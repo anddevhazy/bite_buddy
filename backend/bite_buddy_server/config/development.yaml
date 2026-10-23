@@ -33,6 +33,9 @@ database:
   port: 8090
   name: bite_buddy
   user: postgres
+  # Serverpod 4 runs an embedded PostgreSQL from this folder, so local
+  # development doesn't need Docker. Remove this line to use docker-compose.
+  dataPath: .serverpod/postgres
   #requireSsl: true # defaults to false
   #isUnixSocket: true # defaults to false
   #maxConnectionCount: 10 # Defaults to 10, a negative or null value removes the limit

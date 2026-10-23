@@ -1,7 +1,7 @@
 import 'package:bite_buddy/features/battle/data/models/opponent_model.dart';
 import 'package:bite_buddy/features/battle/domain/entities/battle_entity.dart';
 import 'package:bite_buddy/features/global/enums/battle_move.dart' as app;
-import 'package:bite_buddy_client/bite_buddy_client.dart';
+import 'package:bite_buddy_client/bite_buddy_client.dart' hide BattleStatus;
 
 class BattleModel extends BattleEntity {
   const BattleModel({

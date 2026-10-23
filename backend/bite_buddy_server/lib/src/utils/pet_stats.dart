@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:serverpod/serverpod.dart';
+
 import '../generated/protocol.dart';
 
 // All the game-balance numbers live here so they're easy to tune and test.

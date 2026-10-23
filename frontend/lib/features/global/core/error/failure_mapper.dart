@@ -5,7 +5,6 @@ import 'package:bite_buddy/features/global/core/error/error_messages.dart';
 import 'package:bite_buddy/features/global/core/error/failures.dart';
 import 'package:bite_buddy_client/bite_buddy_client.dart';
 import 'package:flutter/foundation.dart';
-import 'package:serverpod_flutter/serverpod_flutter.dart';
 
 class FailureMapper {
   const FailureMapper._();

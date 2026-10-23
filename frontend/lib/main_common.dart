@@ -6,6 +6,7 @@ import 'package:bite_buddy/features/global/routes/routes.dart';
 import 'package:bite_buddy/features/pet/presentation/bloc/pet_cubit.dart';
 import 'package:bite_buddy/features/scanner/presentation/bloc/scanner_cubit.dart';
 import 'package:bite_buddy/service_locator.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
