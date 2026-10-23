@@ -2,19 +2,19 @@ name: bite_buddy_server
 description: The Serverpod backend for Bite Buddy.
 
 environment:
-  sdk: '^3.8.0'
+  sdk: ^3.12.2
 
 resolution: workspace
 
 dependencies:
-  serverpod: 3.4.13
-  serverpod_auth_idp_server: 3.4.13
+  serverpod: 4.0.4
+  serverpod_auth_idp_server: 4.0.4
   crypto: ^3.0.6
   http: ^1.2.2
 
 dev_dependencies:
   lints: '>=3.0.0 <7.0.0'
-  serverpod_test: 3.4.13
+  serverpod_test: 4.0.4
   test: ^1.25.5
 
 serverpod:

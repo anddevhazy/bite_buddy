@@ -13,8 +13,7 @@ class LeaderboardService {
     final pets = await Pet.db.find(
       session,
       where: (t) => t.mealsEaten > 0,
-      orderBy: (t) => t.nutrition,
-      orderDescending: true,
+      orderByList: (t) => [t.nutrition.desc(), t.level.desc()],
       limit: size,
     );
 

@@ -5,7 +5,7 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.11.5
+  sdk: ^3.12.2
 
 resolution: workspace
 
@@ -15,8 +15,8 @@ dependencies:
 
   bite_buddy_client:
     path: ../backend/bite_buddy_client
-  serverpod_flutter: 3.4.13
-  serverpod_auth_idp_flutter: 3.4.13
+  serverpod_flutter: 4.0.4
+  serverpod_auth_idp_flutter: 4.0.4
 
   cupertino_icons: ^1.0.8
   google_fonts: ^6.2.1

@@ -21,6 +21,9 @@ class FailureMapper {
         _ => ValidationFailure(e.message),
       };
     }
+    if (e is ServerpodClientNetworkException) {
+      return const NetworkFailure(ErrorMessages.network);
+    }
     if (e is ServerpodClientUnauthorized) {
       return const UnauthorizedFailure(ErrorMessages.unauthorized);
     }

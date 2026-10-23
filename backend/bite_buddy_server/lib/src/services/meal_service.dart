@@ -159,8 +159,7 @@ class MealService {
     return Meal.db.find(
       session,
       where: (t) => t.ownerId.equals(ownerId),
-      orderBy: (t) => t.createdAt,
-      orderDescending: true,
+      orderByList: (t) => [t.createdAt.desc()],
       limit: 50,
     );
   }
