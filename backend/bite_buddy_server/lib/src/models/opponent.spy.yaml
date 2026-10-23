@@ -1,0 +1,14 @@
+### A battle opponent from the catalog in utils/catalog.dart.
+class: Opponent
+fields:
+  key: String
+  name: String
+  emoji: String
+  level: int
+  hp: int
+  attack: int
+  defense: int
+  difficulty: String
+  coinReward: int
+  ### Rough chance the caller's pet wins, 0-100.
+  winChance: int

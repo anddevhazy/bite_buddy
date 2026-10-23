@@ -1,0 +1,15 @@
+# Pub workspace: the server, its generated client and the Flutter app resolve
+# their packages together, so they always agree on Serverpod versions.
+name: _
+publish_to: none
+
+environment:
+  sdk: ^3.11.5
+
+workspace:
+  - backend/bite_buddy_client
+  - backend/bite_buddy_server
+  - frontend
+
+dependency_overrides:
+  flutter_secure_storage: ^10.0.0

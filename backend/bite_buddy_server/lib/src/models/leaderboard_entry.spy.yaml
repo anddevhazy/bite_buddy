@@ -1,0 +1,10 @@
+### One row of the nutrition leaderboard. Leaves out the owner's id on purpose.
+class: LeaderboardEntry
+fields:
+  rank: int
+  petId: int
+  petName: String
+  speciesKey: String
+  level: int
+  nutrition: int
+  isYou: bool

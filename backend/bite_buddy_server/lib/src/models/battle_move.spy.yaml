@@ -1,0 +1,6 @@
+enum: BattleMove
+serialized: byName
+values:
+  - attack
+  - defend
+  - special

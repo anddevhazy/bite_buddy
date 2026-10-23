@@ -1,0 +1,9 @@
+### The pet after a meal, and how much each stat moved.
+class: FeedResult
+fields:
+  pet: Pet
+  healthChange: int
+  energyChange: int
+  nutritionChange: int
+  xpGained: int
+  leveledUp: bool

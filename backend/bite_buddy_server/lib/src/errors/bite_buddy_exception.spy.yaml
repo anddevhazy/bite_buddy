@@ -1,0 +1,8 @@
+### Thrown by endpoints for errors the app should show to the user. Serverpod
+### sends it to the client as a typed exception.
+exception: BiteBuddyException
+fields:
+  ### NO_PET, PET_EXISTS, MEAL_REJECTED, ALREADY_FED, DUPLICATE_PHOTO,
+  ### NOT_ENOUGH_ENERGY, NOT_FOUND, INVALID_INPUT, AI_UNAVAILABLE
+  code: String
+  message: String

@@ -1,0 +1,29 @@
+### A scanned meal and the nutrition the AI read from the photo.
+class: Meal
+table: meal
+fields:
+  ownerId: UuidValue
+  name: String
+  description: String
+  calories: int
+  ### Percent of a daily target, 0-100+.
+  proteinPct: int
+  carbsPct: int
+  fatsPct: int
+  vitaminsPct: int
+  mineralsPct: int
+  fiberPct: int
+  ### 0-100, overall quality of the meal.
+  healthScore: int
+  ### A-F, from healthScore.
+  grade: String
+  ### SHA-256 of the uploaded photo, so the same photo can't be fed twice.
+  imageHash: String
+  ### Whether this meal has been fed to the pet yet.
+  fed: bool
+  createdAt: DateTime
+indexes:
+  meal_owner_created_idx:
+    fields: ownerId, createdAt
+  meal_image_hash_idx:
+    fields: imageHash

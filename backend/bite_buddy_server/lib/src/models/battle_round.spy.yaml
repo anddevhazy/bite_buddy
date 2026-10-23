@@ -1,0 +1,9 @@
+### What happened in one round of a battle. Stored as JSON on the battle row.
+class: BattleRound
+fields:
+  round: int
+  playerMove: BattleMove
+  opponentMove: BattleMove
+  damageDealt: int
+  damageTaken: int
+  message: String

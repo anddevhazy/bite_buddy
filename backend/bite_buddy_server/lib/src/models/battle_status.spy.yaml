@@ -1,0 +1,6 @@
+enum: BattleStatus
+serialized: byName
+values:
+  - ongoing
+  - won
+  - lost

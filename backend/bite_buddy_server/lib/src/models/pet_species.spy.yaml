@@ -1,0 +1,8 @@
+### A pet the user can adopt. Served from the catalog in utils/catalog.dart.
+class: PetSpecies
+fields:
+  key: String
+  name: String
+  title: String
+  rarity: String
+  emoji: String

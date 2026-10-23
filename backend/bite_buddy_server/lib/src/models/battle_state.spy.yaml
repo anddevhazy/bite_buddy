@@ -1,0 +1,7 @@
+### A battle plus the details the app needs to draw it.
+class: BattleState
+fields:
+  battle: Battle
+  opponent: Opponent
+  petName: String
+  petSpeciesKey: String

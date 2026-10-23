@@ -1,0 +1,30 @@
+### A user's pet. One per user; every stat is 0-100 except level, xp and coins.
+class: Pet
+table: pet
+fields:
+  ### The auth user that owns this pet.
+  ownerId: UuidValue
+  ### Key into the species catalog (fluffy, sparkle, thunder, mystic).
+  speciesKey: String
+  name: String
+  level: int
+  ### XP towards the next level; a level needs level * 100 XP.
+  xp: int
+  health: int
+  energy: int
+  ### Rolling meal quality. This is the leaderboard score.
+  nutrition: int
+  coins: int
+  mealsEaten: int
+  wins: int
+  losses: int
+  lastFedAt: DateTime?
+  ### Neglect decay has been applied up to this moment.
+  lastDecayAt: DateTime
+  createdAt: DateTime
+indexes:
+  pet_owner_idx:
+    fields: ownerId
+    unique: true
+  pet_nutrition_idx:
+    fields: nutrition

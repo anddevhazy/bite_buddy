@@ -1,0 +1,27 @@
+### A battle between the user's pet and a catalog opponent, resolved round by
+### round on the server.
+class: Battle
+table: battle
+fields:
+  ownerId: UuidValue
+  petId: int
+  opponentKey: String
+  petHp: int
+  petMaxHp: int
+  petAttack: int
+  petDefense: int
+  opponentHp: int
+  opponentMaxHp: int
+  round: int
+  status: BattleStatus
+  ### Rounds until Special can be used again; 0 means ready.
+  specialCooldown: int
+  opponentSpecialCooldown: int
+  lastRound: BattleRound?
+  coinsEarned: int
+  xpEarned: int
+  energyChange: int
+  createdAt: DateTime
+indexes:
+  battle_owner_idx:
+    fields: ownerId
