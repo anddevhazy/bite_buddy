@@ -1,13 +1,11 @@
-import 'package:serverpod/serverpod.dart';
 import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:serverpod_auth_idp_server/providers/email.dart';
 
-import 'src/generated/endpoints.dart';
-import 'src/generated/protocol.dart';
+import 'src/generated/serverpod.dart';
 
 /// The starting point of the Serverpod server.
 void run(List<String> args) async {
-  final pod = Serverpod(args, Protocol(), Endpoints());
+  final pod = Serverpod(args);
 
   // JWTs for API auth, and email + password as the sign-in method
   pod.initializeAuthServices(

@@ -2,7 +2,7 @@
 # docker build -f bite_buddy_server/Dockerfile .
 
 # Build stage
-FROM dart:3.8.0 AS build
+FROM dart:3.12.2 AS build
 
 # Create a minimal workspace that preserves locked server dependency versions.
 WORKDIR /app
@@ -11,7 +11,7 @@ COPY bite_buddy_server bite_buddy_server
 RUN printf '%s\n' \
   'name: _' \
   'environment:' \
-  '  sdk: ^3.8.0' \
+  '  sdk: ^3.12.2' \
   'workspace:' \
   '  - bite_buddy_server' \
   > pubspec.yaml
@@ -19,7 +19,8 @@ RUN dart pub get
 
 # Compile the server executable.
 WORKDIR /app/bite_buddy_server
-RUN dart compile exe bin/main.dart -o bin/server
+RUN dart build cli --target bin/main.dart --output build
+RUN mv build/bundle/bin/main build/bundle/bin/server
 
 # Add a fallback for the copy of possibly missing directories.
 RUN mkdir -p config web migrations
@@ -37,8 +38,8 @@ ENV role=monolith
 # Copy runtime dependencies
 COPY --from=build /runtime/ /
 
-# Copy compiled server executable
-COPY --from=build /app/bite_buddy_server/bin/server server
+# Copy compiled server executable and native libraries
+COPY --from=build /app/bite_buddy_server/build/bundle/ ./
 
 # Copy configuration files and resources
 COPY --from=build /app/bite_buddy_server/config/ config/
@@ -54,4 +55,4 @@ EXPOSE 8081
 EXPOSE 8082
 
 # Define the entrypoint command
-ENTRYPOINT ./server --mode=$runmode --server-id=$serverid --logging=$logging --role=$role
+ENTRYPOINT ./bin/server --mode=$runmode --server-id=$serverid --logging=$logging --role=$role

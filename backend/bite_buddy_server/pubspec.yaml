@@ -18,6 +18,11 @@ dev_dependencies:
   test: ^1.25.5
 
 serverpod:
-  scripts:
-    # Starts the server and applies migrations
-    start: dart bin/main.dart --apply-migrations
+  # The Flutter app that `serverpod start` launches alongside the server
+  # (Ctrl+R in its terminal UI). Extra properties are passed to `flutter run`.
+  flutter_apps:
+    bite_buddy:
+      path: ../../frontend
+      displayName: "Bite Buddy"
+      auto_launch: true
+      target: lib/driver.dart

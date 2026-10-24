@@ -19,3 +19,6 @@ config/firebase_service_account_key.json
 
 # Embedded development database (Serverpod 4)
 .serverpod/
+
+# SQLite databases created by the ephemeral test database
+**/sp_*.db*

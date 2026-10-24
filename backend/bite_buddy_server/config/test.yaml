@@ -21,35 +21,19 @@ insightsServer:
   publicPort: 0
   publicScheme: http
 
-# Configuration for the web test server.
-webServer:
-  port: 0
-  publicHost: localhost
-  publicPort: 0
-  publicScheme: http
-
-# This is the database setup for your test server.
 database:
   host: localhost
   port: 9090
   name: bite_buddy_test
   user: postgres
+  # Tests start their own embedded PostgreSQL; no Docker needed
+  dataPath: .serverpod/test/pgdata
   #maxConnectionCount: 10 # Defaults to 10, a negative or null value removes the limit
-
-# This is the setup for your Redis test instance.
-redis:
-  enabled: false
-  host: localhost
-  port: 9091
-  #user: # defaults to empty
-  #requireSsl: true # defaults to false
 
 sessionLogs:
   persistentEnabled: true
   consoleEnabled: true
 # consoleLogFormat: json # Defaults to "json", options are "text" or "json"
-
-# futureCallExecutionEnabled: true # Defaults to true
 
 #futureCall:
 #  concurrencyLimit: 1 # Defaults to 1, a negative or null value removes the limit
