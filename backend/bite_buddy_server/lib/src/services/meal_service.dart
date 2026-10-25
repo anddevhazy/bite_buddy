@@ -119,11 +119,10 @@ class MealService {
 
       final fedToday = await Meal.db.count(
         session,
-        where:
-            (t) =>
-                t.ownerId.equals(ownerId) &
-                t.fed.equals(true) &
-                (t.createdAt > now.subtract(const Duration(days: 1))),
+        where: (t) =>
+            t.ownerId.equals(ownerId) &
+            t.fed.equals(true) &
+            (t.createdAt > now.subtract(const Duration(days: 1))),
         transaction: transaction,
       );
       if (fedToday >= maxMealsPerDay) {

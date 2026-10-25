@@ -17,7 +17,10 @@ class BattleService {
   static const int specialCooldownRounds = 3;
   static const int maxRounds = 30;
 
-  Future<List<Opponent>> opponentsFor(Session session, UuidValue ownerId) async {
+  Future<List<Opponent>> opponentsFor(
+    Session session,
+    UuidValue ownerId,
+  ) async {
     final pet = await pets.requireMine(session, ownerId);
     return [
       for (final o in opponents) o.toProtocol(winChance: _winChance(pet, o)),
@@ -48,10 +51,8 @@ class BattleService {
       // Only one battle at a time: an unfinished one counts as a loss
       final unfinished = await Battle.db.find(
         session,
-        where:
-            (t) =>
-                t.ownerId.equals(ownerId) &
-                t.status.equals(BattleStatus.ongoing),
+        where: (t) =>
+            t.ownerId.equals(ownerId) & t.status.equals(BattleStatus.ongoing),
         transaction: transaction,
       );
       var current = pet;
@@ -170,24 +171,24 @@ class BattleService {
     if (playerMove == BattleMove.defend) taken = (taken / 2).round();
     if (opponentMove == BattleMove.defend) dealt = (dealt / 2).round();
 
-    final petHeal =
-        playerMove == BattleMove.defend ? (b.petMaxHp * 0.05).round() : 0;
-    final oppHeal =
-        opponentMove == BattleMove.defend ? (b.opponentMaxHp * 0.05).round() : 0;
+    final petHeal = playerMove == BattleMove.defend
+        ? (b.petMaxHp * 0.05).round()
+        : 0;
+    final oppHeal = opponentMove == BattleMove.defend
+        ? (b.opponentMaxHp * 0.05).round()
+        : 0;
 
     final round = b.round + 1;
     return b.copyWith(
       round: round,
       petHp: (b.petHp - taken + petHeal).clamp(0, b.petMaxHp),
       opponentHp: (b.opponentHp - dealt + oppHeal).clamp(0, b.opponentMaxHp),
-      specialCooldown:
-          playerMove == BattleMove.special
-              ? specialCooldownRounds
-              : max(0, b.specialCooldown - 1),
-      opponentSpecialCooldown:
-          opponentMove == BattleMove.special
-              ? specialCooldownRounds
-              : max(0, b.opponentSpecialCooldown - 1),
+      specialCooldown: playerMove == BattleMove.special
+          ? specialCooldownRounds
+          : max(0, b.specialCooldown - 1),
+      opponentSpecialCooldown: opponentMove == BattleMove.special
+          ? specialCooldownRounds
+          : max(0, b.opponentSpecialCooldown - 1),
       lastRound: BattleRound(
         round: round,
         playerMove: playerMove,

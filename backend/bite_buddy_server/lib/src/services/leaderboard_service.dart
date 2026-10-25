@@ -9,7 +9,10 @@ class LeaderboardService {
 
   // Top pets by nutrition. Pets that never ate are left out so the board
   // isn't padded with zeros.
-  Future<List<LeaderboardEntry>> top(Session session, UuidValue callerId) async {
+  Future<List<LeaderboardEntry>> top(
+    Session session,
+    UuidValue callerId,
+  ) async {
     final pets = await Pet.db.find(
       session,
       where: (t) => t.mealsEaten > 0,
