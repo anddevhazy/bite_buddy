@@ -14,7 +14,12 @@ Future<void> init() async {
   // Attend: every remote data source talks to the server through it. The
   // auth session manager stores the tokens securely and refreshes them.
   final client =
-      Client(FlavorConfig.instance.serverUrl)
+      Client(
+          FlavorConfig.instance.serverUrl,
+          // A food scan uploads a photo and waits for the AI, which can take
+          // well over the 20 s default on a slow connection
+          connectionTimeout: const Duration(seconds: 90),
+        )
         ..connectivityMonitor = FlutterConnectivityMonitor()
         ..authSessionManager = FlutterAuthSessionManager();
   await client.auth.initialize();

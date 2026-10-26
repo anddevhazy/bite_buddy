@@ -35,7 +35,9 @@ class _CameraCapturePageState extends State<CameraCapturePage> {
       );
       final controller = CameraController(
         back,
-        ResolutionPreset.high,
+        // About 640x480: plenty for the food AI, and small enough to upload
+        // quickly on a weak connection
+        ResolutionPreset.medium,
         enableAudio: false,
         imageFormatGroup: ImageFormatGroup.jpeg,
       );

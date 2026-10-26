@@ -1,6 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Talks to the Serverpod backend -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
-        android:label="bite_buddy"
+        android:label="Bite Buddy"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
