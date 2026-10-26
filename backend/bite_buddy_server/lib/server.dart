@@ -22,7 +22,8 @@ void run(List<String> args) async {
 }
 
 // TODO: send these through an email service (Resend, like Attend). Until
-// then the codes are written to the server log so you can sign up locally.
+// then the codes are written to the server log so you can sign up locally,
+// and in development also printed to the `serverpod start` terminal.
 void _sendRegistrationCode(
   Session session, {
   required String email,
@@ -31,6 +32,7 @@ void _sendRegistrationCode(
   required Transaction? transaction,
 }) {
   session.log('[EmailIdp] Registration code ($email): $verificationCode');
+  _printInDevelopment(session, 'Registration code for $email: $verificationCode');
 }
 
 void _sendPasswordResetCode(
@@ -41,4 +43,14 @@ void _sendPasswordResetCode(
   required Transaction? transaction,
 }) {
   session.log('[EmailIdp] Password reset code ($email): $verificationCode');
+  _printInDevelopment(session, 'Password reset code for $email: $verificationCode');
+}
+
+// Session logs are stored in the database but not shown in the `serverpod
+// start` view, so print sign-up codes there too. Never in staging/production.
+void _printInDevelopment(Session session, String message) {
+  if (session.serverpod.runMode == ServerpodRunMode.development) {
+    // ignore: avoid_print
+    print('📧 $message');
+  }
 }
