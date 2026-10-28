@@ -1,8 +1,7 @@
 import 'package:bite_buddy/features/auth/presentation/bloc/auth_cubit.dart';
 import 'package:bite_buddy/features/global/components/app_error_view.dart';
 import 'package:bite_buddy/features/global/components/forest_background.dart';
-import 'package:bite_buddy/features/global/constants/app_images.dart';
-import 'package:bite_buddy/features/global/constants/colors.dart';
+import 'package:bite_buddy/features/global/components/splash_art.dart';
 import 'package:bite_buddy/features/global/routes/routes.dart';
 import 'package:bite_buddy/features/pet/presentation/bloc/pet_cubit.dart';
 import 'package:flutter/material.dart';
@@ -59,26 +58,7 @@ class _SplashScreenState extends State<SplashScreen> {
               child: AppErrorView(message: state.message, onRetry: _start),
             );
           }
-          return Stack(
-            fit: StackFit.expand,
-            children: [
-              Image.asset(AppImages.splashBackground, fit: BoxFit.cover),
-              SafeArea(
-                child: Column(
-                  children: [
-                    const Spacer(flex: 3),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32),
-                      child: Image.asset(AppImages.logo),
-                    ),
-                    const Spacer(flex: 4),
-                    const CircularProgressIndicator(color: AppColors.white),
-                    const SizedBox(height: 48),
-                  ],
-                ),
-              ),
-            ],
-          );
+          return const SplashArt();
         },
       ),
     );

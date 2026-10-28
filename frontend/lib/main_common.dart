@@ -1,7 +1,9 @@
 import 'package:bite_buddy/features/auth/presentation/bloc/auth_cubit.dart';
 import 'package:bite_buddy/features/battle/presentation/bloc/battle_cubit.dart';
 import 'package:bite_buddy/features/collection/presentation/bloc/collection_cubit.dart';
+import 'package:bite_buddy/features/global/components/splash_art.dart';
 import 'package:bite_buddy/features/global/constants/colors.dart';
+import 'package:bite_buddy/features/global/constants/text_styles.dart';
 import 'package:bite_buddy/features/global/routes/routes.dart';
 import 'package:bite_buddy/features/insights/presentation/bloc/insights_cubit.dart';
 import 'package:bite_buddy/features/pet/presentation/bloc/pet_cubit.dart';
@@ -16,8 +18,12 @@ import 'main_injection_container.dart' as di;
 
 Future<void> mainCommon() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
+  // Draw the splash art straight away. Set-up (restoring the sign-in and so
+  // on) happens behind it; the app then takes over showing the same picture.
+  runApp(const BootSplash());
+
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await di.init();
 
   runApp(const MyApp());
@@ -57,6 +63,7 @@ class MyApp extends StatelessWidget {
               routerConfig: Routes.router,
               theme: ThemeData(
                 brightness: Brightness.dark,
+                fontFamily: AppTextStyles.body,
                 scaffoldBackgroundColor: AppColors.background,
                 colorScheme: const ColorScheme.dark(
                   primary: AppColors.primary,
