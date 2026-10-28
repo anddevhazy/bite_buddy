@@ -7,6 +7,7 @@ import 'package:bite_buddy/features/global/constants/spacing.dart';
 import 'package:bite_buddy/features/global/constants/text_styles.dart';
 import 'package:bite_buddy/features/global/routes/routes.dart';
 import 'package:bite_buddy/features/insights/presentation/bloc/insights_cubit.dart';
+import 'package:bite_buddy/features/pet/domain/entities/pet_entity.dart';
 import 'package:bite_buddy/features/pet/presentation/bloc/pet_cubit.dart';
 import 'package:bite_buddy/features/pet/presentation/widgets/pet_avatar.dart';
 import 'package:bite_buddy/features/scanner/domain/entities/feed_result_entity.dart';
@@ -318,6 +319,17 @@ class _Fed extends StatelessWidget {
 
   String _signed(int v) => v >= 0 ? '+$v' : '$v';
 
+  // "+0" looks like the meal did nothing, so say why the stat didn't move
+  String _describe(String label, int change, PetEntity pet) {
+    if (change != 0) return _signed(change);
+    return switch (label) {
+      'Health' when pet.health == 100 => 'Full',
+      'Energy' when pet.energy == 100 => 'Full',
+      'Nutrition' => 'Steady',
+      _ => _signed(change),
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final pet = result.pet;
@@ -382,9 +394,7 @@ class _Fed extends StatelessWidget {
                       Text(label, style: AppTextStyles.bodyLarge),
                       const Spacer(),
                       Text(
-                        label == 'Health' && change == 0 && pet.health == 100
-                            ? 'Full'
-                            : _signed(change),
+                        _describe(label, change, pet),
                         style: AppTextStyles.h3.copyWith(
                           color: change >= 0
                               ? AppColors.primary

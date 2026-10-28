@@ -139,8 +139,9 @@ FeedResult feed(
   final health = clampStat(pet.health + healing);
   // Healing past full health becomes XP, so a good meal is never wasted
   final fullHealthBonusXp = max(0, (pet.health + healing).round() - maxStat);
-  // Food is fuel: 2 to 15 energy depending on calories
-  final energy = clampStat(pet.energy + (meal.calories / 60).clamp(2, 15));
+  // Good food is better fuel: 5 energy for the worst meal, 15 for the best.
+  // Based on quality, not calories, so eating more never pays off.
+  final energy = clampStat(pet.energy + 5 + score / 10);
   final xpGained =
       10 + (score >= 70 ? 5 : 0) + streakBonusXp + fullHealthBonusXp;
 

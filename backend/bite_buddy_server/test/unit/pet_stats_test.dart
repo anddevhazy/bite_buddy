@@ -53,9 +53,13 @@ void main() {
       expect(feed(pet(), meal(score: 100), t0).pet.health, 100);
     });
 
-    test('energy gain is between 2 and 15', () {
-      expect(feed(pet(), meal(calories: 0), t0).energyChange, 2);
-      expect(feed(pet(), meal(calories: 5000), t0).energyChange, 15);
+    test('energy comes from meal quality, 5 to 15, not calories', () {
+      expect(feed(pet(), meal(score: 0), t0).energyChange, 5);
+      expect(feed(pet(), meal(score: 100), t0).energyChange, 15);
+      // A huge junk meal gives less energy than a small healthy one
+      final junk = feed(pet(), meal(score: 20, calories: 2000), t0);
+      final salad = feed(pet(), meal(score: 90, calories: 300), t0);
+      expect(junk.energyChange, lessThan(salad.energyChange));
     });
 
     test('a healthy meal gives bonus XP', () {

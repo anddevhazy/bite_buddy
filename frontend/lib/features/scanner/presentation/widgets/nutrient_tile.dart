@@ -28,7 +28,7 @@ class NutrientTile extends StatelessWidget {
   static String levelForCalories(int kcal) {
     if (kcal < 300) return 'Light';
     if (kcal < 700) return 'Moderate';
-    return 'High Energy';
+    return 'Hearty';
   }
 
   @override
