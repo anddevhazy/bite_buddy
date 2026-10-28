@@ -9,6 +9,8 @@ import 'package:bite_buddy/features/global/constants/spacing.dart';
 import 'package:bite_buddy/features/global/constants/text_styles.dart';
 import 'package:bite_buddy/features/global/routes/routes.dart';
 import 'package:bite_buddy/features/pet/presentation/bloc/pet_cubit.dart';
+import 'package:bite_buddy/features/guide/presentation/widgets/info_button.dart';
+import 'package:bite_buddy/features/guide/domain/entities/guide_topic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -56,6 +58,13 @@ class _BattleArenaPageState extends State<BattleArenaPage> {
               const PageHeader(
                 title: '⚔️ Battle Arena',
                 subtitle: 'Challenge opponents to earn coins and XP',
+                trailing: InfoButton(
+                  topics: [
+                    GuideTopicId.battles,
+                    GuideTopicId.battleMoves,
+                    GuideTopicId.coins,
+                  ],
+                ),
               ),
               const SizedBox(height: AppSpacing.lg),
               if (pet != null)

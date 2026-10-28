@@ -4,6 +4,8 @@ import 'package:bite_buddy/features/global/constants/spacing.dart';
 import 'package:bite_buddy/features/global/constants/text_styles.dart';
 import 'package:bite_buddy/features/insights/domain/entities/nutrition_insights_entity.dart';
 import 'package:bite_buddy/features/insights/presentation/bloc/insights_cubit.dart';
+import 'package:bite_buddy/features/guide/presentation/widgets/info_button.dart';
+import 'package:bite_buddy/features/guide/domain/entities/guide_topic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -74,7 +76,12 @@ class _Summary extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('This week', style: AppTextStyles.h3),
+        Row(
+          children: [
+            Expanded(child: Text('This week', style: AppTextStyles.h3)),
+            const InfoButton(topics: [GuideTopicId.weeklySummary]),
+          ],
+        ),
         if (insights.mealsCounted > 0) ...[
           const SizedBox(height: AppSpacing.xs),
           Text(

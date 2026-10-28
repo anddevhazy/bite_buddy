@@ -14,6 +14,8 @@ import 'package:bite_buddy/features/scanner/domain/entities/feed_result_entity.d
 import 'package:bite_buddy/features/scanner/domain/entities/meal_entity.dart';
 import 'package:bite_buddy/features/scanner/presentation/bloc/scanner_cubit.dart';
 import 'package:bite_buddy/features/scanner/presentation/widgets/nutrient_tile.dart';
+import 'package:bite_buddy/features/guide/presentation/widgets/info_button.dart';
+import 'package:bite_buddy/features/guide/domain/entities/guide_topic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -94,7 +96,9 @@ class ScanResultPage extends StatelessWidget {
                         const Spacer(),
                         Text('Scan Results', style: AppTextStyles.h2),
                         const Spacer(),
-                        const SizedBox(width: 48),
+                        const InfoButton(
+                          topics: [GuideTopicId.grades, GuideTopicId.scanning],
+                        ),
                       ],
                     ),
                   ),

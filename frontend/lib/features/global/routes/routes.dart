@@ -4,6 +4,7 @@ import 'package:bite_buddy/features/battle/presentation/pages/battle_page.dart';
 import 'package:bite_buddy/features/collection/presentation/pages/collection_page.dart';
 import 'package:bite_buddy/features/global/components/main_shell.dart';
 import 'package:bite_buddy/features/global/pages/splash_screen.dart';
+import 'package:bite_buddy/features/guide/presentation/pages/guide_page.dart';
 import 'package:bite_buddy/features/pet/presentation/pages/choose_buddy_page.dart';
 import 'package:bite_buddy/features/pet/presentation/pages/pet_home_page.dart';
 import 'package:bite_buddy/features/profile/presentation/pages/profile_page.dart';
@@ -44,6 +45,9 @@ class Routes {
 
   static const String battlePath = '/fight';
   static const String battleName = 'fight';
+
+  static const String guidePath = '/guide';
+  static const String guideName = 'guide';
 
   static void goToSignIn() {
     if (router.state.matchedLocation != signInPath) {
@@ -128,6 +132,12 @@ class Routes {
         name: scanResultName,
         parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const ScanResultPage(),
+      ),
+      GoRoute(
+        path: guidePath,
+        name: guideName,
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => const GuidePage(),
       ),
       GoRoute(
         path: battlePath,

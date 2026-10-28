@@ -8,6 +8,8 @@ import 'package:bite_buddy/features/global/constants/colors.dart';
 import 'package:bite_buddy/features/global/constants/spacing.dart';
 import 'package:bite_buddy/features/global/constants/text_styles.dart';
 import 'package:bite_buddy/features/pet/presentation/bloc/pet_cubit.dart';
+import 'package:bite_buddy/features/global/routes/routes.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -94,6 +96,11 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.xl),
+          GameButton(
+            label: 'How to play',
+            onPressed: () => context.pushNamed(Routes.guideName),
+          ),
+          const SizedBox(height: AppSpacing.md),
           GameButton(
             label: 'Sign out',
             style: GameButtonStyle.danger,

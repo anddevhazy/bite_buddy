@@ -9,6 +9,8 @@ import 'package:bite_buddy/features/global/constants/colors.dart';
 import 'package:bite_buddy/features/global/constants/spacing.dart';
 import 'package:bite_buddy/features/global/constants/text_styles.dart';
 import 'package:bite_buddy/features/scanner/domain/entities/meal_entity.dart';
+import 'package:bite_buddy/features/guide/presentation/widgets/info_button.dart';
+import 'package:bite_buddy/features/guide/domain/entities/guide_topic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -40,6 +42,9 @@ class _CollectionPageState extends State<CollectionPage> {
             const PageHeader(
               title: 'My Collection',
               subtitle: 'Meals, achievements & more',
+              trailing: InfoButton(
+                topics: [GuideTopicId.leaderboard, GuideTopicId.grades],
+              ),
             ),
             const SizedBox(height: AppSpacing.lg),
             _Tabs(selected: _tab, onSelect: (i) => setState(() => _tab = i)),

@@ -11,6 +11,8 @@ import 'package:bite_buddy/features/global/constants/spacing.dart';
 import 'package:bite_buddy/features/global/constants/text_styles.dart';
 import 'package:bite_buddy/features/global/enums/battle_move.dart';
 import 'package:bite_buddy/features/pet/presentation/bloc/pet_cubit.dart';
+import 'package:bite_buddy/features/guide/presentation/widgets/info_button.dart';
+import 'package:bite_buddy/features/guide/domain/entities/guide_topic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -79,10 +81,18 @@ class _Arena extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.lg),
       children: [
-        Text(
-          battle.round == 0 ? 'Battle started!' : 'Round ${battle.round}',
-          textAlign: TextAlign.center,
-          style: AppTextStyles.h2,
+        Row(
+          children: [
+            const SizedBox(width: 48),
+            Expanded(
+              child: Text(
+                battle.round == 0 ? 'Battle started!' : 'Round ${battle.round}',
+                textAlign: TextAlign.center,
+                style: AppTextStyles.h2,
+              ),
+            ),
+            const InfoButton(topics: [GuideTopicId.battleMoves]),
+          ],
         ),
         const SizedBox(height: AppSpacing.lg),
         Row(

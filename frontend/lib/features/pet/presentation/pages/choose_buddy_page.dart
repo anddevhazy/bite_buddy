@@ -13,6 +13,8 @@ import 'package:bite_buddy/features/global/routes/routes.dart';
 import 'package:bite_buddy/features/pet/domain/entities/pet_species_entity.dart';
 import 'package:bite_buddy/features/pet/presentation/bloc/pet_cubit.dart';
 import 'package:bite_buddy/features/pet/presentation/widgets/pet_avatar.dart';
+import 'package:bite_buddy/features/guide/presentation/widgets/info_button.dart';
+import 'package:bite_buddy/features/guide/domain/entities/guide_topic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -27,7 +29,20 @@ class ChooseBuddyPage extends StatelessWidget {
         child: SafeArea(
           child: BlocConsumer<PetCubit, PetState>(
             listener: (context, state) {
-              if (state is PetLoaded) context.goNamed(Routes.petHomeName);
+              if (state is PetLoaded) {
+                context.goNamed(Routes.petHomeName);
+                // A newly adopted buddy: explain the basics once it's on screen
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  final rootContext = Routes.rootNavigatorKey.currentContext;
+                  if (rootContext == null) return;
+                  showGuideSheet(rootContext, const [
+                    GuideTopicId.basics,
+                    GuideTopicId.health,
+                    GuideTopicId.energy,
+                    GuideTopicId.nutrition,
+                  ]);
+                });
+              }
               if (state is PetFailed) {
                 AppToast.show(
                   context: context,

@@ -10,6 +10,8 @@ import 'package:bite_buddy/features/insights/presentation/widgets/insights_card.
 import 'package:bite_buddy/features/pet/domain/entities/pet_entity.dart';
 import 'package:bite_buddy/features/pet/presentation/bloc/pet_cubit.dart';
 import 'package:bite_buddy/features/pet/presentation/widgets/pet_avatar.dart';
+import 'package:bite_buddy/features/guide/presentation/widgets/info_button.dart';
+import 'package:bite_buddy/features/guide/domain/entities/guide_topic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -83,6 +85,16 @@ class _PetHome extends StatelessWidget {
               ],
             ),
             const Spacer(),
+            const InfoButton(
+              topics: [
+                GuideTopicId.health,
+                GuideTopicId.energy,
+                GuideTopicId.nutrition,
+                GuideTopicId.levels,
+                GuideTopicId.streak,
+                GuideTopicId.coins,
+              ],
+            ),
             IconButton.filled(
               style: IconButton.styleFrom(backgroundColor: AppColors.primary),
               onPressed: () => _refresh(context),

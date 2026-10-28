@@ -8,6 +8,8 @@ import 'package:bite_buddy/features/global/constants/text_styles.dart';
 import 'package:bite_buddy/features/global/routes/routes.dart';
 import 'package:bite_buddy/features/scanner/presentation/bloc/scanner_cubit.dart';
 import 'package:bite_buddy/features/scanner/presentation/pages/camera_capture_page.dart';
+import 'package:bite_buddy/features/guide/presentation/widgets/info_button.dart';
+import 'package:bite_buddy/features/guide/domain/entities/guide_topic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -41,6 +43,9 @@ class FoodScannerPage extends StatelessWidget {
           const PageHeader(
             title: 'Food Scanner',
             subtitle: 'Feed your buddy with what you eat',
+            trailing: InfoButton(
+              topics: [GuideTopicId.scanning, GuideTopicId.grades],
+            ),
           ),
           const SizedBox(height: AppSpacing.xl),
           const Center(child: Text('🥗', style: TextStyle(fontSize: 110))),
