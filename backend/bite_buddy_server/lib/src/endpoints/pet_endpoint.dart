@@ -10,8 +10,9 @@ class PetEndpoint extends Endpoint {
   @override
   bool get requireLogin => true;
 
-  Future<List<PetSpecies>> listSpecies(Session session) async =>
-      [for (final s in petSpecies) s.toProtocol()];
+  Future<List<PetSpecies>> listSpecies(Session session) async => [
+    for (final s in petSpecies) s.toProtocol(),
+  ];
 
   // Null until the user adopts a pet
   Future<Pet?> getMyPet(Session session) =>

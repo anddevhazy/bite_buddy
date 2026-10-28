@@ -51,7 +51,11 @@ void main() {
       final species = await endpoints.pet.listSpecies(signedIn);
       expect(species, isNotEmpty);
 
-      final pet = await endpoints.pet.adopt(signedIn, species.first.key, 'Fluffy');
+      final pet = await endpoints.pet.adopt(
+        signedIn,
+        species.first.key,
+        'Fluffy',
+      );
       expect(pet.name, 'Fluffy');
       expect(pet.health, 100);
       expect(pet.level, 1);
@@ -116,10 +120,9 @@ void main() {
       expect(state.battle.status, BattleStatus.ongoing);
 
       while (state.battle.status == BattleStatus.ongoing) {
-        final move =
-            state.battle.specialCooldown == 0
-                ? BattleMove.special
-                : BattleMove.attack;
+        final move = state.battle.specialCooldown == 0
+            ? BattleMove.special
+            : BattleMove.attack;
         state = await endpoints.battle.move(signedIn, state.battle.id!, move);
       }
 

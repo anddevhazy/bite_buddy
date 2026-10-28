@@ -131,15 +131,18 @@ FeedResult feed(
   final score = meal.healthScore.clamp(0, 100);
 
   // Nutrition leans on recent meals: one bad meal dents it, a habit sinks it
-  final nutrition =
-      pet.mealsEaten == 0
-          ? score
-          : clampStat(pet.nutrition * 0.7 + score * 0.3);
+  final nutrition = pet.mealsEaten == 0
+      ? score
+      : clampStat(pet.nutrition * 0.7 + score * 0.3);
   // Good meals heal, junk hurts: -10 to +10
-  final health = clampStat(pet.health + (score - 50) / 5);
+  final healing = (score - 50) / 5;
+  final health = clampStat(pet.health + healing);
+  // Healing past full health becomes XP, so a good meal is never wasted
+  final fullHealthBonusXp = max(0, (pet.health + healing).round() - maxStat);
   // Food is fuel: 2 to 15 energy depending on calories
   final energy = clampStat(pet.energy + (meal.calories / 60).clamp(2, 15));
-  final xpGained = 10 + (score >= 70 ? 5 : 0) + streakBonusXp;
+  final xpGained =
+      10 + (score >= 70 ? 5 : 0) + streakBonusXp + fullHealthBonusXp;
 
   final fed = pet.copyWith(
     nutrition: nutrition,
@@ -164,6 +167,7 @@ FeedResult feed(
     leveledUp: leveledUp,
     streakExtended: streakExtended,
     streakBonusXp: streakBonusXp,
+    fullHealthBonusXp: fullHealthBonusXp,
   );
 }
 

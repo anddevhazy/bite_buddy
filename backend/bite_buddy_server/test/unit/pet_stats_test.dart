@@ -59,9 +59,27 @@ void main() {
     });
 
     test('a healthy meal gives bonus XP', () {
-      // The first meal also starts a 1-day streak, worth 1 XP
-      expect(feed(pet(), meal(score: 70), t0).xpGained, 15 + 1);
-      expect(feed(pet(), meal(score: 69), t0).xpGained, 10 + 1);
+      // The first meal also starts a 1-day streak, worth 1 XP. A score of 70
+      // heals 4, which at full health becomes 4 more XP.
+      expect(feed(pet(), meal(score: 70), t0).xpGained, 15 + 1 + 4);
+      expect(feed(pet(), meal(score: 50), t0).xpGained, 10 + 1);
+    });
+
+    test('healing past full health becomes bonus XP', () {
+      // A fresh pet is at 100; a score-90 meal would heal 8
+      final full = feed(pet(), meal(score: 90), t0);
+      expect(full.healthChange, 0);
+      expect(full.fullHealthBonusXp, 8);
+      expect(full.xpGained, 15 + 1 + 8);
+
+      // At 95 health, 5 of the 8 heals and only 3 spills over
+      final hurt = pet().copyWith(health: 95);
+      final partial = feed(hurt, meal(score: 90), t0);
+      expect(partial.healthChange, 5);
+      expect(partial.fullHealthBonusXp, 3);
+
+      // Junk food never earns it
+      expect(feed(pet(), meal(score: 20), t0).fullHealthBonusXp, 0);
     });
   });
 
@@ -145,7 +163,10 @@ void main() {
 
     test('charges whole hours after the grace period', () {
       final p = pet();
-      final decayed = applyDecay(p, t0.add(const Duration(hours: 11, minutes: 59)));
+      final decayed = applyDecay(
+        p,
+        t0.add(const Duration(hours: 11, minutes: 59)),
+      );
       expect(decayed.health, 100 - 3 * healthDecayPerHour);
       expect(decayed.lastDecayAt, t0.add(const Duration(hours: 11)));
     });
@@ -171,12 +192,20 @@ void main() {
   group('winChance', () {
     test('is clamped to 5-95', () {
       final easy = winChance(
-        petHp: 500, petAtk: 100, petDef: 100,
-        oppHp: 10, oppAtk: 1, oppDef: 1,
+        petHp: 500,
+        petAtk: 100,
+        petDef: 100,
+        oppHp: 10,
+        oppAtk: 1,
+        oppDef: 1,
       );
       final hopeless = winChance(
-        petHp: 10, petAtk: 1, petDef: 1,
-        oppHp: 500, oppAtk: 100, oppDef: 100,
+        petHp: 10,
+        petAtk: 1,
+        petDef: 1,
+        oppHp: 500,
+        oppAtk: 100,
+        oppDef: 100,
       );
       expect(easy, 95);
       expect(hopeless, 5);
@@ -184,8 +213,12 @@ void main() {
 
     test('an even match is about 50%', () {
       final even = winChance(
-        petHp: 100, petAtk: 20, petDef: 10,
-        oppHp: 100, oppAtk: 20, oppDef: 10,
+        petHp: 100,
+        petAtk: 20,
+        petDef: 10,
+        oppHp: 100,
+        oppAtk: 20,
+        oppDef: 10,
       );
       expect(even, 50);
     });

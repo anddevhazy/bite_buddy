@@ -12,6 +12,8 @@ class FeedResultEntity extends Equatable {
   final bool streakExtended;
   // Already included in xpGained
   final int streakBonusXp;
+  // Healing past 100 health, given as XP instead. Already included in xpGained
+  final int fullHealthBonusXp;
 
   const FeedResultEntity({
     required this.pet,
@@ -22,6 +24,7 @@ class FeedResultEntity extends Equatable {
     required this.leveledUp,
     required this.streakExtended,
     required this.streakBonusXp,
+    required this.fullHealthBonusXp,
   });
 
   @override
@@ -34,5 +37,6 @@ class FeedResultEntity extends Equatable {
     leveledUp,
     streakExtended,
     streakBonusXp,
+    fullHealthBonusXp,
   ];
 }

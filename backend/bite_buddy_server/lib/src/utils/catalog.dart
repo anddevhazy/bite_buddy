@@ -11,10 +11,40 @@ const List<PetSpeciesData> petSpecies = [
 // Opponents in the battle arena, weakest first.
 const List<OpponentData> opponents = [
   OpponentData('wild_pup', 'Wild Pup', '🐕', 1, 80, 18, 10, 'Easy', 75),
-  OpponentData('forest_guardian', 'Forest Guardian', '🦮', 2, 120, 24, 16, 'Medium', 100),
-  OpponentData('shadow_beast', 'Shadow Beast', '🐈‍⬛', 3, 150, 30, 22, 'Medium', 125),
+  OpponentData(
+    'forest_guardian',
+    'Forest Guardian',
+    '🦮',
+    2,
+    120,
+    24,
+    16,
+    'Medium',
+    100,
+  ),
+  OpponentData(
+    'shadow_beast',
+    'Shadow Beast',
+    '🐈‍⬛',
+    3,
+    150,
+    30,
+    22,
+    'Medium',
+    125,
+  ),
   OpponentData('storm_drake', 'Storm Drake', '🐉', 5, 200, 38, 30, 'Hard', 200),
-  OpponentData('ancient_golem', 'Ancient Golem', '🗿', 8, 280, 46, 42, 'Legendary', 350),
+  OpponentData(
+    'ancient_golem',
+    'Ancient Golem',
+    '🗿',
+    8,
+    280,
+    46,
+    42,
+    'Legendary',
+    350,
+  ),
 ];
 
 PetSpeciesData? findSpecies(String key) {
@@ -38,7 +68,13 @@ class PetSpeciesData {
   final String rarity;
   final String emoji;
 
-  const PetSpeciesData(this.key, this.name, this.title, this.rarity, this.emoji);
+  const PetSpeciesData(
+    this.key,
+    this.name,
+    this.title,
+    this.rarity,
+    this.emoji,
+  );
 
   PetSpecies toProtocol() => PetSpecies(
     key: key,

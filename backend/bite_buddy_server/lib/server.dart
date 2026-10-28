@@ -32,7 +32,10 @@ void _sendRegistrationCode(
   required Transaction? transaction,
 }) {
   session.log('[EmailIdp] Registration code ($email): $verificationCode');
-  _printInDevelopment(session, 'Registration code for $email: $verificationCode');
+  _printInDevelopment(
+    session,
+    'Registration code for $email: $verificationCode',
+  );
 }
 
 void _sendPasswordResetCode(
@@ -43,7 +46,10 @@ void _sendPasswordResetCode(
   required Transaction? transaction,
 }) {
   session.log('[EmailIdp] Password reset code ($email): $verificationCode');
-  _printInDevelopment(session, 'Password reset code for $email: $verificationCode');
+  _printInDevelopment(
+    session,
+    'Password reset code for $email: $verificationCode',
+  );
 }
 
 // Session logs are stored in the database but not shown in the `serverpod

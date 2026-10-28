@@ -11,3 +11,6 @@ fields:
   streakExtended: bool
   ### Bonus XP for the streak, already included in xpGained.
   streakBonusXp: int
+  ### Healing past 100 health, turned into XP so a good meal is never wasted
+  ### at full health. Already included in xpGained.
+  fullHealthBonusXp: int

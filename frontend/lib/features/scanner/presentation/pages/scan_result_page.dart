@@ -354,6 +354,14 @@ class _Fed extends StatelessWidget {
             style: AppTextStyles.h3.copyWith(color: AppColors.accent),
           ),
         ],
+        if (result.fullHealthBonusXp > 0) ...[
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            '💪 Health already full! +${result.fullHealthBonusXp} bonus XP',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.h3.copyWith(color: AppColors.primary),
+          ),
+        ],
         const SizedBox(height: AppSpacing.xl),
         GlassCard(
           padding: const EdgeInsets.all(AppSpacing.lg),
@@ -374,7 +382,9 @@ class _Fed extends StatelessWidget {
                       Text(label, style: AppTextStyles.bodyLarge),
                       const Spacer(),
                       Text(
-                        _signed(change),
+                        label == 'Health' && change == 0 && pet.health == 100
+                            ? 'Full'
+                            : _signed(change),
                         style: AppTextStyles.h3.copyWith(
                           color: change >= 0
                               ? AppColors.primary
