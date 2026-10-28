@@ -2,11 +2,12 @@ import 'package:bite_buddy/features/battle/domain/entities/battle_entity.dart';
 import 'package:bite_buddy/features/battle/presentation/bloc/battle_cubit.dart';
 import 'package:bite_buddy/features/global/components/app_toast.dart';
 import 'package:bite_buddy/features/global/components/forest_background.dart';
+import 'package:bite_buddy/features/global/components/game_art.dart';
 import 'package:bite_buddy/features/global/components/game_button.dart';
 import 'package:bite_buddy/features/global/components/glass_card.dart';
+import 'package:bite_buddy/features/global/constants/app_images.dart';
 import 'package:bite_buddy/features/global/constants/colors.dart';
 import 'package:bite_buddy/features/global/constants/spacing.dart';
-import 'package:bite_buddy/features/global/constants/species.dart';
 import 'package:bite_buddy/features/global/constants/text_styles.dart';
 import 'package:bite_buddy/features/global/enums/battle_move.dart';
 import 'package:bite_buddy/features/pet/presentation/bloc/pet_cubit.dart';
@@ -30,6 +31,7 @@ class BattlePage extends StatelessWidget {
       canPop: false,
       child: Scaffold(
         body: ForestBackground(
+          image: AppImages.arenaBackground,
           child: SafeArea(
             child: BlocConsumer<BattleCubit, BattleState>(
               listenWhen: (previous, _) => previous is InBattle,
@@ -88,7 +90,7 @@ class _Arena extends StatelessWidget {
           children: [
             Expanded(
               child: _Fighter(
-                emoji: battle.opponent.emoji,
+                image: AppImages.opponent(battle.opponent.key),
                 name: battle.opponent.name,
                 hp: battle.opponentHp,
                 maxHp: battle.opponentMaxHp,
@@ -105,7 +107,7 @@ class _Arena extends StatelessWidget {
             ),
             Expanded(
               child: _Fighter(
-                emoji: Species.emoji(battle.petSpeciesKey),
+                image: AppImages.pet(battle.petSpeciesKey),
                 name: battle.petName,
                 hp: battle.petHp,
                 maxHp: battle.petMaxHp,
@@ -136,8 +138,7 @@ class _Arena extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: AppSpacing.md),
             child: _MoveButton(
               move: move,
-              cooldown:
-                  move == BattleMove.special ? battle.specialCooldown : 0,
+              cooldown: move == BattleMove.special ? battle.specialCooldown : 0,
               enabled: !resolving && !battle.isOver,
             ),
           ),
@@ -147,14 +148,14 @@ class _Arena extends StatelessWidget {
 }
 
 class _Fighter extends StatelessWidget {
-  final String emoji;
+  final String image;
   final String name;
   final int hp;
   final int maxHp;
   final Color color;
 
   const _Fighter({
-    required this.emoji,
+    required this.image,
     required this.name,
     required this.hp,
     required this.maxHp,
@@ -165,7 +166,7 @@ class _Fighter extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(emoji, style: const TextStyle(fontSize: 64)),
+        GameArt(image, size: 110),
         Text(
           name,
           style: AppTextStyles.h3,
@@ -179,13 +180,12 @@ class _Fighter extends StatelessWidget {
           child: TweenAnimationBuilder<double>(
             tween: Tween(end: maxHp == 0 ? 0 : hp / maxHp),
             duration: const Duration(milliseconds: 400),
-            builder:
-                (context, v, _) => LinearProgressIndicator(
-                  value: v,
-                  minHeight: 10,
-                  backgroundColor: AppColors.track,
-                  valueColor: AlwaysStoppedAnimation(color),
-                ),
+            builder: (context, v, _) => LinearProgressIndicator(
+              value: v,
+              minHeight: 10,
+              backgroundColor: AppColors.track,
+              valueColor: AlwaysStoppedAnimation(color),
+            ),
           ),
         ),
         const SizedBox(height: AppSpacing.xs),
@@ -212,10 +212,9 @@ class _MoveButton extends StatelessWidget {
     return Opacity(
       opacity: enabled && ready ? 1 : 0.45,
       child: GlassCard(
-        onTap:
-            enabled && ready
-                ? () => context.read<BattleCubit>().play(move)
-                : null,
+        onTap: enabled && ready
+            ? () => context.read<BattleCubit>().play(move)
+            : null,
         child: Row(
           children: [
             Text(move.emoji, style: const TextStyle(fontSize: 28)),

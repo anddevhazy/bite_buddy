@@ -37,17 +37,16 @@ class BattleModel extends BattleEntity {
       round: b.round,
       status: BattleStatus.values.byName(b.status.name),
       specialCooldown: b.specialCooldown,
-      lastRound:
-          last == null
-              ? null
-              : BattleRoundEntity(
-                round: last.round,
-                playerMove: toAppMove(last.playerMove),
-                opponentMove: toAppMove(last.opponentMove),
-                damageDealt: last.damageDealt,
-                damageTaken: last.damageTaken,
-                message: last.message,
-              ),
+      lastRound: last == null
+          ? null
+          : BattleRoundEntity(
+              round: last.round,
+              playerMove: toAppMove(last.playerMove),
+              opponentMove: toAppMove(last.opponentMove),
+              damageDealt: last.damageDealt,
+              damageTaken: last.damageTaken,
+              message: last.message,
+            ),
       coinsEarned: b.coinsEarned,
       xpEarned: b.xpEarned,
       energyChange: b.energyChange,

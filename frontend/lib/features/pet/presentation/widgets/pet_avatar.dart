@@ -1,6 +1,6 @@
 import 'dart:math';
-
-import 'package:bite_buddy/features/global/constants/species.dart';
+import 'package:bite_buddy/features/global/components/game_art.dart';
+import 'package:bite_buddy/features/global/constants/app_images.dart';
 import 'package:flutter/material.dart';
 
 // The pet, gently bobbing. Tapping it pops a few hearts.
@@ -20,8 +20,7 @@ class PetAvatar extends StatefulWidget {
   State<PetAvatar> createState() => _PetAvatarState();
 }
 
-class _PetAvatarState extends State<PetAvatar>
-    with TickerProviderStateMixin {
+class _PetAvatarState extends State<PetAvatar> with TickerProviderStateMixin {
   late final AnimationController _bob = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 1800),
@@ -70,30 +69,25 @@ class _PetAvatarState extends State<PetAvatar>
           children: [
             AnimatedBuilder(
               animation: _bob,
-              builder:
-                  (context, child) => Transform.translate(
-                    offset: Offset(0, -8 * Curves.easeInOut.transform(_bob.value)),
-                    child: child,
-                  ),
-              child: Text(
-                Species.emoji(widget.speciesKey),
-                style: TextStyle(fontSize: widget.size * 0.75),
+              builder: (context, child) => Transform.translate(
+                offset: Offset(0, -8 * Curves.easeInOut.transform(_bob.value)),
+                child: child,
+              ),
+              child: GameArt(
+                AppImages.pet(widget.speciesKey),
+                size: widget.size,
               ),
             ),
             for (final h in _hearts)
               AnimatedBuilder(
                 animation: h.controller,
-                builder:
-                    (context, _) => Transform.translate(
-                      offset: Offset(
-                        h.dx,
-                        -widget.size * 0.6 * h.controller.value,
-                      ),
-                      child: Opacity(
-                        opacity: 1 - h.controller.value,
-                        child: const Text('❤️', style: TextStyle(fontSize: 34)),
-                      ),
-                    ),
+                builder: (context, _) => Transform.translate(
+                  offset: Offset(h.dx, -widget.size * 0.6 * h.controller.value),
+                  child: Opacity(
+                    opacity: 1 - h.controller.value,
+                    child: const Text('❤️', style: TextStyle(fontSize: 34)),
+                  ),
+                ),
               ),
           ],
         ),

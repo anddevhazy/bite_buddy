@@ -1,11 +1,12 @@
 import 'package:bite_buddy/features/collection/domain/entities/leaderboard_entry_entity.dart';
 import 'package:bite_buddy/features/collection/presentation/bloc/collection_cubit.dart';
 import 'package:bite_buddy/features/global/components/app_error_view.dart';
+import 'package:bite_buddy/features/global/components/game_art.dart';
 import 'package:bite_buddy/features/global/components/glass_card.dart';
 import 'package:bite_buddy/features/global/components/page_header.dart';
+import 'package:bite_buddy/features/global/constants/app_images.dart';
 import 'package:bite_buddy/features/global/constants/colors.dart';
 import 'package:bite_buddy/features/global/constants/spacing.dart';
-import 'package:bite_buddy/features/global/constants/species.dart';
 import 'package:bite_buddy/features/global/constants/text_styles.dart';
 import 'package:bite_buddy/features/scanner/domain/entities/meal_entity.dart';
 import 'package:flutter/material.dart';
@@ -62,10 +63,9 @@ class _CollectionPageState extends State<CollectionPage> {
                   return RefreshIndicator(
                     color: AppColors.primary,
                     onRefresh: () => context.read<CollectionCubit>().load(),
-                    child:
-                        _tab == 0
-                            ? _MealList(meals: state.meals)
-                            : _Leaderboard(entries: state.leaderboard),
+                    child: _tab == 0
+                        ? _MealList(meals: state.meals)
+                        : _Leaderboard(entries: state.leaderboard),
                   );
                 },
               ),
@@ -223,17 +223,13 @@ class _Leaderboard extends StatelessWidget {
                     child: Text(
                       e.rank <= 3 ? _medals[e.rank - 1] : '#${e.rank}',
                       textAlign: TextAlign.center,
-                      style:
-                          e.rank <= 3
-                              ? const TextStyle(fontSize: 26)
-                              : AppTextStyles.h3,
+                      style: e.rank <= 3
+                          ? const TextStyle(fontSize: 26)
+                          : AppTextStyles.h3,
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm),
-                  Text(
-                    Species.emoji(e.speciesKey),
-                    style: const TextStyle(fontSize: 28),
-                  ),
+                  GameArt(AppImages.pet(e.speciesKey), size: 40),
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Column(

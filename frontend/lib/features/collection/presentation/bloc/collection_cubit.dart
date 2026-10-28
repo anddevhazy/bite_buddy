@@ -21,9 +21,10 @@ class CollectionCubit extends Cubit<CollectionState> {
     // Keep showing the old lists while refreshing
     if (state is! CollectionLoaded) emit(CollectionLoading());
 
-    final (leaderboardResult, mealsResult) =
-        await (fetchLeaderboardUseCase.call(), fetchMealHistoryUseCase.call())
-            .wait;
+    final (leaderboardResult, mealsResult) = await (
+      fetchLeaderboardUseCase.call(),
+      fetchMealHistoryUseCase.call(),
+    ).wait;
 
     leaderboardResult.fold(
       (failure) => emit(CollectionFailed(failure: failure)),

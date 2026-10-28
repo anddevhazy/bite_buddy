@@ -84,9 +84,7 @@ class _PetHome extends StatelessWidget {
             ),
             const Spacer(),
             IconButton.filled(
-              style: IconButton.styleFrom(
-                backgroundColor: AppColors.primary,
-              ),
+              style: IconButton.styleFrom(backgroundColor: AppColors.primary),
               onPressed: () => _refresh(context),
               icon: const Icon(Icons.refresh_rounded, color: AppColors.white),
             ),

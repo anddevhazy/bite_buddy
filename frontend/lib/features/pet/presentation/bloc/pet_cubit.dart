@@ -28,16 +28,15 @@ class PetCubit extends Cubit<PetState> {
   Future<void> loadPet({bool silent = false}) async {
     if (!silent) emit(PetLoading());
     final result = await fetchMyPetUseCase.call();
-    await result.fold(
-      (failure) async => emit(PetFailed(failure: failure)),
-      (pet) async {
-        if (pet != null) {
-          emit(PetLoaded(pet: pet));
-        } else {
-          await _showSpecies();
-        }
-      },
-    );
+    await result.fold((failure) async => emit(PetFailed(failure: failure)), (
+      pet,
+    ) async {
+      if (pet != null) {
+        emit(PetLoaded(pet: pet));
+      } else {
+        await _showSpecies();
+      }
+    });
   }
 
   Future<void> adopt(String speciesKey, String name) async {

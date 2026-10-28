@@ -1,10 +1,11 @@
 import 'package:bite_buddy/features/auth/presentation/bloc/auth_cubit.dart';
+import 'package:bite_buddy/features/global/components/game_art.dart';
 import 'package:bite_buddy/features/global/components/game_button.dart';
 import 'package:bite_buddy/features/global/components/glass_card.dart';
 import 'package:bite_buddy/features/global/components/page_header.dart';
+import 'package:bite_buddy/features/global/constants/app_images.dart';
 import 'package:bite_buddy/features/global/constants/colors.dart';
 import 'package:bite_buddy/features/global/constants/spacing.dart';
-import 'package:bite_buddy/features/global/constants/species.dart';
 import 'package:bite_buddy/features/global/constants/text_styles.dart';
 import 'package:bite_buddy/features/pet/presentation/bloc/pet_cubit.dart';
 import 'package:flutter/material.dart';
@@ -32,10 +33,7 @@ class ProfilePage extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Text(
-                        Species.emoji(pet.speciesKey),
-                        style: const TextStyle(fontSize: 44),
-                      ),
+                      GameArt(AppImages.pet(pet.speciesKey), size: 64),
                       const SizedBox(width: AppSpacing.md),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

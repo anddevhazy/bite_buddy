@@ -1,6 +1,7 @@
-import 'package:bite_buddy/features/global/components/forest_background.dart';
 import 'package:bite_buddy/features/global/components/app_toast.dart';
+import 'package:bite_buddy/features/global/components/forest_background.dart';
 import 'package:bite_buddy/features/global/components/glass_card.dart';
+import 'package:bite_buddy/features/global/constants/app_images.dart';
 import 'package:bite_buddy/features/global/constants/colors.dart';
 import 'package:bite_buddy/features/global/constants/spacing.dart';
 import 'package:bite_buddy/features/global/constants/text_styles.dart';
@@ -25,7 +26,7 @@ class SignInPage extends StatelessWidget {
             padding: const EdgeInsets.all(AppSpacing.lg),
             children: [
               const SizedBox(height: AppSpacing.xl),
-              const Center(child: Text('🍱', style: TextStyle(fontSize: 72))),
+              Center(child: Image.asset(AppImages.logo, width: 220)),
               const SizedBox(height: AppSpacing.md),
               Text(
                 'Welcome to Bite Buddy',
@@ -53,12 +54,11 @@ class SignInPage extends StatelessWidget {
                   child: SignInWidget(
                     client: sl<Client>(),
                     onAuthenticated: () => context.goNamed(Routes.splashName),
-                    onError:
-                        (error) => AppToast.show(
-                          context: context,
-                          message: 'Sign-in failed. Please try again.',
-                          type: ToastType.error,
-                        ),
+                    onError: (error) => AppToast.show(
+                      context: context,
+                      message: 'Sign-in failed. Please try again.',
+                      type: ToastType.error,
+                    ),
                   ),
                 ),
               ),

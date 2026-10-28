@@ -56,17 +56,16 @@ class GameButton extends StatelessWidget {
               ),
             ],
           ),
-          child:
-              isLoading
-                  ? const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 3,
-                      color: AppColors.white,
-                    ),
-                  )
-                  : Text(label.toUpperCase(), style: AppTextStyles.button),
+          child: isLoading
+              ? const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 3,
+                    color: AppColors.white,
+                  ),
+                )
+              : Text(label.toUpperCase(), style: AppTextStyles.button),
         ),
       ),
     );

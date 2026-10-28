@@ -37,11 +37,10 @@ class MainShell extends StatelessWidget {
                 for (final (i, (icon, label)) in _tabs.indexed)
                   Expanded(
                     child: InkWell(
-                      onTap:
-                          () => shell.goBranch(
-                            i,
-                            initialLocation: i == shell.currentIndex,
-                          ),
+                      onTap: () => shell.goBranch(
+                        i,
+                        initialLocation: i == shell.currentIndex,
+                      ),
                       child: _NavItem(
                         icon: icon,
                         label: label,

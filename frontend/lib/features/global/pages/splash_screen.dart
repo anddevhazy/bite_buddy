@@ -1,16 +1,16 @@
 import 'package:bite_buddy/features/auth/presentation/bloc/auth_cubit.dart';
 import 'package:bite_buddy/features/global/components/app_error_view.dart';
 import 'package:bite_buddy/features/global/components/forest_background.dart';
+import 'package:bite_buddy/features/global/constants/app_images.dart';
 import 'package:bite_buddy/features/global/constants/colors.dart';
-import 'package:bite_buddy/features/global/constants/spacing.dart';
-import 'package:bite_buddy/features/global/constants/text_styles.dart';
 import 'package:bite_buddy/features/global/routes/routes.dart';
 import 'package:bite_buddy/features/pet/presentation/bloc/pet_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-// Decides where to go on launch: sign in, pick a buddy, or straight to the pet
+// The illustrated title screen. While it's up, works out where to go next:
+// sign in, pick a buddy, or straight to the pet.
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -19,71 +19,67 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  // Long enough to read as an intro rather than a flicker
+  static const _minimumDisplay = Duration(milliseconds: 1500);
+
   @override
   void initState() {
     super.initState();
-    final auth = context.read<AuthCubit>()..start();
+    _start();
+  }
 
-    // start() emits right away, before the listeners below are attached, so
-    // act on the current state once the first frame is up
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      if (auth.state is Authenticated) {
-        context.read<PetCubit>().loadPet();
-      } else {
-        context.goNamed(Routes.signInName);
-      }
-    });
+  Future<void> _start() async {
+    final shownLongEnough = Future<void>.delayed(_minimumDisplay);
+    final route = await _decideRoute();
+    await shownLongEnough;
+    if (mounted && route != null) context.goNamed(route);
+  }
+
+  // Null means loading the pet failed; the error view offers a retry
+  Future<String?> _decideRoute() async {
+    final auth = context.read<AuthCubit>()..start();
+    if (auth.state is! Authenticated) return Routes.signInName;
+
+    final pets = context.read<PetCubit>();
+    await pets.loadPet();
+    return switch (pets.state) {
+      PetLoaded() => Routes.petHomeName,
+      NoPet() => Routes.chooseBuddyName,
+      _ => null,
+    };
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: MultiBlocListener(
-        listeners: [
-          BlocListener<AuthCubit, AuthState>(
-            listener: (context, state) {
-              if (state is Unauthenticated) context.goNamed(Routes.signInName);
-            },
-          ),
-          BlocListener<PetCubit, PetState>(
-            listener: (context, state) {
-              if (state is PetLoaded) context.goNamed(Routes.petHomeName);
-              if (state is NoPet) context.goNamed(Routes.chooseBuddyName);
-            },
-          ),
-        ],
-        child: ForestBackground(
-          child: BlocBuilder<PetCubit, PetState>(
-            builder: (context, state) {
-              if (state is PetFailed) {
-                return AppErrorView(
-                  message: state.message,
-                  onRetry: () => context.read<PetCubit>().loadPet(),
-                );
-              }
-              return Center(
+      body: BlocBuilder<PetCubit, PetState>(
+        builder: (context, state) {
+          if (state is PetFailed) {
+            return ForestBackground(
+              child: AppErrorView(message: state.message, onRetry: _start),
+            );
+          }
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              Image.asset(AppImages.splashBackground, fit: BoxFit.cover),
+              SafeArea(
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text('🍱', style: TextStyle(fontSize: 88)),
-                    const SizedBox(height: AppSpacing.lg),
-                    Text('Bite Buddy', style: AppTextStyles.h1),
-                    const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      'Eat well. Raise a champion.',
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: AppColors.primary,
-                      ),
+                    const Spacer(flex: 3),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: Image.asset(AppImages.logo),
                     ),
-                    const SizedBox(height: AppSpacing.xl),
-                    const CircularProgressIndicator(color: AppColors.primary),
+                    const Spacer(flex: 4),
+                    const CircularProgressIndicator(color: AppColors.white),
+                    const SizedBox(height: 48),
                   ],
                 ),
-              );
-            },
-          ),
-        ),
+              ),
+            ],
+          );
+        },
       ),
     );
   }

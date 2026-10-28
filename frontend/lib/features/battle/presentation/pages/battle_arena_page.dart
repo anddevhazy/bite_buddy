@@ -87,10 +87,9 @@ class _BattleArenaPageState extends State<BattleArenaPage> {
                       opponent: o,
                       loading:
                           state is BattleStarting && state.opponentKey == o.key,
-                      onBattle:
-                          state is BattleStarting
-                              ? null
-                              : () => context.read<BattleCubit>().start(o.key),
+                      onBattle: state is BattleStarting
+                          ? null
+                          : () => context.read<BattleCubit>().start(o.key),
                     ),
                   )
               else

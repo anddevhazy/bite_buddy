@@ -1,6 +1,8 @@
 import 'package:bite_buddy/features/battle/domain/entities/opponent_entity.dart';
+import 'package:bite_buddy/features/global/components/game_art.dart';
 import 'package:bite_buddy/features/global/components/game_button.dart';
 import 'package:bite_buddy/features/global/components/glass_card.dart';
+import 'package:bite_buddy/features/global/constants/app_images.dart';
 import 'package:bite_buddy/features/global/constants/colors.dart';
 import 'package:bite_buddy/features/global/constants/spacing.dart';
 import 'package:bite_buddy/features/global/constants/text_styles.dart';
@@ -32,7 +34,7 @@ class OpponentCard extends StatelessWidget {
               color: AppColors.card,
               borderRadius: BorderRadius.circular(14),
             ),
-            child: Text(o.emoji, style: const TextStyle(fontSize: 40)),
+            child: GameArt(AppImages.opponent(o.key), size: 64),
           ),
           const SizedBox(width: AppSpacing.md),
           Expanded(

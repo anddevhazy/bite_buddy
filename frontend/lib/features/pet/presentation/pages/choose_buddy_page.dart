@@ -1,8 +1,10 @@
 import 'package:bite_buddy/features/global/components/app_toast.dart';
 import 'package:bite_buddy/features/global/components/forest_background.dart';
+import 'package:bite_buddy/features/global/components/game_art.dart';
 import 'package:bite_buddy/features/global/components/game_button.dart';
 import 'package:bite_buddy/features/global/components/glass_card.dart';
 import 'package:bite_buddy/features/global/components/page_header.dart';
+import 'package:bite_buddy/features/global/constants/app_images.dart';
 import 'package:bite_buddy/features/global/constants/colors.dart';
 import 'package:bite_buddy/features/global/constants/spacing.dart';
 import 'package:bite_buddy/features/global/constants/species.dart';
@@ -62,10 +64,9 @@ class ChooseBuddyPage extends StatelessWidget {
                       for (final s in state.species)
                         _BuddyCard(
                           species: s,
-                          onTap:
-                              state is Adopting
-                                  ? null
-                                  : () => _confirm(context, s),
+                          onTap: state is Adopting
+                              ? null
+                              : () => _confirm(context, s),
                         ),
                     ],
                   ),
@@ -136,10 +137,7 @@ class _BuddyCard extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  Species.emoji(species.key),
-                  style: const TextStyle(fontSize: 64),
-                ),
+                GameArt(AppImages.pet(species.key), size: 96),
                 const SizedBox(height: AppSpacing.sm),
                 Text(species.name, style: AppTextStyles.h3),
                 Text(species.title, style: AppTextStyles.caption),

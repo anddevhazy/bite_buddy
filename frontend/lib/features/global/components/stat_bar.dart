@@ -45,13 +45,12 @@ class StatBar extends StatelessWidget {
           child: TweenAnimationBuilder<double>(
             tween: Tween(begin: 0, end: fraction),
             duration: const Duration(milliseconds: 600),
-            builder:
-                (context, v, _) => LinearProgressIndicator(
-                  value: v,
-                  minHeight: 12,
-                  backgroundColor: AppColors.track,
-                  valueColor: AlwaysStoppedAnimation(color),
-                ),
+            builder: (context, v, _) => LinearProgressIndicator(
+              value: v,
+              minHeight: 12,
+              backgroundColor: AppColors.track,
+              valueColor: AlwaysStoppedAnimation(color),
+            ),
           ),
         ),
       ],

@@ -123,10 +123,9 @@ class _MealPhoto extends StatelessWidget {
           border: Border.all(color: AppColors.primary, width: 4),
         ),
         child: ClipOval(
-          child:
-              photo == null
-                  ? const ColoredBox(color: AppColors.card)
-                  : Image.memory(photo, fit: BoxFit.cover),
+          child: photo == null
+              ? const ColoredBox(color: AppColors.card)
+              : Image.memory(photo, fit: BoxFit.cover),
         ),
       ),
     );
@@ -147,10 +146,7 @@ class _Analyzing extends StatelessWidget {
         const SizedBox(height: AppSpacing.md),
         Text('AI Chef is analyzing...', style: AppTextStyles.h3),
         const SizedBox(height: AppSpacing.sm),
-        Text(
-          'Reading calories, macros and more',
-          style: AppTextStyles.caption,
-        ),
+        Text('Reading calories, macros and more', style: AppTextStyles.caption),
         const SizedBox(height: AppSpacing.lg),
         const CircularProgressIndicator(color: AppColors.primary),
       ],
@@ -218,13 +214,43 @@ class _Results extends StatelessWidget {
     final petName = context.read<PetCubit>().pet?.name ?? 'your buddy';
     String pct(int v) => '$v%';
     final tiles = [
-      ('🔥', 'Calories', '${meal.calories}', NutrientTile.levelForCalories(meal.calories)),
-      ('💪', 'Protein', pct(meal.proteinPct), NutrientTile.levelForPct(meal.proteinPct)),
-      ('🌾', 'Carbs', pct(meal.carbsPct), NutrientTile.levelForPct(meal.carbsPct)),
+      (
+        '🔥',
+        'Calories',
+        '${meal.calories}',
+        NutrientTile.levelForCalories(meal.calories),
+      ),
+      (
+        '💪',
+        'Protein',
+        pct(meal.proteinPct),
+        NutrientTile.levelForPct(meal.proteinPct),
+      ),
+      (
+        '🌾',
+        'Carbs',
+        pct(meal.carbsPct),
+        NutrientTile.levelForPct(meal.carbsPct),
+      ),
       ('🥑', 'Fats', pct(meal.fatsPct), NutrientTile.levelForPct(meal.fatsPct)),
-      ('🍊', 'Vitamins', pct(meal.vitaminsPct), NutrientTile.levelForPct(meal.vitaminsPct)),
-      ('⚡', 'Minerals', pct(meal.mineralsPct), NutrientTile.levelForPct(meal.mineralsPct)),
-      ('🌿', 'Fiber', pct(meal.fiberPct), NutrientTile.levelForPct(meal.fiberPct)),
+      (
+        '🍊',
+        'Vitamins',
+        pct(meal.vitaminsPct),
+        NutrientTile.levelForPct(meal.vitaminsPct),
+      ),
+      (
+        '⚡',
+        'Minerals',
+        pct(meal.mineralsPct),
+        NutrientTile.levelForPct(meal.mineralsPct),
+      ),
+      (
+        '🌿',
+        'Fiber',
+        pct(meal.fiberPct),
+        NutrientTile.levelForPct(meal.fiberPct),
+      ),
       ('❤️', 'Health Score', '${meal.healthScore}', 'out of 100'),
     ];
 
@@ -350,8 +376,9 @@ class _Fed extends StatelessWidget {
                       Text(
                         _signed(change),
                         style: AppTextStyles.h3.copyWith(
-                          color:
-                              change >= 0 ? AppColors.primary : AppColors.error,
+                          color: change >= 0
+                              ? AppColors.primary
+                              : AppColors.error,
                         ),
                       ),
                     ],

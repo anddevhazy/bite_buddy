@@ -27,51 +27,50 @@ class AppToast {
     };
 
     entry = OverlayEntry(
-      builder:
-          (context) => Positioned(
-            top: MediaQuery.of(context).padding.top + 16,
-            left: 24,
-            right: 24,
-            child: Material(
-              color: Colors.transparent,
-              child: Dismissible(
-                key: ValueKey(message),
-                direction: DismissDirection.up,
-                onDismissed: (_) => entry.remove(),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.lg,
-                    vertical: AppSpacing.md,
+      builder: (context) => Positioned(
+        top: MediaQuery.of(context).padding.top + 16,
+        left: 24,
+        right: 24,
+        child: Material(
+          color: Colors.transparent,
+          child: Dismissible(
+            key: ValueKey(message),
+            direction: DismissDirection.up,
+            onDismissed: (_) => entry.remove(),
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+                vertical: AppSpacing.md,
+              ),
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    blurRadius: 16,
+                    offset: const Offset(0, 8),
                   ),
-                  decoration: BoxDecoration(
-                    color: color,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.3),
-                        blurRadius: 16,
-                        offset: const Offset(0, 8),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Icon(icon, color: AppColors.white, size: 28),
+                  const SizedBox(width: AppSpacing.md),
+                  Expanded(
+                    child: Text(
+                      message,
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        fontWeight: FontWeight.w600,
                       ),
-                    ],
+                    ),
                   ),
-                  child: Row(
-                    children: [
-                      Icon(icon, color: AppColors.white, size: 28),
-                      const SizedBox(width: AppSpacing.md),
-                      Expanded(
-                        child: Text(
-                          message,
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                ],
               ),
             ),
           ),
+        ),
+      ),
     );
 
     overlay.insert(entry);

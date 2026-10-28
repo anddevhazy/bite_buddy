@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Average colour of assets/images/splash_bg.jpg, so the native launch
+         screen blends into the Flutter splash screen -->
+    <color name="splash_background">#A49944</color>
+</resources>

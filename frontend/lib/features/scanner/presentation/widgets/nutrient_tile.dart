@@ -44,7 +44,10 @@ class NutrientTile extends StatelessWidget {
         children: [
           Text(emoji, style: const TextStyle(fontSize: 28)),
           const SizedBox(height: AppSpacing.xs),
-          Text(label, style: AppTextStyles.caption.copyWith(color: AppColors.white)),
+          Text(
+            label,
+            style: AppTextStyles.caption.copyWith(color: AppColors.white),
+          ),
           Text(value, style: AppTextStyles.stat),
           Text(level, style: AppTextStyles.caption.copyWith(fontSize: 10)),
         ],

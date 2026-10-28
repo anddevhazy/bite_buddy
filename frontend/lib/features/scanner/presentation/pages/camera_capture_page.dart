@@ -49,11 +49,9 @@ class _CameraCapturePageState extends State<CameraCapturePage> {
       setState(() => _controller = controller);
     } on CameraException catch (e) {
       setState(
-        () =>
-            _error =
-                e.code == 'CameraAccessDenied'
-                    ? 'Camera access is off. Turn it on in Settings to scan meals.'
-                    : ErrorMessages.cameraUnavailable,
+        () => _error = e.code == 'CameraAccessDenied'
+            ? 'Camera access is off. Turn it on in Settings to scan meals.'
+            : ErrorMessages.cameraUnavailable,
       );
     } on StateError {
       setState(() => _error = ErrorMessages.cameraUnavailable);
@@ -120,9 +118,7 @@ class _CameraCapturePageState extends State<CameraCapturePage> {
               top: AppSpacing.md,
               left: AppSpacing.md,
               child: IconButton.filled(
-                style: IconButton.styleFrom(
-                  backgroundColor: Colors.black54,
-                ),
+                style: IconButton.styleFrom(backgroundColor: Colors.black54),
                 onPressed: () => Navigator.pop(context),
                 icon: const Icon(Icons.close_rounded, color: AppColors.white),
               ),

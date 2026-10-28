@@ -10,7 +10,8 @@ import 'package:bite_buddy/service_locator.dart';
 Future<void> scannerInjectionContainer() async {
   // * CUBITS INJECTION
   sl.registerFactory<ScannerCubit>(
-    () => ScannerCubit(analyzeMealUseCase: sl.call(), feedPetUseCase: sl.call()),
+    () =>
+        ScannerCubit(analyzeMealUseCase: sl.call(), feedPetUseCase: sl.call()),
   );
 
   // * USE CASES INJECTION
