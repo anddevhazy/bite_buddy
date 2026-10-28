@@ -1,0 +1,18 @@
+### A summary of the meals the pet ate over the last 7 days, with tips.
+class: NutritionInsights
+fields:
+  mealsCounted: int
+  ### Days in the last 7 with at least one meal.
+  daysWithMeals: int
+  ### 0-100, or 0 when there are no meals.
+  averageHealthScore: int
+  ### Average per day with meals, as a percent of the daily target.
+  proteinPct: int
+  carbsPct: int
+  fatsPct: int
+  vitaminsPct: int
+  mineralsPct: int
+  fiberPct: int
+  bestMealName: String?
+  ### Up to 3 short suggestions, most important first.
+  tips: List<String>

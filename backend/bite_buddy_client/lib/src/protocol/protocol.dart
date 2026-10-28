@@ -30,6 +30,7 @@ import 'errors/bite_buddy_exception.dart' as _in42pmv9;
 import 'feed_result.dart' as _i6546n9y;
 import 'leaderboard_entry.dart' as _ikawkn1p;
 import 'meal.dart' as _ixnoudrx;
+import 'nutrition_insights.dart' as _ik434gbd;
 import 'opponent.dart' as _i2ot5zrj;
 import 'pet.dart' as _ie9pyd3w;
 import 'pet_species.dart' as _it7bnlgl;
@@ -42,6 +43,7 @@ export 'errors/bite_buddy_exception.dart';
 export 'feed_result.dart';
 export 'leaderboard_entry.dart';
 export 'meal.dart';
+export 'nutrition_insights.dart';
 export 'opponent.dart';
 export 'pet.dart';
 export 'pet_species.dart';
@@ -108,6 +110,9 @@ class Protocol extends _isc.SerializationManager {
     if (t == _ixnoudrx.Meal) {
       return _ixnoudrx.Meal.fromJson(data) as T;
     }
+    if (t == _ik434gbd.NutritionInsights) {
+      return _ik434gbd.NutritionInsights.fromJson(data) as T;
+    }
     if (t == _i2ot5zrj.Opponent) {
       return _i2ot5zrj.Opponent.fromJson(data) as T;
     }
@@ -146,6 +151,10 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_ixnoudrx.Meal?>()) {
       return (data != null ? _ixnoudrx.Meal.fromJson(data) : null) as T;
     }
+    if (t == _isc.getType<_ik434gbd.NutritionInsights?>()) {
+      return (data != null ? _ik434gbd.NutritionInsights.fromJson(data) : null)
+          as T;
+    }
     if (t == _isc.getType<_i2ot5zrj.Opponent?>()) {
       return (data != null ? _i2ot5zrj.Opponent.fromJson(data) : null) as T;
     }
@@ -154,6 +163,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _isc.getType<_it7bnlgl.PetSpecies?>()) {
       return (data != null ? _it7bnlgl.PetSpecies.fromJson(data) : null) as T;
+    }
+    if (t == List<String>) {
+      return (data as List).map((e) => deserialize<String>(e)).toList() as T;
     }
     if (t == List<_in0kp8ea.Opponent>) {
       return (data as List)
@@ -197,6 +209,7 @@ class Protocol extends _isc.SerializationManager {
       _i6546n9y.FeedResult => 'FeedResult',
       _ikawkn1p.LeaderboardEntry => 'LeaderboardEntry',
       _ixnoudrx.Meal => 'Meal',
+      _ik434gbd.NutritionInsights => 'NutritionInsights',
       _i2ot5zrj.Opponent => 'Opponent',
       _ie9pyd3w.Pet => 'Pet',
       _it7bnlgl.PetSpecies => 'PetSpecies',
@@ -232,6 +245,8 @@ class Protocol extends _isc.SerializationManager {
         return 'LeaderboardEntry';
       case _ixnoudrx.Meal():
         return 'Meal';
+      case _ik434gbd.NutritionInsights():
+        return 'NutritionInsights';
       case _i2ot5zrj.Opponent():
         return 'Opponent';
       case _ie9pyd3w.Pet():
@@ -286,6 +301,9 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'Meal') {
       return deserialize<_ixnoudrx.Meal>(data['data']);
+    }
+    if (dataClassName == 'NutritionInsights') {
+      return deserialize<_ik434gbd.NutritionInsights>(data['data']);
     }
     if (dataClassName == 'Opponent') {
       return deserialize<_i2ot5zrj.Opponent>(data['data']);

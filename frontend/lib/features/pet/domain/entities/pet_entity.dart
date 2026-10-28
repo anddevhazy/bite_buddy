@@ -14,6 +14,9 @@ class PetEntity extends Equatable {
   final int mealsEaten;
   final int wins;
   final int losses;
+  // Days in a row the pet has eaten; 0 once a whole day is missed
+  final int streak;
+  final int bestStreak;
   final DateTime? lastFedAt;
 
   const PetEntity({
@@ -30,6 +33,8 @@ class PetEntity extends Equatable {
     required this.mealsEaten,
     required this.wins,
     required this.losses,
+    required this.streak,
+    required this.bestStreak,
     this.lastFedAt,
   });
 
@@ -48,6 +53,8 @@ class PetEntity extends Equatable {
     mealsEaten,
     wins,
     losses,
+    streak,
+    bestStreak,
     lastFedAt,
   ];
 }

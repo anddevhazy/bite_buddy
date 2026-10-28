@@ -20,6 +20,8 @@ import 'package:bite_buddy_server/src/generated/feed_result.dart' as _ien0ctj9;
 import 'package:bite_buddy_server/src/generated/leaderboard_entry.dart'
     as _i5n4mhlw;
 import 'package:bite_buddy_server/src/generated/meal.dart' as _idk4xbnt;
+import 'package:bite_buddy_server/src/generated/nutrition_insights.dart'
+    as _irm6gbir;
 import 'package:bite_buddy_server/src/generated/opponent.dart' as _i4cu6vyo;
 import 'package:bite_buddy_server/src/generated/pet.dart' as _i9zqw63y;
 import 'package:bite_buddy_server/src/generated/pet_species.dart' as _it8ve0l0;
@@ -717,6 +719,7 @@ class _MealEndpoint {
   _ida.Future<_ien0ctj9.FeedResult> feed(
     _ist.TestSessionBuilder sessionBuilder,
     int mealId,
+    int utcOffsetMinutes,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -729,7 +732,10 @@ class _MealEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'meal',
           methodName: 'feed',
-          parameters: _ist.testObjectToJson({'mealId': mealId}),
+          parameters: _ist.testObjectToJson({
+            'mealId': mealId,
+            'utcOffsetMinutes': utcOffsetMinutes,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =
@@ -768,6 +774,36 @@ class _MealEndpoint {
                   _localCallContext.arguments,
                 )
                 as _ida.Future<List<_idk4xbnt.Meal>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_irm6gbir.NutritionInsights> insights(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'meal',
+            method: 'insights',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'meal',
+          methodName: 'insights',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_irm6gbir.NutritionInsights>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

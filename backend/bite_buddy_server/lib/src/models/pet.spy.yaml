@@ -19,6 +19,15 @@ fields:
   wins: int
   losses: int
   lastFedAt: DateTime?
+  ### Days in a row the pet has eaten, in the owner's local time. Missing a
+  ### whole day resets it to 0.
+  streak: int, default=0
+  bestStreak: int, default=0
+  ### The last local day (stored as UTC midnight) that counted for the streak.
+  lastStreakDay: DateTime?
+  ### The owner's UTC offset at their last feed, so the server knows when
+  ### their day starts and ends.
+  utcOffsetMinutes: int, default=0
   ### Neglect decay has been applied up to this moment.
   lastDecayAt: DateTime
   createdAt: DateTime

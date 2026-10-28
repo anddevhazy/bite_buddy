@@ -29,9 +29,15 @@ abstract class Pet implements _is.TableRow<int?>, _is.ProtocolSerialization {
     required this.wins,
     required this.losses,
     this.lastFedAt,
+    int? streak,
+    int? bestStreak,
+    this.lastStreakDay,
+    int? utcOffsetMinutes,
     required this.lastDecayAt,
     required this.createdAt,
-  });
+  }) : streak = streak ?? 0,
+       bestStreak = bestStreak ?? 0,
+       utcOffsetMinutes = utcOffsetMinutes ?? 0;
 
   factory Pet({
     int? id,
@@ -48,6 +54,10 @@ abstract class Pet implements _is.TableRow<int?>, _is.ProtocolSerialization {
     required int wins,
     required int losses,
     DateTime? lastFedAt,
+    int? streak,
+    int? bestStreak,
+    DateTime? lastStreakDay,
+    int? utcOffsetMinutes,
     required DateTime lastDecayAt,
     required DateTime createdAt,
   }) = _PetImpl;
@@ -72,6 +82,14 @@ abstract class Pet implements _is.TableRow<int?>, _is.ProtocolSerialization {
       lastFedAt: jsonSerialization['lastFedAt'] == null
           ? null
           : _is.DateTimeJsonExtension.fromJson(jsonSerialization['lastFedAt']),
+      streak: jsonSerialization['streak'] as int?,
+      bestStreak: jsonSerialization['bestStreak'] as int?,
+      lastStreakDay: jsonSerialization['lastStreakDay'] == null
+          ? null
+          : _is.DateTimeJsonExtension.fromJson(
+              jsonSerialization['lastStreakDay'],
+            ),
+      utcOffsetMinutes: jsonSerialization['utcOffsetMinutes'] as int?,
       lastDecayAt: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['lastDecayAt'],
       ),
@@ -118,6 +136,19 @@ abstract class Pet implements _is.TableRow<int?>, _is.ProtocolSerialization {
 
   DateTime? lastFedAt;
 
+  /// Days in a row the pet has eaten, in the owner's local time. Missing a
+  /// whole day resets it to 0.
+  int streak;
+
+  int bestStreak;
+
+  /// The last local day (stored as UTC midnight) that counted for the streak.
+  DateTime? lastStreakDay;
+
+  /// The owner's UTC offset at their last feed, so the server knows when
+  /// their day starts and ends.
+  int utcOffsetMinutes;
+
   /// Neglect decay has been applied up to this moment.
   DateTime lastDecayAt;
 
@@ -144,6 +175,10 @@ abstract class Pet implements _is.TableRow<int?>, _is.ProtocolSerialization {
     int? wins,
     int? losses,
     DateTime? lastFedAt,
+    int? streak,
+    int? bestStreak,
+    DateTime? lastStreakDay,
+    int? utcOffsetMinutes,
     DateTime? lastDecayAt,
     DateTime? createdAt,
   });
@@ -165,6 +200,10 @@ abstract class Pet implements _is.TableRow<int?>, _is.ProtocolSerialization {
       'wins': wins,
       'losses': losses,
       if (lastFedAt != null) 'lastFedAt': lastFedAt?.toJson(),
+      'streak': streak,
+      'bestStreak': bestStreak,
+      if (lastStreakDay != null) 'lastStreakDay': lastStreakDay?.toJson(),
+      'utcOffsetMinutes': utcOffsetMinutes,
       'lastDecayAt': lastDecayAt.toJson(),
       'createdAt': createdAt.toJson(),
     };
@@ -188,6 +227,10 @@ abstract class Pet implements _is.TableRow<int?>, _is.ProtocolSerialization {
       'wins': wins,
       'losses': losses,
       if (lastFedAt != null) 'lastFedAt': lastFedAt?.toJson(),
+      'streak': streak,
+      'bestStreak': bestStreak,
+      if (lastStreakDay != null) 'lastStreakDay': lastStreakDay?.toJson(),
+      'utcOffsetMinutes': utcOffsetMinutes,
       'lastDecayAt': lastDecayAt.toJson(),
       'createdAt': createdAt.toJson(),
     };
@@ -239,6 +282,10 @@ class _PetImpl extends Pet {
     required int wins,
     required int losses,
     DateTime? lastFedAt,
+    int? streak,
+    int? bestStreak,
+    DateTime? lastStreakDay,
+    int? utcOffsetMinutes,
     required DateTime lastDecayAt,
     required DateTime createdAt,
   }) : super._(
@@ -256,6 +303,10 @@ class _PetImpl extends Pet {
          wins: wins,
          losses: losses,
          lastFedAt: lastFedAt,
+         streak: streak,
+         bestStreak: bestStreak,
+         lastStreakDay: lastStreakDay,
+         utcOffsetMinutes: utcOffsetMinutes,
          lastDecayAt: lastDecayAt,
          createdAt: createdAt,
        );
@@ -279,6 +330,10 @@ class _PetImpl extends Pet {
     int? wins,
     int? losses,
     Object? lastFedAt = _Undefined,
+    int? streak,
+    int? bestStreak,
+    Object? lastStreakDay = _Undefined,
+    int? utcOffsetMinutes,
     DateTime? lastDecayAt,
     DateTime? createdAt,
   }) {
@@ -297,6 +352,12 @@ class _PetImpl extends Pet {
       wins: wins ?? this.wins,
       losses: losses ?? this.losses,
       lastFedAt: lastFedAt is DateTime? ? lastFedAt : this.lastFedAt,
+      streak: streak ?? this.streak,
+      bestStreak: bestStreak ?? this.bestStreak,
+      lastStreakDay: lastStreakDay is DateTime?
+          ? lastStreakDay
+          : this.lastStreakDay,
+      utcOffsetMinutes: utcOffsetMinutes ?? this.utcOffsetMinutes,
       lastDecayAt: lastDecayAt ?? this.lastDecayAt,
       createdAt: createdAt ?? this.createdAt,
     );
@@ -373,6 +434,27 @@ class PetUpdateTable extends _is.UpdateTable<PetTable> {
         value,
       );
 
+  _is.ColumnValue<int, int> streak(int value) => _is.ColumnValue(
+    table.streak,
+    value,
+  );
+
+  _is.ColumnValue<int, int> bestStreak(int value) => _is.ColumnValue(
+    table.bestStreak,
+    value,
+  );
+
+  _is.ColumnValue<DateTime, DateTime> lastStreakDay(DateTime? value) =>
+      _is.ColumnValue(
+        table.lastStreakDay,
+        value,
+      );
+
+  _is.ColumnValue<int, int> utcOffsetMinutes(int value) => _is.ColumnValue(
+    table.utcOffsetMinutes,
+    value,
+  );
+
   _is.ColumnValue<DateTime, DateTime> lastDecayAt(DateTime value) =>
       _is.ColumnValue(
         table.lastDecayAt,
@@ -441,6 +523,25 @@ class PetTable extends _is.Table<int?> {
       'lastFedAt',
       this,
     );
+    streak = _is.ColumnInt(
+      'streak',
+      this,
+      hasDefault: true,
+    );
+    bestStreak = _is.ColumnInt(
+      'bestStreak',
+      this,
+      hasDefault: true,
+    );
+    lastStreakDay = _is.ColumnDateTime(
+      'lastStreakDay',
+      this,
+    );
+    utcOffsetMinutes = _is.ColumnInt(
+      'utcOffsetMinutes',
+      this,
+      hasDefault: true,
+    );
     lastDecayAt = _is.ColumnDateTime(
       'lastDecayAt',
       this,
@@ -483,6 +584,19 @@ class PetTable extends _is.Table<int?> {
 
   late final _is.ColumnDateTime lastFedAt;
 
+  /// Days in a row the pet has eaten, in the owner's local time. Missing a
+  /// whole day resets it to 0.
+  late final _is.ColumnInt streak;
+
+  late final _is.ColumnInt bestStreak;
+
+  /// The last local day (stored as UTC midnight) that counted for the streak.
+  late final _is.ColumnDateTime lastStreakDay;
+
+  /// The owner's UTC offset at their last feed, so the server knows when
+  /// their day starts and ends.
+  late final _is.ColumnInt utcOffsetMinutes;
+
   /// Neglect decay has been applied up to this moment.
   late final _is.ColumnDateTime lastDecayAt;
 
@@ -504,6 +618,10 @@ class PetTable extends _is.Table<int?> {
     wins,
     losses,
     lastFedAt,
+    streak,
+    bestStreak,
+    lastStreakDay,
+    utcOffsetMinutes,
     lastDecayAt,
     createdAt,
   ];

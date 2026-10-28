@@ -8,6 +8,10 @@ class FeedResultEntity extends Equatable {
   final int nutritionChange;
   final int xpGained;
   final bool leveledUp;
+  // True for the first meal of a new streak day
+  final bool streakExtended;
+  // Already included in xpGained
+  final int streakBonusXp;
 
   const FeedResultEntity({
     required this.pet,
@@ -16,6 +20,8 @@ class FeedResultEntity extends Equatable {
     required this.nutritionChange,
     required this.xpGained,
     required this.leveledUp,
+    required this.streakExtended,
+    required this.streakBonusXp,
   });
 
   @override
@@ -26,5 +32,7 @@ class FeedResultEntity extends Equatable {
     nutritionChange,
     xpGained,
     leveledUp,
+    streakExtended,
+    streakBonusXp,
   ];
 }

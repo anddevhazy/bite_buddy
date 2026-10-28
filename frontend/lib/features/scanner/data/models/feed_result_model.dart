@@ -10,6 +10,8 @@ class FeedResultModel extends FeedResultEntity {
     required super.nutritionChange,
     required super.xpGained,
     required super.leveledUp,
+    required super.streakExtended,
+    required super.streakBonusXp,
   });
 
   factory FeedResultModel.fromProtocol(FeedResult result) {
@@ -20,6 +22,8 @@ class FeedResultModel extends FeedResultEntity {
       nutritionChange: result.nutritionChange,
       xpGained: result.xpGained,
       leveledUp: result.leveledUp,
+      streakExtended: result.streakExtended,
+      streakBonusXp: result.streakBonusXp,
     );
   }
 }

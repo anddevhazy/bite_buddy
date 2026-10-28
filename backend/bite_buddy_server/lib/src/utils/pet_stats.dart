@@ -12,6 +12,10 @@ const int healthDecayPerHour = 2;
 const int nutritionDecayPerHour = 1;
 const int battleEnergyCost = 10;
 const int battleWinEnergy = 8;
+const int maxStreakBonusXp = 10;
+// Real UTC offsets run from -12:00 to +14:00
+const int minUtcOffsetMinutes = -12 * 60;
+const int maxUtcOffsetMinutes = 14 * 60;
 
 int clampStat(num v) => v.round().clamp(0, maxStat);
 
@@ -44,6 +48,10 @@ Pet newPet({
   wins: 0,
   losses: 0,
   lastFedAt: null,
+  streak: 0,
+  bestStreak: 0,
+  lastStreakDay: null,
+  utcOffsetMinutes: 0,
   lastDecayAt: now,
   createdAt: now,
 );
@@ -80,7 +88,46 @@ Pet applyDecay(Pet pet, DateTime now) {
   );
 }
 
-FeedResult feed(Pet pet, Meal meal, DateTime now) {
+// The owner's calendar day at [now], as UTC midnight so days compare cleanly
+DateTime localDay(DateTime now, int utcOffsetMinutes) {
+  final local = now.toUtc().add(Duration(minutes: utcOffsetMinutes));
+  return DateTime.utc(local.year, local.month, local.day);
+}
+
+// A streak survives until the end of the day after its last meal. Once a
+// whole day passes with no meal, it drops to 0.
+Pet expireStreak(Pet pet, DateTime now) {
+  final last = pet.lastStreakDay;
+  if (pet.streak == 0 || last == null) return pet;
+  final today = localDay(now, pet.utcOffsetMinutes);
+  if (today.difference(last).inDays <= 1) return pet;
+  return pet.copyWith(streak: 0);
+}
+
+FeedResult feed(
+  Pet pet,
+  Meal meal,
+  DateTime now, {
+  int utcOffsetMinutes = 0,
+}) {
+  final offset = utcOffsetMinutes.clamp(
+    minUtcOffsetMinutes,
+    maxUtcOffsetMinutes,
+  );
+  final today = localDay(now, offset);
+  final last = pet.lastStreakDay;
+  final streakExtended = last == null || today.isAfter(last);
+  final int streak;
+  if (!streakExtended) {
+    streak = pet.streak; // already counted today
+  } else if (last != null && today.difference(last).inDays == 1) {
+    streak = pet.streak + 1;
+  } else {
+    streak = 1;
+  }
+  // Only the first meal of the day earns the bonus, so it can't be farmed
+  final streakBonusXp = streakExtended ? min(streak, maxStreakBonusXp) : 0;
+
   final score = meal.healthScore.clamp(0, 100);
 
   // Nutrition leans on recent meals: one bad meal dents it, a habit sinks it
@@ -92,13 +139,17 @@ FeedResult feed(Pet pet, Meal meal, DateTime now) {
   final health = clampStat(pet.health + (score - 50) / 5);
   // Food is fuel: 2 to 15 energy depending on calories
   final energy = clampStat(pet.energy + (meal.calories / 60).clamp(2, 15));
-  final xpGained = 10 + (score >= 70 ? 5 : 0);
+  final xpGained = 10 + (score >= 70 ? 5 : 0) + streakBonusXp;
 
   final fed = pet.copyWith(
     nutrition: nutrition,
     health: health,
     energy: energy,
     mealsEaten: pet.mealsEaten + 1,
+    streak: streak,
+    bestStreak: max(pet.bestStreak, streak),
+    lastStreakDay: streakExtended ? today : last,
+    utcOffsetMinutes: offset,
     lastFedAt: now,
     lastDecayAt: now,
   );
@@ -111,6 +162,8 @@ FeedResult feed(Pet pet, Meal meal, DateTime now) {
     nutritionChange: nutrition - pet.nutrition,
     xpGained: xpGained,
     leveledUp: leveledUp,
+    streakExtended: streakExtended,
+    streakBonusXp: streakBonusXp,
   );
 }
 

@@ -59,8 +59,66 @@ void main() {
     });
 
     test('a healthy meal gives bonus XP', () {
-      expect(feed(pet(), meal(score: 70), t0).xpGained, 15);
-      expect(feed(pet(), meal(score: 69), t0).xpGained, 10);
+      // The first meal also starts a 1-day streak, worth 1 XP
+      expect(feed(pet(), meal(score: 70), t0).xpGained, 15 + 1);
+      expect(feed(pet(), meal(score: 69), t0).xpGained, 10 + 1);
+    });
+  });
+
+  group('streaks', () {
+    const day = Duration(days: 1);
+
+    test('the first meal starts a 1-day streak', () {
+      final result = feed(pet(), meal(), t0);
+      expect(result.pet.streak, 1);
+      expect(result.pet.bestStreak, 1);
+      expect(result.streakExtended, isTrue);
+      expect(result.streakBonusXp, 1);
+    });
+
+    test('more meals on the same day do not extend it or earn the bonus', () {
+      final first = feed(pet(), meal(), t0).pet;
+      final second = feed(first, meal(), t0.add(const Duration(hours: 5)));
+      expect(second.pet.streak, 1);
+      expect(second.streakExtended, isFalse);
+      expect(second.streakBonusXp, 0);
+    });
+
+    test('eating on consecutive days grows it, and the bonus caps at 10', () {
+      var p = pet();
+      for (var i = 0; i < 12; i++) {
+        p = feed(p, meal(), t0.add(day * i)).pet;
+      }
+      expect(p.streak, 12);
+      expect(feed(p, meal(), t0.add(day * 12)).streakBonusXp, 10);
+    });
+
+    test('a missed day resets it, but the best streak is kept', () {
+      var p = pet();
+      for (var i = 0; i < 3; i++) {
+        p = feed(p, meal(), t0.add(day * i)).pet;
+      }
+      p = feed(p, meal(), t0.add(day * 4)).pet;
+      expect(p.streak, 1);
+      expect(p.bestStreak, 3);
+    });
+
+    test('expireStreak keeps it through the next day, then clears it', () {
+      final fed = feed(pet(), meal(), t0).pet;
+      expect(expireStreak(fed, t0.add(const Duration(hours: 39))).streak, 1);
+      expect(expireStreak(fed, t0.add(const Duration(hours: 40))).streak, 0);
+    });
+
+    test("days follow the owner's time zone, not UTC", () {
+      // 23:30 UTC on the 23rd is 00:30 on the 24th in Lagos (UTC+1)
+      final lateUtc = DateTime.utc(2026, 10, 23, 23, 30);
+      final first = feed(pet(), meal(), t0, utcOffsetMinutes: 60).pet;
+      final second = feed(first, meal(), lateUtc, utcOffsetMinutes: 60);
+      expect(second.streakExtended, isTrue);
+      expect(second.pet.streak, 2);
+
+      final sameDayInUtc = feed(pet(), meal(), t0).pet;
+      expect(feed(sameDayInUtc, meal(), lateUtc).streakExtended, isFalse);
     });
   });
 

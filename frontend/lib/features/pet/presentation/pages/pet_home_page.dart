@@ -5,6 +5,8 @@ import 'package:bite_buddy/features/global/constants/colors.dart';
 import 'package:bite_buddy/features/global/constants/spacing.dart';
 import 'package:bite_buddy/features/global/constants/text_styles.dart';
 import 'package:bite_buddy/features/global/routes/routes.dart';
+import 'package:bite_buddy/features/insights/presentation/bloc/insights_cubit.dart';
+import 'package:bite_buddy/features/insights/presentation/widgets/insights_card.dart';
 import 'package:bite_buddy/features/pet/domain/entities/pet_entity.dart';
 import 'package:bite_buddy/features/pet/presentation/bloc/pet_cubit.dart';
 import 'package:bite_buddy/features/pet/presentation/widgets/pet_avatar.dart';
@@ -33,13 +35,20 @@ class PetHomePage extends StatelessWidget {
           }
           return RefreshIndicator(
             color: AppColors.primary,
-            onRefresh: () => context.read<PetCubit>().loadPet(silent: true),
+            onRefresh: () => _refresh(context),
             child: _PetHome(pet: state.pet),
           );
         },
       ),
     );
   }
+}
+
+Future<void> _refresh(BuildContext context) async {
+  await (
+    context.read<PetCubit>().loadPet(silent: true),
+    context.read<InsightsCubit>().load(),
+  ).wait;
 }
 
 class _PetHome extends StatelessWidget {
@@ -64,6 +73,13 @@ class _PetHome extends StatelessWidget {
                   style: AppTextStyles.caption,
                 ),
                 Text('🪙 ${pet.coins}', style: AppTextStyles.caption),
+                if (pet.streak > 0)
+                  Text(
+                    '🔥 ${pet.streak}-day streak',
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.accent,
+                    ),
+                  ),
               ],
             ),
             const Spacer(),
@@ -71,7 +87,7 @@ class _PetHome extends StatelessWidget {
               style: IconButton.styleFrom(
                 backgroundColor: AppColors.primary,
               ),
-              onPressed: () => context.read<PetCubit>().loadPet(silent: true),
+              onPressed: () => _refresh(context),
               icon: const Icon(Icons.refresh_rounded, color: AppColors.white),
             ),
           ],
@@ -136,6 +152,8 @@ class _PetHome extends StatelessWidget {
             ),
           ],
         ),
+        const SizedBox(height: AppSpacing.xl),
+        const InsightsCard(),
       ],
     );
   }

@@ -5,6 +5,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../errors/app_errors.dart';
 import '../generated/protocol.dart';
+import '../utils/nutrition_insights.dart';
 import '../utils/pet_stats.dart' as stats;
 import 'nutrition_ai_service.dart';
 import 'pet_service.dart';
@@ -91,10 +92,13 @@ class MealService {
     );
   }
 
+  // [utcOffsetMinutes] is the phone's offset from UTC, so the streak follows
+  // the user's own calendar days
   Future<FeedResult> feed(
     Session session,
     UuidValue ownerId,
     int mealId,
+    int utcOffsetMinutes,
   ) async {
     return session.db.transaction((transaction) async {
       final meal = await Meal.db.findById(
@@ -137,7 +141,12 @@ class MealService {
         ownerId,
         transaction: transaction,
       );
-      final result = stats.feed(pet, meal, now);
+      final result = stats.feed(
+        pet,
+        meal,
+        now,
+        utcOffsetMinutes: utcOffsetMinutes,
+      );
 
       final savedPet = await Pet.db.updateRow(
         session,
@@ -160,6 +169,25 @@ class MealService {
       where: (t) => t.ownerId.equals(ownerId),
       orderByList: (t) => [t.createdAt.desc()],
       limit: 50,
+    );
+  }
+
+  Future<NutritionInsights> insights(Session session, UuidValue ownerId) async {
+    final pet = await pets.requireMine(session, ownerId);
+    final since = DateTime.now().toUtc().subtract(
+      const Duration(days: insightsDays),
+    );
+    final meals = await Meal.db.find(
+      session,
+      where: (t) =>
+          t.ownerId.equals(ownerId) &
+          t.fed.equals(true) &
+          (t.createdAt > since),
+    );
+    return buildInsights(
+      petName: pet.name,
+      meals: meals,
+      utcOffsetMinutes: pet.utcOffsetMinutes,
     );
   }
 

@@ -24,6 +24,8 @@ abstract class FeedResult
     required this.nutritionChange,
     required this.xpGained,
     required this.leveledUp,
+    required this.streakExtended,
+    required this.streakBonusXp,
   });
 
   factory FeedResult({
@@ -33,6 +35,8 @@ abstract class FeedResult
     required int nutritionChange,
     required int xpGained,
     required bool leveledUp,
+    required bool streakExtended,
+    required int streakBonusXp,
   }) = _FeedResultImpl;
 
   factory FeedResult.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -45,6 +49,10 @@ abstract class FeedResult
       nutritionChange: jsonSerialization['nutritionChange'] as int,
       xpGained: jsonSerialization['xpGained'] as int,
       leveledUp: _is.BoolJsonExtension.fromJson(jsonSerialization['leveledUp']),
+      streakExtended: _is.BoolJsonExtension.fromJson(
+        jsonSerialization['streakExtended'],
+      ),
+      streakBonusXp: jsonSerialization['streakBonusXp'] as int,
     );
   }
 
@@ -60,6 +68,12 @@ abstract class FeedResult
 
   bool leveledUp;
 
+  /// True when this was the first meal of a new streak day.
+  bool streakExtended;
+
+  /// Bonus XP for the streak, already included in xpGained.
+  int streakBonusXp;
+
   /// Returns a shallow copy of this [FeedResult]
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
@@ -70,6 +84,8 @@ abstract class FeedResult
     int? nutritionChange,
     int? xpGained,
     bool? leveledUp,
+    bool? streakExtended,
+    int? streakBonusXp,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -81,6 +97,8 @@ abstract class FeedResult
       'nutritionChange': nutritionChange,
       'xpGained': xpGained,
       'leveledUp': leveledUp,
+      'streakExtended': streakExtended,
+      'streakBonusXp': streakBonusXp,
     };
   }
 
@@ -94,6 +112,8 @@ abstract class FeedResult
       'nutritionChange': nutritionChange,
       'xpGained': xpGained,
       'leveledUp': leveledUp,
+      'streakExtended': streakExtended,
+      'streakBonusXp': streakBonusXp,
     };
   }
 
@@ -111,6 +131,8 @@ class _FeedResultImpl extends FeedResult {
     required int nutritionChange,
     required int xpGained,
     required bool leveledUp,
+    required bool streakExtended,
+    required int streakBonusXp,
   }) : super._(
          pet: pet,
          healthChange: healthChange,
@@ -118,6 +140,8 @@ class _FeedResultImpl extends FeedResult {
          nutritionChange: nutritionChange,
          xpGained: xpGained,
          leveledUp: leveledUp,
+         streakExtended: streakExtended,
+         streakBonusXp: streakBonusXp,
        );
 
   /// Returns a shallow copy of this [FeedResult]
@@ -131,6 +155,8 @@ class _FeedResultImpl extends FeedResult {
     int? nutritionChange,
     int? xpGained,
     bool? leveledUp,
+    bool? streakExtended,
+    int? streakBonusXp,
   }) {
     return FeedResult(
       pet: pet ?? this.pet.copyWith(),
@@ -139,6 +165,8 @@ class _FeedResultImpl extends FeedResult {
       nutritionChange: nutritionChange ?? this.nutritionChange,
       xpGained: xpGained ?? this.xpGained,
       leveledUp: leveledUp ?? this.leveledUp,
+      streakExtended: streakExtended ?? this.streakExtended,
+      streakBonusXp: streakBonusXp ?? this.streakBonusXp,
     );
   }
 }

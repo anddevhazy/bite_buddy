@@ -16,9 +16,17 @@ class MealEndpoint extends Endpoint {
   Future<Meal> analyze(Session session, ByteData image) =>
       mealService.analyze(session, session.userId, image);
 
-  Future<FeedResult> feed(Session session, int mealId) =>
-      mealService.feed(session, session.userId, mealId);
+  // utcOffsetMinutes: DateTime.now().timeZoneOffset.inMinutes on the phone
+  Future<FeedResult> feed(
+    Session session,
+    int mealId,
+    int utcOffsetMinutes,
+  ) => mealService.feed(session, session.userId, mealId, utcOffsetMinutes);
 
   Future<List<Meal>> history(Session session) =>
       mealService.history(session, session.userId);
+
+  // The last 7 days of meals, summarised, with tips
+  Future<NutritionInsights> insights(Session session) =>
+      mealService.insights(session, session.userId);
 }

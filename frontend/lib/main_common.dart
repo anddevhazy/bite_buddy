@@ -3,6 +3,7 @@ import 'package:bite_buddy/features/battle/presentation/bloc/battle_cubit.dart';
 import 'package:bite_buddy/features/collection/presentation/bloc/collection_cubit.dart';
 import 'package:bite_buddy/features/global/constants/colors.dart';
 import 'package:bite_buddy/features/global/routes/routes.dart';
+import 'package:bite_buddy/features/insights/presentation/bloc/insights_cubit.dart';
 import 'package:bite_buddy/features/pet/presentation/bloc/pet_cubit.dart';
 import 'package:bite_buddy/features/scanner/presentation/bloc/scanner_cubit.dart';
 import 'package:bite_buddy/service_locator.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => sl<ScannerCubit>()),
         BlocProvider(create: (context) => sl<CollectionCubit>()),
         BlocProvider(create: (context) => sl<BattleCubit>()),
+        BlocProvider(create: (context) => sl<InsightsCubit>()),
       ],
       // Signing out, or the session expiring, sends the user back to sign in
       child: BlocListener<AuthCubit, AuthState>(
@@ -41,6 +43,7 @@ class MyApp extends StatelessWidget {
             previous is Authenticated && current is Unauthenticated,
         listener: (context, state) {
           context.read<PetCubit>().reset();
+          context.read<InsightsCubit>().reset();
           Routes.goToSignIn();
         },
         child: ScreenUtilInit(

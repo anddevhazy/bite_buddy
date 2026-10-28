@@ -52,6 +52,8 @@ class ProfilePage extends StatelessWidget {
                   const SizedBox(height: AppSpacing.lg),
                   for (final (label, value) in [
                     ('🍽️ Meals eaten', '${pet.mealsEaten}'),
+                    ('🔥 Current streak', _days(pet.streak)),
+                    ('⭐ Best streak', _days(pet.bestStreak)),
                     ('🏆 Battles won', '${pet.wins}'),
                     ('💫 Battles lost', '${pet.losses}'),
                     ('💰 Coins', '${pet.coins}'),
@@ -104,3 +106,5 @@ class ProfilePage extends StatelessWidget {
     );
   }
 }
+
+String _days(int n) => n == 1 ? '1 day' : '$n days';

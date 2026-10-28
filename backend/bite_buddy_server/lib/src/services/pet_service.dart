@@ -8,8 +8,8 @@ import '../utils/pet_stats.dart';
 class PetService {
   const PetService();
 
-  // The user's pet with neglect decay brought up to date, or null if they
-  // haven't adopted one.
+  // The user's pet with neglect decay and its streak brought up to date, or
+  // null if they haven't adopted one.
   Future<Pet?> findMine(
     Session session,
     UuidValue ownerId, {
@@ -22,9 +22,13 @@ class PetService {
     );
     if (pet == null) return null;
 
-    final decayed = applyDecay(pet, DateTime.now().toUtc());
-    if (decayed.lastDecayAt == pet.lastDecayAt) return pet;
-    return Pet.db.updateRow(session, decayed, transaction: transaction);
+    final now = DateTime.now().toUtc();
+    final updated = expireStreak(applyDecay(pet, now), now);
+    if (updated.lastDecayAt == pet.lastDecayAt &&
+        updated.streak == pet.streak) {
+      return pet;
+    }
+    return Pet.db.updateRow(session, updated, transaction: transaction);
   }
 
   Future<Pet> requireMine(

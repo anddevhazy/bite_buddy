@@ -77,17 +77,24 @@ void main() {
       await endpoints.pet.adopt(signedIn, key, 'Fluffy');
       final meal = await insertScannedMeal(healthScore: 80);
 
-      final result = await endpoints.meal.feed(signedIn, meal.id!);
+      final result = await endpoints.meal.feed(signedIn, meal.id!, 60);
       expect(result.pet.nutrition, 80);
       expect(result.pet.mealsEaten, 1);
       expect(result.xpGained, greaterThan(0));
+      expect(result.pet.streak, 1);
+      expect(result.streakExtended, isTrue);
+
+      final insights = await endpoints.meal.insights(signedIn);
+      expect(insights.mealsCounted, 1);
+      expect(insights.averageHealthScore, 80);
+      expect(insights.tips, isNotEmpty);
 
       final board = await endpoints.leaderboard.top(signedIn);
       final me = board.singleWhere((e) => e.isYou);
       expect(me.nutrition, 80);
 
       await expectLater(
-        endpoints.meal.feed(signedIn, meal.id!),
+        endpoints.meal.feed(signedIn, meal.id!, 60),
         throwsA(isA<BiteBuddyException>()),
       );
 

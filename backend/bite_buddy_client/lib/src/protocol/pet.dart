@@ -30,9 +30,15 @@ abstract class Pet
     required this.wins,
     required this.losses,
     this.lastFedAt,
+    int? streak,
+    int? bestStreak,
+    this.lastStreakDay,
+    int? utcOffsetMinutes,
     required this.lastDecayAt,
     required this.createdAt,
-  });
+  }) : streak = streak ?? 0,
+       bestStreak = bestStreak ?? 0,
+       utcOffsetMinutes = utcOffsetMinutes ?? 0;
 
   factory Pet({
     int? id,
@@ -49,6 +55,10 @@ abstract class Pet
     required int wins,
     required int losses,
     DateTime? lastFedAt,
+    int? streak,
+    int? bestStreak,
+    DateTime? lastStreakDay,
+    int? utcOffsetMinutes,
     required DateTime lastDecayAt,
     required DateTime createdAt,
   }) = _PetImpl;
@@ -73,6 +83,14 @@ abstract class Pet
       lastFedAt: jsonSerialization['lastFedAt'] == null
           ? null
           : _isc.DateTimeJsonExtension.fromJson(jsonSerialization['lastFedAt']),
+      streak: jsonSerialization['streak'] as int?,
+      bestStreak: jsonSerialization['bestStreak'] as int?,
+      lastStreakDay: jsonSerialization['lastStreakDay'] == null
+          ? null
+          : _isc.DateTimeJsonExtension.fromJson(
+              jsonSerialization['lastStreakDay'],
+            ),
+      utcOffsetMinutes: jsonSerialization['utcOffsetMinutes'] as int?,
       lastDecayAt: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['lastDecayAt'],
       ),
@@ -117,6 +135,19 @@ abstract class Pet
 
   DateTime? lastFedAt;
 
+  /// Days in a row the pet has eaten, in the owner's local time. Missing a
+  /// whole day resets it to 0.
+  int streak;
+
+  int bestStreak;
+
+  /// The last local day (stored as UTC midnight) that counted for the streak.
+  DateTime? lastStreakDay;
+
+  /// The owner's UTC offset at their last feed, so the server knows when
+  /// their day starts and ends.
+  int utcOffsetMinutes;
+
   /// Neglect decay has been applied up to this moment.
   DateTime lastDecayAt;
 
@@ -140,6 +171,10 @@ abstract class Pet
     int? wins,
     int? losses,
     DateTime? lastFedAt,
+    int? streak,
+    int? bestStreak,
+    DateTime? lastStreakDay,
+    int? utcOffsetMinutes,
     DateTime? lastDecayAt,
     DateTime? createdAt,
   });
@@ -161,6 +196,10 @@ abstract class Pet
       'wins': wins,
       'losses': losses,
       if (lastFedAt != null) 'lastFedAt': lastFedAt?.toJson(),
+      'streak': streak,
+      'bestStreak': bestStreak,
+      if (lastStreakDay != null) 'lastStreakDay': lastStreakDay?.toJson(),
+      'utcOffsetMinutes': utcOffsetMinutes,
       'lastDecayAt': lastDecayAt.toJson(),
       'createdAt': createdAt.toJson(),
     };
@@ -184,6 +223,10 @@ abstract class Pet
       'wins': wins,
       'losses': losses,
       if (lastFedAt != null) 'lastFedAt': lastFedAt?.toJson(),
+      'streak': streak,
+      'bestStreak': bestStreak,
+      if (lastStreakDay != null) 'lastStreakDay': lastStreakDay?.toJson(),
+      'utcOffsetMinutes': utcOffsetMinutes,
       'lastDecayAt': lastDecayAt.toJson(),
       'createdAt': createdAt.toJson(),
     };
@@ -213,6 +256,10 @@ class _PetImpl extends Pet {
     required int wins,
     required int losses,
     DateTime? lastFedAt,
+    int? streak,
+    int? bestStreak,
+    DateTime? lastStreakDay,
+    int? utcOffsetMinutes,
     required DateTime lastDecayAt,
     required DateTime createdAt,
   }) : super._(
@@ -230,6 +277,10 @@ class _PetImpl extends Pet {
          wins: wins,
          losses: losses,
          lastFedAt: lastFedAt,
+         streak: streak,
+         bestStreak: bestStreak,
+         lastStreakDay: lastStreakDay,
+         utcOffsetMinutes: utcOffsetMinutes,
          lastDecayAt: lastDecayAt,
          createdAt: createdAt,
        );
@@ -253,6 +304,10 @@ class _PetImpl extends Pet {
     int? wins,
     int? losses,
     Object? lastFedAt = _Undefined,
+    int? streak,
+    int? bestStreak,
+    Object? lastStreakDay = _Undefined,
+    int? utcOffsetMinutes,
     DateTime? lastDecayAt,
     DateTime? createdAt,
   }) {
@@ -271,6 +326,12 @@ class _PetImpl extends Pet {
       wins: wins ?? this.wins,
       losses: losses ?? this.losses,
       lastFedAt: lastFedAt is DateTime? ? lastFedAt : this.lastFedAt,
+      streak: streak ?? this.streak,
+      bestStreak: bestStreak ?? this.bestStreak,
+      lastStreakDay: lastStreakDay is DateTime?
+          ? lastStreakDay
+          : this.lastStreakDay,
+      utcOffsetMinutes: utcOffsetMinutes ?? this.utcOffsetMinutes,
       lastDecayAt: lastDecayAt ?? this.lastDecayAt,
       createdAt: createdAt ?? this.createdAt,
     );

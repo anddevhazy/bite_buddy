@@ -6,6 +6,7 @@ import 'package:bite_buddy/features/global/constants/colors.dart';
 import 'package:bite_buddy/features/global/constants/spacing.dart';
 import 'package:bite_buddy/features/global/constants/text_styles.dart';
 import 'package:bite_buddy/features/global/routes/routes.dart';
+import 'package:bite_buddy/features/insights/presentation/bloc/insights_cubit.dart';
 import 'package:bite_buddy/features/pet/presentation/bloc/pet_cubit.dart';
 import 'package:bite_buddy/features/pet/presentation/widgets/pet_avatar.dart';
 import 'package:bite_buddy/features/scanner/domain/entities/feed_result_entity.dart';
@@ -33,6 +34,7 @@ class ScanResultPage extends StatelessWidget {
             listener: (context, state) {
               if (state is MealFed) {
                 context.read<PetCubit>().updatePet(state.result.pet);
+                context.read<InsightsCubit>().load();
               }
               if (state is ScannerFailed && state.meal != null) {
                 AppToast.show(
@@ -314,6 +316,16 @@ class _Fed extends StatelessWidget {
             '🎉 Level up! Now level ${pet.level}',
             textAlign: TextAlign.center,
             style: AppTextStyles.h3.copyWith(color: AppColors.gold),
+          ),
+        ],
+        if (result.streakExtended) ...[
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            pet.streak == 1
+                ? '🔥 Streak started! Feed ${pet.name} again tomorrow'
+                : '🔥 ${pet.streak}-day streak! +${result.streakBonusXp} bonus XP',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.h3.copyWith(color: AppColors.accent),
           ),
         ],
         const SizedBox(height: AppSpacing.xl),

@@ -7,3 +7,7 @@ fields:
   nutritionChange: int
   xpGained: int
   leveledUp: bool
+  ### True when this was the first meal of a new streak day.
+  streakExtended: bool
+  ### Bonus XP for the streak, already included in xpGained.
+  streakBonusXp: int

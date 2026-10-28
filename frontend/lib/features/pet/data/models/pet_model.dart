@@ -16,6 +16,8 @@ class PetModel extends PetEntity {
     required super.mealsEaten,
     required super.wins,
     required super.losses,
+    required super.streak,
+    required super.bestStreak,
     super.lastFedAt,
   });
 
@@ -35,6 +37,8 @@ class PetModel extends PetEntity {
       mealsEaten: pet.mealsEaten,
       wins: pet.wins,
       losses: pet.losses,
+      streak: pet.streak,
+      bestStreak: pet.bestStreak,
       lastFedAt: pet.lastFedAt?.toLocal(),
     );
   }

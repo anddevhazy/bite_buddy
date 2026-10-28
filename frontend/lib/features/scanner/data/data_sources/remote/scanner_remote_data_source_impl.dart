@@ -20,7 +20,11 @@ class ScannerRemoteDataSourceImpl implements ScannerRemoteDataSource {
 
   @override
   Future<FeedResultEntity> feedPet(int mealId) async {
-    final result = await client.meal.feed(mealId);
+    // The server counts streak days in the phone's time zone
+    final result = await client.meal.feed(
+      mealId,
+      DateTime.now().timeZoneOffset.inMinutes,
+    );
     return FeedResultModel.fromProtocol(result);
   }
 }

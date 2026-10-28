@@ -18,6 +18,8 @@ import 'package:bite_buddy_client/src/protocol/feed_result.dart' as _ik3mz3kd;
 import 'package:bite_buddy_client/src/protocol/leaderboard_entry.dart'
     as _iw02fr1r;
 import 'package:bite_buddy_client/src/protocol/meal.dart' as _is4r12e0;
+import 'package:bite_buddy_client/src/protocol/nutrition_insights.dart'
+    as _iwtty9ju;
 import 'package:bite_buddy_client/src/protocol/opponent.dart' as _in0kp8ea;
 import 'package:bite_buddy_client/src/protocol/pet.dart' as _iqjbfwnu;
 import 'package:bite_buddy_client/src/protocol/pet_species.dart' as _i12uia3s;
@@ -317,17 +319,29 @@ class EndpointMeal extends _isc.EndpointRef {
         {'image': image},
       );
 
-  _ida.Future<_ik3mz3kd.FeedResult> feed(int mealId) =>
-      caller.callServerEndpoint<_ik3mz3kd.FeedResult>(
-        'meal',
-        'feed',
-        {'mealId': mealId},
-      );
+  _ida.Future<_ik3mz3kd.FeedResult> feed(
+    int mealId,
+    int utcOffsetMinutes,
+  ) => caller.callServerEndpoint<_ik3mz3kd.FeedResult>(
+    'meal',
+    'feed',
+    {
+      'mealId': mealId,
+      'utcOffsetMinutes': utcOffsetMinutes,
+    },
+  );
 
   _ida.Future<List<_is4r12e0.Meal>> history() =>
       caller.callServerEndpoint<List<_is4r12e0.Meal>>(
         'meal',
         'history',
+        {},
+      );
+
+  _ida.Future<_iwtty9ju.NutritionInsights> insights() =>
+      caller.callServerEndpoint<_iwtty9ju.NutritionInsights>(
+        'meal',
+        'insights',
         {},
       );
 }
