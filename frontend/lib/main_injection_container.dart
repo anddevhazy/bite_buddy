@@ -5,6 +5,7 @@ import 'package:bite_buddy/features/global/core/config/flavor_config.dart';
 import 'package:bite_buddy/features/insights/insights_injection_container.dart';
 import 'package:bite_buddy/features/pet/pet_injection_container.dart';
 import 'package:bite_buddy/features/scanner/scanner_injection_container.dart';
+import 'package:bite_buddy/features/social/social_injection_container.dart';
 import 'package:bite_buddy/service_locator.dart';
 import 'package:bite_buddy_client/bite_buddy_client.dart';
 import 'package:serverpod_auth_idp_flutter/serverpod_auth_idp_flutter.dart';
@@ -32,4 +33,5 @@ Future<void> init() async {
   await collectionInjectionContainer();
   await battleInjectionContainer();
   await insightsInjectionContainer();
+  await socialInjectionContainer();
 }

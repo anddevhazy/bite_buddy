@@ -13,6 +13,18 @@ battle:
   - opponents:
   - start:
   - move:
+challenge:
+  - create:
+  - join:
+  - mine:
+  - get:
+  - leave:
+friend:
+  - myCode:
+  - list:
+  - add:
+  - accept:
+  - remove:
 leaderboard:
   - top:
 meal:

@@ -1,0 +1,19 @@
+### A friend request between two users. It becomes a friendship once the
+### addressee accepts. There is one row per pair, whoever asked first.
+class: Friendship
+table: friendship
+fields:
+  requesterId: UuidValue
+  addresseeId: UuidValue
+  accepted: bool
+  ### Days in a row both friends fed their pets.
+  sharedStreak: int
+  ### The last day (UTC midnight of the feeder's local day) that counted.
+  sharedStreakDay: DateTime?
+  createdAt: DateTime
+indexes:
+  friendship_pair_idx:
+    fields: requesterId, addresseeId
+    unique: true
+  friendship_addressee_idx:
+    fields: addresseeId

@@ -11,6 +11,9 @@
 // ignore_for_file: dead_code, unnecessary_type_check
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:bite_buddy_client/src/protocol/challenge_summary.dart'
+    as _iocq2wg4;
+import 'package:bite_buddy_client/src/protocol/friend.dart' as _ifz742s2;
 import 'package:bite_buddy_client/src/protocol/leaderboard_entry.dart'
     as _iw02fr1r;
 import 'package:bite_buddy_client/src/protocol/meal.dart' as _is4r12e0;
@@ -26,8 +29,15 @@ import 'battle_move.dart' as _iz303hum;
 import 'battle_round.dart' as _imrf8vtu;
 import 'battle_state.dart' as _iavxxxi0;
 import 'battle_status.dart' as _ib4xlijd;
+import 'challenge.dart' as _ijvmy76x;
+import 'challenge_member.dart' as _iq0hk9wx;
+import 'challenge_standing.dart' as _itrt04px;
+import 'challenge_summary.dart' as _i4bwjau6;
 import 'errors/bite_buddy_exception.dart' as _in42pmv9;
 import 'feed_result.dart' as _i6546n9y;
+import 'friend.dart' as _iep1719s;
+import 'friend_status.dart' as _ic60syjb;
+import 'friendship.dart' as _i3iaxzrn;
 import 'leaderboard_entry.dart' as _ikawkn1p;
 import 'meal.dart' as _ixnoudrx;
 import 'nutrition_insights.dart' as _ik434gbd;
@@ -39,8 +49,15 @@ export 'battle_move.dart';
 export 'battle_round.dart';
 export 'battle_state.dart';
 export 'battle_status.dart';
+export 'challenge.dart';
+export 'challenge_member.dart';
+export 'challenge_standing.dart';
+export 'challenge_summary.dart';
 export 'errors/bite_buddy_exception.dart';
 export 'feed_result.dart';
+export 'friend.dart';
+export 'friend_status.dart';
+export 'friendship.dart';
 export 'leaderboard_entry.dart';
 export 'meal.dart';
 export 'nutrition_insights.dart';
@@ -98,11 +115,32 @@ class Protocol extends _isc.SerializationManager {
     if (t == _ib4xlijd.BattleStatus) {
       return _ib4xlijd.BattleStatus.fromJson(data) as T;
     }
+    if (t == _ijvmy76x.Challenge) {
+      return _ijvmy76x.Challenge.fromJson(data) as T;
+    }
+    if (t == _iq0hk9wx.ChallengeMember) {
+      return _iq0hk9wx.ChallengeMember.fromJson(data) as T;
+    }
+    if (t == _itrt04px.ChallengeStanding) {
+      return _itrt04px.ChallengeStanding.fromJson(data) as T;
+    }
+    if (t == _i4bwjau6.ChallengeSummary) {
+      return _i4bwjau6.ChallengeSummary.fromJson(data) as T;
+    }
     if (t == _in42pmv9.BiteBuddyException) {
       return _in42pmv9.BiteBuddyException.fromJson(data) as T;
     }
     if (t == _i6546n9y.FeedResult) {
       return _i6546n9y.FeedResult.fromJson(data) as T;
+    }
+    if (t == _iep1719s.Friend) {
+      return _iep1719s.Friend.fromJson(data) as T;
+    }
+    if (t == _ic60syjb.FriendStatus) {
+      return _ic60syjb.FriendStatus.fromJson(data) as T;
+    }
+    if (t == _i3iaxzrn.Friendship) {
+      return _i3iaxzrn.Friendship.fromJson(data) as T;
     }
     if (t == _ikawkn1p.LeaderboardEntry) {
       return _ikawkn1p.LeaderboardEntry.fromJson(data) as T;
@@ -137,12 +175,36 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_ib4xlijd.BattleStatus?>()) {
       return (data != null ? _ib4xlijd.BattleStatus.fromJson(data) : null) as T;
     }
+    if (t == _isc.getType<_ijvmy76x.Challenge?>()) {
+      return (data != null ? _ijvmy76x.Challenge.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_iq0hk9wx.ChallengeMember?>()) {
+      return (data != null ? _iq0hk9wx.ChallengeMember.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_itrt04px.ChallengeStanding?>()) {
+      return (data != null ? _itrt04px.ChallengeStanding.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_i4bwjau6.ChallengeSummary?>()) {
+      return (data != null ? _i4bwjau6.ChallengeSummary.fromJson(data) : null)
+          as T;
+    }
     if (t == _isc.getType<_in42pmv9.BiteBuddyException?>()) {
       return (data != null ? _in42pmv9.BiteBuddyException.fromJson(data) : null)
           as T;
     }
     if (t == _isc.getType<_i6546n9y.FeedResult?>()) {
       return (data != null ? _i6546n9y.FeedResult.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_iep1719s.Friend?>()) {
+      return (data != null ? _iep1719s.Friend.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_ic60syjb.FriendStatus?>()) {
+      return (data != null ? _ic60syjb.FriendStatus.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_i3iaxzrn.Friendship?>()) {
+      return (data != null ? _i3iaxzrn.Friendship.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_ikawkn1p.LeaderboardEntry?>()) {
       return (data != null ? _ikawkn1p.LeaderboardEntry.fromJson(data) : null)
@@ -164,12 +226,30 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_it7bnlgl.PetSpecies?>()) {
       return (data != null ? _it7bnlgl.PetSpecies.fromJson(data) : null) as T;
     }
+    if (t == List<_itrt04px.ChallengeStanding>) {
+      return (data as List)
+              .map((e) => deserialize<_itrt04px.ChallengeStanding>(e))
+              .toList()
+          as T;
+    }
     if (t == List<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toList() as T;
     }
     if (t == List<_in0kp8ea.Opponent>) {
       return (data as List)
               .map((e) => deserialize<_in0kp8ea.Opponent>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_iocq2wg4.ChallengeSummary>) {
+      return (data as List)
+              .map((e) => deserialize<_iocq2wg4.ChallengeSummary>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_ifz742s2.Friend>) {
+      return (data as List)
+              .map((e) => deserialize<_ifz742s2.Friend>(e))
               .toList()
           as T;
     }
@@ -205,8 +285,15 @@ class Protocol extends _isc.SerializationManager {
       _imrf8vtu.BattleRound => 'BattleRound',
       _iavxxxi0.BattleState => 'BattleState',
       _ib4xlijd.BattleStatus => 'BattleStatus',
+      _ijvmy76x.Challenge => 'Challenge',
+      _iq0hk9wx.ChallengeMember => 'ChallengeMember',
+      _itrt04px.ChallengeStanding => 'ChallengeStanding',
+      _i4bwjau6.ChallengeSummary => 'ChallengeSummary',
       _in42pmv9.BiteBuddyException => 'BiteBuddyException',
       _i6546n9y.FeedResult => 'FeedResult',
+      _iep1719s.Friend => 'Friend',
+      _ic60syjb.FriendStatus => 'FriendStatus',
+      _i3iaxzrn.Friendship => 'Friendship',
       _ikawkn1p.LeaderboardEntry => 'LeaderboardEntry',
       _ixnoudrx.Meal => 'Meal',
       _ik434gbd.NutritionInsights => 'NutritionInsights',
@@ -237,10 +324,24 @@ class Protocol extends _isc.SerializationManager {
         return 'BattleState';
       case _ib4xlijd.BattleStatus():
         return 'BattleStatus';
+      case _ijvmy76x.Challenge():
+        return 'Challenge';
+      case _iq0hk9wx.ChallengeMember():
+        return 'ChallengeMember';
+      case _itrt04px.ChallengeStanding():
+        return 'ChallengeStanding';
+      case _i4bwjau6.ChallengeSummary():
+        return 'ChallengeSummary';
       case _in42pmv9.BiteBuddyException():
         return 'BiteBuddyException';
       case _i6546n9y.FeedResult():
         return 'FeedResult';
+      case _iep1719s.Friend():
+        return 'Friend';
+      case _ic60syjb.FriendStatus():
+        return 'FriendStatus';
+      case _i3iaxzrn.Friendship():
+        return 'Friendship';
       case _ikawkn1p.LeaderboardEntry():
         return 'LeaderboardEntry';
       case _ixnoudrx.Meal():
@@ -290,11 +391,32 @@ class Protocol extends _isc.SerializationManager {
     if (dataClassName == 'BattleStatus') {
       return deserialize<_ib4xlijd.BattleStatus>(data['data']);
     }
+    if (dataClassName == 'Challenge') {
+      return deserialize<_ijvmy76x.Challenge>(data['data']);
+    }
+    if (dataClassName == 'ChallengeMember') {
+      return deserialize<_iq0hk9wx.ChallengeMember>(data['data']);
+    }
+    if (dataClassName == 'ChallengeStanding') {
+      return deserialize<_itrt04px.ChallengeStanding>(data['data']);
+    }
+    if (dataClassName == 'ChallengeSummary') {
+      return deserialize<_i4bwjau6.ChallengeSummary>(data['data']);
+    }
     if (dataClassName == 'BiteBuddyException') {
       return deserialize<_in42pmv9.BiteBuddyException>(data['data']);
     }
     if (dataClassName == 'FeedResult') {
       return deserialize<_i6546n9y.FeedResult>(data['data']);
+    }
+    if (dataClassName == 'Friend') {
+      return deserialize<_iep1719s.Friend>(data['data']);
+    }
+    if (dataClassName == 'FriendStatus') {
+      return deserialize<_ic60syjb.FriendStatus>(data['data']);
+    }
+    if (dataClassName == 'Friendship') {
+      return deserialize<_i3iaxzrn.Friendship>(data['data']);
     }
     if (dataClassName == 'LeaderboardEntry') {
       return deserialize<_ikawkn1p.LeaderboardEntry>(data['data']);

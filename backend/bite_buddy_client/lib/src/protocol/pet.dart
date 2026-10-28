@@ -34,6 +34,7 @@ abstract class Pet
     int? bestStreak,
     this.lastStreakDay,
     int? utcOffsetMinutes,
+    this.friendCode,
     required this.lastDecayAt,
     required this.createdAt,
   }) : streak = streak ?? 0,
@@ -59,6 +60,7 @@ abstract class Pet
     int? bestStreak,
     DateTime? lastStreakDay,
     int? utcOffsetMinutes,
+    String? friendCode,
     required DateTime lastDecayAt,
     required DateTime createdAt,
   }) = _PetImpl;
@@ -91,6 +93,7 @@ abstract class Pet
               jsonSerialization['lastStreakDay'],
             ),
       utcOffsetMinutes: jsonSerialization['utcOffsetMinutes'] as int?,
+      friendCode: jsonSerialization['friendCode'] as String?,
       lastDecayAt: _isc.DateTimeJsonExtension.fromJson(
         jsonSerialization['lastDecayAt'],
       ),
@@ -148,6 +151,10 @@ abstract class Pet
   /// their day starts and ends.
   int utcOffsetMinutes;
 
+  /// Short code other players enter to add this pet's owner as a friend.
+  /// Null only for pets created before friends existed, until next loaded.
+  String? friendCode;
+
   /// Neglect decay has been applied up to this moment.
   DateTime lastDecayAt;
 
@@ -175,6 +182,7 @@ abstract class Pet
     int? bestStreak,
     DateTime? lastStreakDay,
     int? utcOffsetMinutes,
+    String? friendCode,
     DateTime? lastDecayAt,
     DateTime? createdAt,
   });
@@ -200,6 +208,7 @@ abstract class Pet
       'bestStreak': bestStreak,
       if (lastStreakDay != null) 'lastStreakDay': lastStreakDay?.toJson(),
       'utcOffsetMinutes': utcOffsetMinutes,
+      if (friendCode != null) 'friendCode': friendCode,
       'lastDecayAt': lastDecayAt.toJson(),
       'createdAt': createdAt.toJson(),
     };
@@ -227,6 +236,7 @@ abstract class Pet
       'bestStreak': bestStreak,
       if (lastStreakDay != null) 'lastStreakDay': lastStreakDay?.toJson(),
       'utcOffsetMinutes': utcOffsetMinutes,
+      if (friendCode != null) 'friendCode': friendCode,
       'lastDecayAt': lastDecayAt.toJson(),
       'createdAt': createdAt.toJson(),
     };
@@ -260,6 +270,7 @@ class _PetImpl extends Pet {
     int? bestStreak,
     DateTime? lastStreakDay,
     int? utcOffsetMinutes,
+    String? friendCode,
     required DateTime lastDecayAt,
     required DateTime createdAt,
   }) : super._(
@@ -281,6 +292,7 @@ class _PetImpl extends Pet {
          bestStreak: bestStreak,
          lastStreakDay: lastStreakDay,
          utcOffsetMinutes: utcOffsetMinutes,
+         friendCode: friendCode,
          lastDecayAt: lastDecayAt,
          createdAt: createdAt,
        );
@@ -308,6 +320,7 @@ class _PetImpl extends Pet {
     int? bestStreak,
     Object? lastStreakDay = _Undefined,
     int? utcOffsetMinutes,
+    Object? friendCode = _Undefined,
     DateTime? lastDecayAt,
     DateTime? createdAt,
   }) {
@@ -332,6 +345,7 @@ class _PetImpl extends Pet {
           ? lastStreakDay
           : this.lastStreakDay,
       utcOffsetMinutes: utcOffsetMinutes ?? this.utcOffsetMinutes,
+      friendCode: friendCode is String? ? friendCode : this.friendCode,
       lastDecayAt: lastDecayAt ?? this.lastDecayAt,
       createdAt: createdAt ?? this.createdAt,
     );

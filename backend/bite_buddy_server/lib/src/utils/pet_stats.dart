@@ -167,11 +167,37 @@ FeedResult feed(
   );
 }
 
+// ── Shared streaks ──────────────────────────────────────────────────────────
+
+// Called when one friend starts a new streak day and the other has already
+// fed on that day. Counting each day once means it doesn't matter who fed
+// first.
+Friendship bumpSharedStreak(Friendship f, DateTime today) {
+  final last = f.sharedStreakDay;
+  if (last != null && !today.isAfter(last)) return f;
+  final continues = last != null && today.difference(last).inDays == 1;
+  return f.copyWith(
+    sharedStreak: continues ? f.sharedStreak + 1 : 1,
+    sharedStreakDay: today,
+  );
+}
+
+// The stored count lingers after a missed day; this is what to show
+int currentSharedStreak(Friendship f, DateTime today) {
+  final last = f.sharedStreakDay;
+  if (last == null || today.difference(last).inDays > 1) return 0;
+  return f.sharedStreak;
+}
+
 // ── Battle stats ────────────────────────────────────────────────────────────
 
 int petMaxHp(Pet pet) => (60 + pet.health * 0.4 + pet.level * 10).round();
 int petAttack(Pet pet) => (10 + pet.level * 4 + pet.nutrition / 5).round();
 int petDefense(Pet pet) => (6 + pet.level * 3 + pet.health / 10).round();
+
+// Beating a friend's pet pays less than the arena, and only once a day per
+// friend, so two accounts can't farm coins off each other
+int friendCoinReward(Pet friendPet) => 30 + friendPet.level * 10;
 
 int baseDamage(int attack, int defense, Random rng) {
   final roll = 0.85 + rng.nextDouble() * 0.3;

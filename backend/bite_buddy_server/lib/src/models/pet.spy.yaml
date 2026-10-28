@@ -28,6 +28,9 @@ fields:
   ### The owner's UTC offset at their last feed, so the server knows when
   ### their day starts and ends.
   utcOffsetMinutes: int, default=0
+  ### Short code other players enter to add this pet's owner as a friend.
+  ### Null only for pets created before friends existed, until next loaded.
+  friendCode: String?
   ### Neglect decay has been applied up to this moment.
   lastDecayAt: DateTime
   createdAt: DateTime
@@ -37,3 +40,6 @@ indexes:
     unique: true
   pet_nutrition_idx:
     fields: nutrition
+  pet_friend_code_idx:
+    fields: friendCode
+    unique: true

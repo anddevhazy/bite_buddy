@@ -3,6 +3,7 @@ import 'package:serverpod/serverpod.dart';
 import '../errors/app_errors.dart';
 import '../generated/protocol.dart';
 import '../utils/catalog.dart';
+import '../utils/codes.dart';
 import '../utils/pet_stats.dart';
 
 class PetService {
@@ -23,9 +24,17 @@ class PetService {
     if (pet == null) return null;
 
     final now = DateTime.now().toUtc();
-    final updated = expireStreak(applyDecay(pet, now), now);
+    var updated = expireStreak(applyDecay(pet, now), now);
+    // Pets adopted before friends existed get their code the first time
+    // they're loaded
+    if (pet.friendCode == null) {
+      updated = updated.copyWith(
+        friendCode: await _unusedFriendCode(session, transaction),
+      );
+    }
     if (updated.lastDecayAt == pet.lastDecayAt &&
-        updated.streak == pet.streak) {
+        updated.streak == pet.streak &&
+        updated.friendCode == pet.friendCode) {
       return pet;
     }
     return Pet.db.updateRow(session, updated, transaction: transaction);
@@ -63,14 +72,32 @@ class PetService {
       throw conflictError('PET_EXISTS', 'You already have a pet.');
     }
 
+    final pet = newPet(
+      ownerId: ownerId,
+      speciesKey: speciesKey,
+      name: trimmed,
+      now: DateTime.now().toUtc(),
+    );
     return Pet.db.insertRow(
       session,
-      newPet(
-        ownerId: ownerId,
-        speciesKey: speciesKey,
-        name: trimmed,
-        now: DateTime.now().toUtc(),
-      ),
+      pet.copyWith(friendCode: await _unusedFriendCode(session, null)),
     );
+  }
+
+  // With ~900 million possible codes a clash is very unlikely, but cheap to
+  // rule out
+  Future<String> _unusedFriendCode(
+    Session session,
+    Transaction? transaction,
+  ) async {
+    while (true) {
+      final code = newCode();
+      final taken = await Pet.db.count(
+        session,
+        where: (t) => t.friendCode.equals(code),
+        transaction: transaction,
+      );
+      if (taken == 0) return code;
+    }
   }
 }

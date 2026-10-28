@@ -6,24 +6,34 @@ import '../errors/app_errors.dart';
 import '../generated/protocol.dart';
 import '../utils/catalog.dart';
 import '../utils/pet_stats.dart' as stats;
+import 'friend_service.dart';
 import 'pet_service.dart';
 
 class BattleService {
   final PetService pets;
+  final FriendService friends;
   final Random _rng;
 
-  BattleService({required this.pets, Random? rng}) : _rng = rng ?? Random();
+  BattleService({required this.pets, required this.friends, Random? rng})
+    : _rng = rng ?? Random();
 
   static const int specialCooldownRounds = 3;
   static const int maxRounds = 30;
+  // Opponent keys for friends' pets are 'friend:<petId>'
+  static const String friendKeyPrefix = 'friend:';
+  static const String friendDifficulty = 'Friend';
 
+  // The arena opponents, then each friend's pet
   Future<List<Opponent>> opponentsFor(
     Session session,
     UuidValue ownerId,
   ) async {
     final pet = await pets.requireMine(session, ownerId);
+    final friendPets = await friends.friendPets(session, ownerId);
+    friendPets.sort((a, b) => a.level.compareTo(b.level));
     return [
-      for (final o in opponents) o.toProtocol(winChance: _winChance(pet, o)),
+      for (final o in [...opponents, ...friendPets.map(_friendOpponent)])
+        o.toProtocol(winChance: _winChance(pet, o)),
     ];
   }
 
@@ -32,10 +42,15 @@ class BattleService {
     UuidValue ownerId,
     String opponentKey,
   ) async {
-    final opponent = findOpponent(opponentKey);
-    if (opponent == null) throw notFoundError('Opponent');
-
     return session.db.transaction((transaction) async {
+      final opponent = await _findOpponent(
+        session,
+        ownerId,
+        opponentKey,
+        transaction: transaction,
+      );
+      if (opponent == null) throw notFoundError('Opponent');
+
       final pet = await pets.requireMine(
         session,
         ownerId,
@@ -62,6 +77,7 @@ class BattleService {
           b,
           current,
           won: false,
+          opponent: null,
           transaction: transaction,
         );
         current = forfeited.$2;
@@ -119,7 +135,15 @@ class BattleService {
         throw invalidInputError('Special is still recharging.');
       }
 
-      final opponent = findOpponent(battle.opponentKey)!;
+      // A friend's pet is read again each round, so it fights with whatever
+      // stats it has now. If the friendship ended mid-battle, it's gone.
+      final opponent = await _findOpponent(
+        session,
+        ownerId,
+        battle.opponentKey,
+        transaction: transaction,
+      );
+      if (opponent == null) throw notFoundError('Opponent');
       final pet = await pets.requireMine(
         session,
         ownerId,
@@ -145,6 +169,7 @@ class BattleService {
           next,
           pet,
           won: won,
+          opponent: opponent,
           transaction: transaction,
         );
         return _state(finished, updatedPet, opponent);
@@ -232,17 +257,20 @@ class BattleService {
     return '$yours. $theirs.';
   }
 
-  // Ends the battle, pays out rewards and saves both rows
+  // Ends the battle, pays out rewards and saves both rows. [opponent] is only
+  // needed for a win.
   Future<(Battle, Pet)> _finish(
     Session session,
     Battle battle,
     Pet pet, {
     required bool won,
+    required OpponentData? opponent,
     required Transaction transaction,
   }) async {
-    final opponent = findOpponent(battle.opponentKey)!;
-    final coins = won ? opponent.coinReward : 0;
-    final xp = won ? 20 + opponent.level * 5 : 5;
+    final coins = won
+        ? await _coinsFor(session, battle, opponent!, transaction)
+        : 0;
+    final xp = won ? 20 + opponent!.level * 5 : 5;
     final energyChange = won ? stats.battleWinEnergy : -stats.battleEnergyCost;
 
     final rewarded = pet.copyWith(
@@ -270,6 +298,65 @@ class BattleService {
     );
     return (savedBattle, savedPet);
   }
+
+  // Friend wins only pay the first time each day
+  Future<int> _coinsFor(
+    Session session,
+    Battle battle,
+    OpponentData opponent,
+    Transaction transaction,
+  ) async {
+    if (!battle.opponentKey.startsWith(friendKeyPrefix)) {
+      return opponent.coinReward;
+    }
+    final paidToday = await Battle.db.count(
+      session,
+      where: (t) =>
+          t.ownerId.equals(battle.ownerId) &
+          t.opponentKey.equals(battle.opponentKey) &
+          t.status.equals(BattleStatus.won) &
+          (t.coinsEarned > 0) &
+          (t.createdAt > DateTime.now().toUtc().subtract(const Duration(days: 1))),
+      transaction: transaction,
+    );
+    return paidToday > 0 ? 0 : opponent.coinReward;
+  }
+
+  Future<OpponentData?> _findOpponent(
+    Session session,
+    UuidValue ownerId,
+    String key, {
+    Transaction? transaction,
+  }) async {
+    if (!key.startsWith(friendKeyPrefix)) return findOpponent(key);
+
+    final petId = int.tryParse(key.substring(friendKeyPrefix.length));
+    if (petId == null) return null;
+    final pet = await Pet.db.findById(session, petId, transaction: transaction);
+    if (pet == null ||
+        !await friends.areFriends(
+          session,
+          ownerId,
+          pet.ownerId,
+          transaction: transaction,
+        )) {
+      return null;
+    }
+    return _friendOpponent(pet);
+  }
+
+  // A friend's pet fights with the same stats it would have as a player
+  OpponentData _friendOpponent(Pet pet) => OpponentData(
+    '$friendKeyPrefix${pet.id}',
+    pet.name,
+    findSpecies(pet.speciesKey)?.emoji ?? '🐾',
+    pet.level,
+    stats.petMaxHp(pet),
+    stats.petAttack(pet),
+    stats.petDefense(pet),
+    friendDifficulty,
+    stats.friendCoinReward(pet),
+  );
 
   int _winChance(Pet pet, OpponentData o) => stats.winChance(
     petHp: stats.petMaxHp(pet),

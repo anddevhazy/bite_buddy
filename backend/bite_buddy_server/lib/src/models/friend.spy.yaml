@@ -1,0 +1,14 @@
+### A friend or pending request, as the app shows it. Leaves out the other
+### user's id on purpose.
+class: Friend
+fields:
+  friendshipId: int
+  status: FriendStatus
+  petId: int
+  petName: String
+  speciesKey: String
+  level: int
+  nutrition: int
+  streak: int
+  ### 0 unless you're friends and both fed on the same days.
+  sharedStreak: int

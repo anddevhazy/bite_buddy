@@ -1,3 +1,4 @@
+import 'package:bite_buddy/features/battle/domain/entities/opponent_entity.dart';
 import 'package:bite_buddy/features/battle/presentation/bloc/battle_cubit.dart';
 import 'package:bite_buddy/features/battle/presentation/widgets/opponent_card.dart';
 import 'package:bite_buddy/features/global/components/app_error_view.dart';
@@ -79,21 +80,42 @@ class _BattleArenaPageState extends State<BattleArenaPage> {
                   message: 'Could not load opponents.',
                   onRetry: () => context.read<BattleCubit>().loadOpponents(),
                 )
-              else if (state is OpponentsLoaded)
-                for (final o in state.opponents)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                    child: OpponentCard(
-                      opponent: o,
-                      loading:
-                          state is BattleStarting && state.opponentKey == o.key,
-                      onBattle:
-                          state is BattleStarting
-                              ? null
-                              : () => context.read<BattleCubit>().start(o.key),
+              else if (state is OpponentsLoaded) ...[
+                for (final o in state.opponents.where((o) => !o.isFriend))
+                  _opponentCard(context, state, o),
+                const SizedBox(height: AppSpacing.md),
+                Text('Battle a Friend', style: AppTextStyles.h2),
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  'Their buddy is played by the computer. Coins are paid for '
+                  'your first win against each friend per day.',
+                  style: AppTextStyles.caption,
+                ),
+                const SizedBox(height: AppSpacing.md),
+                if (state.opponents.any((o) => o.isFriend))
+                  for (final o in state.opponents.where((o) => o.isFriend))
+                    _opponentCard(context, state, o)
+                else
+                  GlassCard(
+                    onTap: () => context.pushNamed(Routes.socialName),
+                    child: Row(
+                      children: [
+                        const Text('👥', style: TextStyle(fontSize: 32)),
+                        const SizedBox(width: AppSpacing.md),
+                        Expanded(
+                          child: Text(
+                            'Add friends to battle their buddies',
+                            style: AppTextStyles.bodyMedium,
+                          ),
+                        ),
+                        const Icon(
+                          Icons.chevron_right_rounded,
+                          color: AppColors.textMuted,
+                        ),
+                      ],
                     ),
-                  )
-              else
+                  ),
+              ] else
                 const Padding(
                   padding: EdgeInsets.all(AppSpacing.xl),
                   child: Center(
@@ -106,4 +128,22 @@ class _BattleArenaPageState extends State<BattleArenaPage> {
       ),
     );
   }
+}
+
+Widget _opponentCard(
+  BuildContext context,
+  OpponentsLoaded state,
+  OpponentEntity o,
+) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: AppSpacing.md),
+    child: OpponentCard(
+      opponent: o,
+      loading: state is BattleStarting && state.opponentKey == o.key,
+      onBattle:
+          state is BattleStarting
+              ? null
+              : () => context.read<BattleCubit>().start(o.key),
+    ),
+  );
 }

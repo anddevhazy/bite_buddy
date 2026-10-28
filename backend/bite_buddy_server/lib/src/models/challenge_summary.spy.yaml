@@ -1,0 +1,10 @@
+### A challenge with its current standings.
+class: ChallengeSummary
+fields:
+  id: int
+  name: String
+  code: String
+  startsAt: DateTime
+  endsAt: DateTime
+  isOwner: bool
+  standings: List<ChallengeStanding>

@@ -6,9 +6,11 @@ import 'package:bite_buddy/features/global/constants/colors.dart';
 import 'package:bite_buddy/features/global/constants/spacing.dart';
 import 'package:bite_buddy/features/global/constants/species.dart';
 import 'package:bite_buddy/features/global/constants/text_styles.dart';
+import 'package:bite_buddy/features/global/routes/routes.dart';
 import 'package:bite_buddy/features/pet/presentation/bloc/pet_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -72,6 +74,12 @@ class ProfilePage extends StatelessWidget {
                     ),
                 ],
               ),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            GameButton(
+              label: 'Friends & Challenges',
+              style: GameButtonStyle.accent,
+              onPressed: () => context.pushNamed(Routes.socialName),
             ),
             const SizedBox(height: AppSpacing.xl),
           ],

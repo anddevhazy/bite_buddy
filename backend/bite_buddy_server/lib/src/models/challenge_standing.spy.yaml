@@ -1,0 +1,9 @@
+### One player's place in a challenge.
+class: ChallengeStanding
+fields:
+  rank: int
+  petName: String
+  speciesKey: String
+  ### Healthy meals (score 70+) fed during the challenge.
+  score: int
+  isYou: bool

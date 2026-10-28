@@ -28,6 +28,9 @@ class OpponentEntity extends Equatable {
 
   int get power => ((attack + defense + hp / 5)).round();
 
+  // A friend's pet, played by the computer (same key format as the server)
+  bool get isFriend => key.startsWith('friend:');
+
   @override
   List<Object?> get props => [key, winChance];
 }

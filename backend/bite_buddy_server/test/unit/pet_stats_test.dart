@@ -168,6 +168,34 @@ void main() {
     });
   });
 
+  group('shared streaks', () {
+    final day1 = DateTime.utc(2026, 10, 23);
+    final day2 = DateTime.utc(2026, 10, 24);
+    final day4 = DateTime.utc(2026, 10, 26);
+    Friendship friendship() => Friendship(
+      requesterId: owner,
+      addresseeId: owner,
+      accepted: true,
+      sharedStreak: 0,
+      sharedStreakDay: null,
+      createdAt: t0,
+    );
+
+    test('grows once per day, on consecutive days', () {
+      final first = bumpSharedStreak(friendship(), day1);
+      expect(first.sharedStreak, 1);
+      expect(bumpSharedStreak(first, day1).sharedStreak, 1);
+      expect(bumpSharedStreak(first, day2).sharedStreak, 2);
+    });
+
+    test('a missed day starts it again and hides the old count', () {
+      final two = bumpSharedStreak(bumpSharedStreak(friendship(), day1), day2);
+      expect(currentSharedStreak(two, day2.add(const Duration(days: 1))), 2);
+      expect(currentSharedStreak(two, day4), 0);
+      expect(bumpSharedStreak(two, day4).sharedStreak, 1);
+    });
+  });
+
   group('winChance', () {
     test('is clamped to 5-95', () {
       final easy = winChance(

@@ -20,6 +20,8 @@ import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
 import '../auth/email_idp_endpoint.dart' as _iuc1hd5t;
 import '../auth/jwt_refresh_endpoint.dart' as _inwq3ztq;
 import '../endpoints/battle_endpoint.dart' as _ilghbeth;
+import '../endpoints/challenge_endpoint.dart' as _ip0awr9w;
+import '../endpoints/friend_endpoint.dart' as _ikwmyfcu;
 import '../endpoints/leaderboard_endpoint.dart' as _iy80ldha;
 import '../endpoints/meal_endpoint.dart' as _indvr2gf;
 import '../endpoints/pet_endpoint.dart' as _ic7gura5;
@@ -44,6 +46,18 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'battle',
+          null,
+        ),
+      'challenge': _ip0awr9w.ChallengeEndpoint()
+        ..initialize(
+          server,
+          'challenge',
+          null,
+        ),
+      'friend': _ikwmyfcu.FriendEndpoint()
+        ..initialize(
+          server,
+          'friend',
           null,
         ),
       'leaderboard': _iy80ldha.LeaderboardEndpoint()
@@ -327,6 +341,187 @@ class Endpoints extends _is.EndpointDispatch {
                 params['battleId'],
                 params['move'],
               ),
+        ),
+      },
+    );
+    connectors['challenge'] = _is.EndpointConnector(
+      name: 'challenge',
+      endpoint: endpoints['challenge']!,
+      methodConnectors: {
+        'create': _is.MethodConnector(
+          name: 'create',
+          params: {
+            'name': _is.ParameterDescription(
+              name: 'name',
+              type: _is.getType<String>(),
+              nullable: false,
+            ),
+            'days': _is.ParameterDescription(
+              name: 'days',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['challenge'] as _ip0awr9w.ChallengeEndpoint)
+                  .create(
+                    session,
+                    params['name'],
+                    params['days'],
+                  ),
+        ),
+        'join': _is.MethodConnector(
+          name: 'join',
+          params: {
+            'code': _is.ParameterDescription(
+              name: 'code',
+              type: _is.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['challenge'] as _ip0awr9w.ChallengeEndpoint).join(
+                    session,
+                    params['code'],
+                  ),
+        ),
+        'mine': _is.MethodConnector(
+          name: 'mine',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['challenge'] as _ip0awr9w.ChallengeEndpoint)
+                  .mine(session),
+        ),
+        'get': _is.MethodConnector(
+          name: 'get',
+          params: {
+            'challengeId': _is.ParameterDescription(
+              name: 'challengeId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['challenge'] as _ip0awr9w.ChallengeEndpoint).get(
+                    session,
+                    params['challengeId'],
+                  ),
+        ),
+        'leave': _is.MethodConnector(
+          name: 'leave',
+          params: {
+            'challengeId': _is.ParameterDescription(
+              name: 'challengeId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['challenge'] as _ip0awr9w.ChallengeEndpoint).leave(
+                    session,
+                    params['challengeId'],
+                  ),
+        ),
+      },
+    );
+    connectors['friend'] = _is.EndpointConnector(
+      name: 'friend',
+      endpoint: endpoints['friend']!,
+      methodConnectors: {
+        'myCode': _is.MethodConnector(
+          name: 'myCode',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['friend'] as _ikwmyfcu.FriendEndpoint)
+                  .myCode(session),
+        ),
+        'list': _is.MethodConnector(
+          name: 'list',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['friend'] as _ikwmyfcu.FriendEndpoint).list(
+                session,
+              ),
+        ),
+        'add': _is.MethodConnector(
+          name: 'add',
+          params: {
+            'friendCode': _is.ParameterDescription(
+              name: 'friendCode',
+              type: _is.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['friend'] as _ikwmyfcu.FriendEndpoint).add(
+                session,
+                params['friendCode'],
+              ),
+        ),
+        'accept': _is.MethodConnector(
+          name: 'accept',
+          params: {
+            'friendshipId': _is.ParameterDescription(
+              name: 'friendshipId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['friend'] as _ikwmyfcu.FriendEndpoint).accept(
+                    session,
+                    params['friendshipId'],
+                  ),
+        ),
+        'remove': _is.MethodConnector(
+          name: 'remove',
+          params: {
+            'friendshipId': _is.ParameterDescription(
+              name: 'friendshipId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['friend'] as _ikwmyfcu.FriendEndpoint).remove(
+                    session,
+                    params['friendshipId'],
+                  ),
         ),
       },
     );

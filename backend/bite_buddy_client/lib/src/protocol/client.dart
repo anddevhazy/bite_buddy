@@ -14,7 +14,10 @@ import 'dart:async' as _ida;
 import 'dart:typed_data' as _idt;
 import 'package:bite_buddy_client/src/protocol/battle_move.dart' as _ih5s12ml;
 import 'package:bite_buddy_client/src/protocol/battle_state.dart' as _it997u85;
+import 'package:bite_buddy_client/src/protocol/challenge_summary.dart'
+    as _iocq2wg4;
 import 'package:bite_buddy_client/src/protocol/feed_result.dart' as _ik3mz3kd;
+import 'package:bite_buddy_client/src/protocol/friend.dart' as _ifz742s2;
 import 'package:bite_buddy_client/src/protocol/leaderboard_entry.dart'
     as _iw02fr1r;
 import 'package:bite_buddy_client/src/protocol/meal.dart' as _is4r12e0;
@@ -291,6 +294,94 @@ class EndpointBattle extends _isc.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointChallenge extends _isc.EndpointRef {
+  EndpointChallenge(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'challenge';
+
+  _ida.Future<_iocq2wg4.ChallengeSummary> create(
+    String name,
+    int days,
+  ) => caller.callServerEndpoint<_iocq2wg4.ChallengeSummary>(
+    'challenge',
+    'create',
+    {
+      'name': name,
+      'days': days,
+    },
+  );
+
+  _ida.Future<_iocq2wg4.ChallengeSummary> join(String code) =>
+      caller.callServerEndpoint<_iocq2wg4.ChallengeSummary>(
+        'challenge',
+        'join',
+        {'code': code},
+      );
+
+  _ida.Future<List<_iocq2wg4.ChallengeSummary>> mine() =>
+      caller.callServerEndpoint<List<_iocq2wg4.ChallengeSummary>>(
+        'challenge',
+        'mine',
+        {},
+      );
+
+  _ida.Future<_iocq2wg4.ChallengeSummary> get(int challengeId) =>
+      caller.callServerEndpoint<_iocq2wg4.ChallengeSummary>(
+        'challenge',
+        'get',
+        {'challengeId': challengeId},
+      );
+
+  _ida.Future<void> leave(int challengeId) => caller.callServerEndpoint<void>(
+    'challenge',
+    'leave',
+    {'challengeId': challengeId},
+  );
+}
+
+/// {@category Endpoint}
+class EndpointFriend extends _isc.EndpointRef {
+  EndpointFriend(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'friend';
+
+  _ida.Future<String> myCode() => caller.callServerEndpoint<String>(
+    'friend',
+    'myCode',
+    {},
+  );
+
+  _ida.Future<List<_ifz742s2.Friend>> list() =>
+      caller.callServerEndpoint<List<_ifz742s2.Friend>>(
+        'friend',
+        'list',
+        {},
+      );
+
+  _ida.Future<_ifz742s2.Friend> add(String friendCode) =>
+      caller.callServerEndpoint<_ifz742s2.Friend>(
+        'friend',
+        'add',
+        {'friendCode': friendCode},
+      );
+
+  _ida.Future<_ifz742s2.Friend> accept(int friendshipId) =>
+      caller.callServerEndpoint<_ifz742s2.Friend>(
+        'friend',
+        'accept',
+        {'friendshipId': friendshipId},
+      );
+
+  _ida.Future<void> remove(int friendshipId) => caller.callServerEndpoint<void>(
+    'friend',
+    'remove',
+    {'friendshipId': friendshipId},
+  );
+}
+
+/// {@category Endpoint}
 class EndpointLeaderboard extends _isc.EndpointRef {
   EndpointLeaderboard(_isc.EndpointCaller caller) : super(caller);
 
@@ -421,6 +512,8 @@ class Client extends _isc.ServerpodClientShared {
     emailIdp = EndpointEmailIdp(this);
     jwtRefresh = EndpointJwtRefresh(this);
     battle = EndpointBattle(this);
+    challenge = EndpointChallenge(this);
+    friend = EndpointFriend(this);
     leaderboard = EndpointLeaderboard(this);
     meal = EndpointMeal(this);
     pet = EndpointPet(this);
@@ -432,6 +525,10 @@ class Client extends _isc.ServerpodClientShared {
   late final EndpointJwtRefresh jwtRefresh;
 
   late final EndpointBattle battle;
+
+  late final EndpointChallenge challenge;
+
+  late final EndpointFriend friend;
 
   late final EndpointLeaderboard leaderboard;
 
@@ -446,6 +543,8 @@ class Client extends _isc.ServerpodClientShared {
     'emailIdp': emailIdp,
     'jwtRefresh': jwtRefresh,
     'battle': battle,
+    'challenge': challenge,
+    'friend': friend,
     'leaderboard': leaderboard,
     'meal': meal,
     'pet': pet,

@@ -9,6 +9,7 @@ import 'package:bite_buddy/features/pet/presentation/pages/pet_home_page.dart';
 import 'package:bite_buddy/features/profile/presentation/pages/profile_page.dart';
 import 'package:bite_buddy/features/scanner/presentation/pages/food_scanner_page.dart';
 import 'package:bite_buddy/features/scanner/presentation/pages/scan_result_page.dart';
+import 'package:bite_buddy/features/social/presentation/pages/social_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -44,6 +45,9 @@ class Routes {
 
   static const String battlePath = '/fight';
   static const String battleName = 'fight';
+
+  static const String socialPath = '/friends';
+  static const String socialName = 'friends';
 
   static void goToSignIn() {
     if (router.state.matchedLocation != signInPath) {
@@ -134,6 +138,12 @@ class Routes {
         name: battleName,
         parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const BattlePage(),
+      ),
+      GoRoute(
+        path: socialPath,
+        name: socialName,
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => const SocialPage(),
       ),
     ],
   );

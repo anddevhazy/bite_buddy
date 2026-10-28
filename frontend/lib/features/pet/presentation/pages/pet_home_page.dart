@@ -84,6 +84,15 @@ class _PetHome extends StatelessWidget {
             ),
             const Spacer(),
             IconButton.filled(
+              tooltip: 'Friends',
+              style: IconButton.styleFrom(
+                backgroundColor: AppColors.accent,
+              ),
+              onPressed: () => context.pushNamed(Routes.socialName),
+              icon: const Icon(Icons.group_rounded, color: AppColors.white),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            IconButton.filled(
               style: IconButton.styleFrom(
                 backgroundColor: AppColors.primary,
               ),

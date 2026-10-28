@@ -8,13 +8,19 @@ import '../generated/protocol.dart';
 import '../utils/nutrition_insights.dart';
 import '../utils/pet_stats.dart' as stats;
 import 'nutrition_ai_service.dart';
+import 'friend_service.dart';
 import 'pet_service.dart';
 
 class MealService {
   final NutritionAiService ai;
   final PetService pets;
+  final FriendService friends;
 
-  const MealService({required this.ai, required this.pets});
+  const MealService({
+    required this.ai,
+    required this.pets,
+    required this.friends,
+  });
 
   static const int maxImageBytes = 4 * 1024 * 1024;
   // Real phone photos are never this small; tiny images are usually thumbnails
@@ -158,6 +164,14 @@ class MealService {
         meal.copyWith(fed: true),
         transaction: transaction,
       );
+      if (result.streakExtended) {
+        await friends.recordFeedDay(
+          session,
+          ownerId,
+          savedPet.lastStreakDay!,
+          transaction: transaction,
+        );
+      }
 
       return result.copyWith(pet: savedPet);
     });

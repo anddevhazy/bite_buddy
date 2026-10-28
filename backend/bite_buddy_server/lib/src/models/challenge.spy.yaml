@@ -1,0 +1,15 @@
+### A group challenge: whoever feeds the most healthy meals before it ends wins.
+class: Challenge
+table: challenge
+fields:
+  name: String
+  ### Short code friends enter to join.
+  code: String
+  ownerId: UuidValue
+  startsAt: DateTime
+  endsAt: DateTime
+  createdAt: DateTime
+indexes:
+  challenge_code_idx:
+    fields: code
+    unique: true

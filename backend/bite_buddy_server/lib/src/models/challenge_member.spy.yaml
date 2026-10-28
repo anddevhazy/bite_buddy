@@ -1,0 +1,12 @@
+class: ChallengeMember
+table: challenge_member
+fields:
+  challengeId: int
+  userId: UuidValue
+  joinedAt: DateTime
+indexes:
+  challenge_member_idx:
+    fields: challengeId, userId
+    unique: true
+  challenge_member_user_idx:
+    fields: userId

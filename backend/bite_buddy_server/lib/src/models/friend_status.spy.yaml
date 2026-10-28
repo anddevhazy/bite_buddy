@@ -1,0 +1,8 @@
+enum: FriendStatus
+serialized: byName
+values:
+  - friends
+  ### They asked you; you can accept or decline.
+  - incoming
+  ### You asked them; waiting for them to accept.
+  - outgoing
