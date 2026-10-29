@@ -1,6 +1,7 @@
+import 'package:bite_buddy/features/battle/domain/entities/arena_entity.dart';
 import 'package:bite_buddy/features/battle/domain/entities/battle_entity.dart';
 import 'package:bite_buddy/features/battle/domain/entities/opponent_entity.dart';
-import 'package:bite_buddy/features/battle/domain/usecases/fetch_opponents_usecase.dart';
+import 'package:bite_buddy/features/battle/domain/usecases/fetch_arena_usecase.dart';
 import 'package:bite_buddy/features/battle/domain/usecases/play_move_usecase.dart';
 import 'package:bite_buddy/features/battle/domain/usecases/start_battle_usecase.dart';
 import 'package:bite_buddy/features/global/core/error/failures.dart';
@@ -11,40 +12,57 @@ import 'package:equatable/equatable.dart';
 part 'battle_state.dart';
 
 class BattleCubit extends Cubit<BattleState> {
-  final FetchOpponentsUseCase fetchOpponentsUseCase;
+  final FetchArenaUseCase fetchArenaUseCase;
   final StartBattleUseCase startBattleUseCase;
   final PlayMoveUseCase playMoveUseCase;
 
-  List<OpponentEntity> _opponents = const [];
+  ArenaEntity? _arena;
 
   BattleCubit({
-    required this.fetchOpponentsUseCase,
+    required this.fetchArenaUseCase,
     required this.startBattleUseCase,
     required this.playMoveUseCase,
   }) : super(BattleInitial());
 
   Future<void> loadOpponents() async {
-    if (_opponents.isEmpty) emit(OpponentsLoading());
-    final result = await fetchOpponentsUseCase.call();
+    if (_arena == null) emit(OpponentsLoading());
+    final result = await fetchArenaUseCase.call();
     result.fold(
       (failure) {
         emit(BattleFailed(failure: failure));
-        emit(OpponentsLoaded(opponents: _opponents));
+        _showArena();
       },
-      (list) {
-        _opponents = list;
-        emit(OpponentsLoaded(opponents: list));
+      (arena) {
+        _arena = arena;
+        emit(OpponentsLoaded(arena: arena));
       },
     );
   }
 
   Future<void> start(String opponentKey) async {
-    emit(BattleStarting(opponents: _opponents, opponentKey: opponentKey));
+    final arena = _arena;
+    if (arena == null) return;
+    emit(BattleStarting(arena: arena, opponentKey: opponentKey));
     final result = await startBattleUseCase.call(opponentKey);
     result.fold((failure) {
       emit(BattleFailed(failure: failure));
-      emit(OpponentsLoaded(opponents: _opponents));
+      _showArena();
     }, (battle) => emit(InBattle(battle: battle)));
+  }
+
+  // Back to the opponent list, or to the error view if it never loaded
+  void _showArena() {
+    final arena = _arena;
+    emit(
+      arena == null
+          ? OpponentsLoaded(
+              arena: const ArenaEntity(
+                petStats: BattleStatsEntity(hp: 0, attack: 0, defense: 0),
+                opponents: [],
+              ),
+            )
+          : OpponentsLoaded(arena: arena),
+    );
   }
 
   Future<void> play(BattleMove move) async {

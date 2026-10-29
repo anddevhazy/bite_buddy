@@ -14,6 +14,7 @@
 import 'dart:async' as _ida;
 import 'dart:io' as _idi;
 import 'dart:typed_data' as _idt;
+import 'package:bite_buddy_server/src/generated/arena.dart' as _ismcu0gw;
 import 'package:bite_buddy_server/src/generated/battle_move.dart' as _itk175y8;
 import 'package:bite_buddy_server/src/generated/battle_state.dart' as _i8mv9gfm;
 import 'package:bite_buddy_server/src/generated/feed_result.dart' as _ien0ctj9;
@@ -22,7 +23,6 @@ import 'package:bite_buddy_server/src/generated/leaderboard_entry.dart'
 import 'package:bite_buddy_server/src/generated/meal.dart' as _idk4xbnt;
 import 'package:bite_buddy_server/src/generated/nutrition_insights.dart'
     as _irm6gbir;
-import 'package:bite_buddy_server/src/generated/opponent.dart' as _i4cu6vyo;
 import 'package:bite_buddy_server/src/generated/pet.dart' as _i9zqw63y;
 import 'package:bite_buddy_server/src/generated/pet_species.dart' as _it8ve0l0;
 import 'package:serverpod/serverpod.dart' as _is;
@@ -537,20 +537,20 @@ class _BattleEndpoint {
 
   final _is.SerializationManager _serializationManager;
 
-  _ida.Future<List<_i4cu6vyo.Opponent>> opponents(
+  _ida.Future<_ismcu0gw.Arena> arena(
     _ist.TestSessionBuilder sessionBuilder,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
             endpoint: 'battle',
-            method: 'opponents',
+            method: 'arena',
           );
       try {
         var _localCallContext = await _endpointDispatch.getMethodCallContext(
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'battle',
-          methodName: 'opponents',
+          methodName: 'arena',
           parameters: _ist.testObjectToJson({}),
           serializationManager: _serializationManager,
         );
@@ -559,7 +559,7 @@ class _BattleEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<List<_i4cu6vyo.Opponent>>);
+                as _ida.Future<_ismcu0gw.Arena>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

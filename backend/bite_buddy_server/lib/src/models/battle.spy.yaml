@@ -17,6 +17,11 @@ fields:
   ### Rounds until Special can be used again; 0 means ready.
   specialCooldown: int
   opponentSpecialCooldown: int
+  ### The move the opponent will make next round. Decided a round ahead so a
+  ### tell can hint at it; never sent to the app.
+  opponentNextMove: BattleMove?, scope=serverOnly
+  ### What the opponent appears to be doing next (usually, not always, true).
+  opponentTell: BattleMove?
   lastRound: BattleRound?
   coinsEarned: int
   xpEarned: int

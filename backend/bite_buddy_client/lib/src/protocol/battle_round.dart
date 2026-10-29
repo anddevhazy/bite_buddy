@@ -22,6 +22,9 @@ abstract class BattleRound
     required this.opponentMove,
     required this.damageDealt,
     required this.damageTaken,
+    required this.playerCritical,
+    required this.opponentCritical,
+    required this.clash,
     required this.message,
   });
 
@@ -31,6 +34,9 @@ abstract class BattleRound
     required _iz303hum.BattleMove opponentMove,
     required int damageDealt,
     required int damageTaken,
+    required bool playerCritical,
+    required bool opponentCritical,
+    required String clash,
     required String message,
   }) = _BattleRoundImpl;
 
@@ -45,6 +51,13 @@ abstract class BattleRound
       ),
       damageDealt: jsonSerialization['damageDealt'] as int,
       damageTaken: jsonSerialization['damageTaken'] as int,
+      playerCritical: _isc.BoolJsonExtension.fromJson(
+        jsonSerialization['playerCritical'],
+      ),
+      opponentCritical: _isc.BoolJsonExtension.fromJson(
+        jsonSerialization['opponentCritical'],
+      ),
+      clash: jsonSerialization['clash'] as String,
       message: jsonSerialization['message'] as String,
     );
   }
@@ -59,6 +72,15 @@ abstract class BattleRound
 
   int damageTaken;
 
+  /// Whether either side landed a critical hit this round.
+  bool playerCritical;
+
+  bool opponentCritical;
+
+  /// Short label for how the moves met, e.g. "Guard broken!"; empty when the
+  /// moves were the same.
+  String clash;
+
   String message;
 
   /// Returns a shallow copy of this [BattleRound]
@@ -70,6 +92,9 @@ abstract class BattleRound
     _iz303hum.BattleMove? opponentMove,
     int? damageDealt,
     int? damageTaken,
+    bool? playerCritical,
+    bool? opponentCritical,
+    String? clash,
     String? message,
   });
   @override
@@ -81,6 +106,9 @@ abstract class BattleRound
       'opponentMove': opponentMove.toJson(),
       'damageDealt': damageDealt,
       'damageTaken': damageTaken,
+      'playerCritical': playerCritical,
+      'opponentCritical': opponentCritical,
+      'clash': clash,
       'message': message,
     };
   }
@@ -94,6 +122,9 @@ abstract class BattleRound
       'opponentMove': opponentMove.toJson(),
       'damageDealt': damageDealt,
       'damageTaken': damageTaken,
+      'playerCritical': playerCritical,
+      'opponentCritical': opponentCritical,
+      'clash': clash,
       'message': message,
     };
   }
@@ -111,6 +142,9 @@ class _BattleRoundImpl extends BattleRound {
     required _iz303hum.BattleMove opponentMove,
     required int damageDealt,
     required int damageTaken,
+    required bool playerCritical,
+    required bool opponentCritical,
+    required String clash,
     required String message,
   }) : super._(
          round: round,
@@ -118,6 +152,9 @@ class _BattleRoundImpl extends BattleRound {
          opponentMove: opponentMove,
          damageDealt: damageDealt,
          damageTaken: damageTaken,
+         playerCritical: playerCritical,
+         opponentCritical: opponentCritical,
+         clash: clash,
          message: message,
        );
 
@@ -131,6 +168,9 @@ class _BattleRoundImpl extends BattleRound {
     _iz303hum.BattleMove? opponentMove,
     int? damageDealt,
     int? damageTaken,
+    bool? playerCritical,
+    bool? opponentCritical,
+    String? clash,
     String? message,
   }) {
     return BattleRound(
@@ -139,6 +179,9 @@ class _BattleRoundImpl extends BattleRound {
       opponentMove: opponentMove ?? this.opponentMove,
       damageDealt: damageDealt ?? this.damageDealt,
       damageTaken: damageTaken ?? this.damageTaken,
+      playerCritical: playerCritical ?? this.playerCritical,
+      opponentCritical: opponentCritical ?? this.opponentCritical,
+      clash: clash ?? this.clash,
       message: message ?? this.message,
     );
   }

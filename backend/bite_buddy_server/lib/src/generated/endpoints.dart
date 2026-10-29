@@ -275,15 +275,15 @@ class Endpoints extends _is.EndpointDispatch {
       name: 'battle',
       endpoint: endpoints['battle']!,
       methodConnectors: {
-        'opponents': _is.MethodConnector(
-          name: 'opponents',
+        'arena': _is.MethodConnector(
+          name: 'arena',
           params: {},
           call:
               (
                 _is.Session session,
                 Map<String, dynamic> params,
               ) async => (endpoints['battle'] as _ilghbeth.BattleEndpoint)
-                  .opponents(session),
+                  .arena(session),
         ),
         'start': _is.MethodConnector(
           name: 'start',

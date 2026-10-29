@@ -12,6 +12,7 @@ class OpponentModel extends OpponentEntity {
     required super.defense,
     required super.difficulty,
     required super.coinReward,
+    required super.tellReliability,
     required super.winChance,
   });
 
@@ -26,6 +27,7 @@ class OpponentModel extends OpponentEntity {
       defense: opponent.defense,
       difficulty: opponent.difficulty,
       coinReward: opponent.coinReward,
+      tellReliability: opponent.tellReliability,
       winChance: opponent.winChance,
     );
   }

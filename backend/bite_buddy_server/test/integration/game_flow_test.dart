@@ -110,14 +110,25 @@ void main() {
       final key = (await endpoints.pet.listSpecies(signedIn)).first.key;
       final before = await endpoints.pet.adopt(signedIn, key, 'Fluffy');
 
-      final opponents = await endpoints.battle.opponents(signedIn);
+      final arena = await endpoints.battle.arena(signedIn);
+      final opponents = arena.opponents;
       expect(opponents, isNotEmpty);
+      expect(arena.petStats.hp, greaterThan(0));
       for (final o in opponents) {
-        expect(o.winChance, inInclusiveRange(5, 95));
+        expect(o.winChance, inInclusiveRange(0, 100));
       }
+      // Weakest opponent first, so win chances only go down the list
+      final chances = [for (final o in opponents) o.winChance];
+      expect(chances, orderedEquals([...chances]..sort((a, b) => b - a)));
 
       var state = await endpoints.battle.start(signedIn, opponents.first.key);
       expect(state.battle.status, BattleStatus.ongoing);
+      // The app sees a tell, never the opponent's real next move
+      expect(state.battle.opponentTell, isNotNull);
+      expect(
+        state.battle.toJsonForProtocol(),
+        isNot(contains('opponentNextMove')),
+      );
 
       while (state.battle.status == BattleStatus.ongoing) {
         final move = state.battle.specialCooldown == 0
@@ -142,7 +153,7 @@ void main() {
     test("one user can't play another user's battle", () async {
       final key = (await endpoints.pet.listSpecies(signedIn)).first.key;
       await endpoints.pet.adopt(signedIn, key, 'Fluffy');
-      final opponent = (await endpoints.battle.opponents(signedIn)).first;
+      final opponent = (await endpoints.battle.arena(signedIn)).opponents.first;
       final state = await endpoints.battle.start(signedIn, opponent.key);
 
       final intruder = sessionBuilder.copyWith(

@@ -1,5 +1,6 @@
 import 'package:bite_buddy/features/battle/presentation/bloc/battle_cubit.dart';
 import 'package:bite_buddy/features/battle/presentation/widgets/opponent_card.dart';
+import 'package:bite_buddy/features/battle/presentation/widgets/stat_chips.dart';
 import 'package:bite_buddy/features/global/components/app_error_view.dart';
 import 'package:bite_buddy/features/global/components/app_toast.dart';
 import 'package:bite_buddy/features/global/components/glass_card.dart';
@@ -68,16 +69,25 @@ class _BattleArenaPageState extends State<BattleArenaPage> {
               ),
               const SizedBox(height: AppSpacing.lg),
               if (pet != null)
-                Center(
-                  child: GlassCard(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg,
-                      vertical: AppSpacing.sm,
-                    ),
-                    child: Text(
-                      '${pet.name} · Level ${pet.level} · ⚡ ${pet.energy}/100',
-                      style: AppTextStyles.bodyMedium,
-                    ),
+                GlassCard(
+                  padding: const EdgeInsets.all(AppSpacing.md),
+                  child: Column(
+                    children: [
+                      Text(
+                        '${pet.name} · Level ${pet.level} · '
+                        '⚡ ${pet.energy}/100',
+                        style: AppTextStyles.bodyMedium,
+                      ),
+                      if (state is OpponentsLoaded &&
+                          state.arena.petStats.hp > 0) ...[
+                        const SizedBox(height: AppSpacing.sm),
+                        StatChips(
+                          hp: state.arena.petStats.hp,
+                          attack: state.arena.petStats.attack,
+                          defense: state.arena.petStats.defense,
+                        ),
+                      ],
+                    ],
                   ),
                 ),
               const SizedBox(height: AppSpacing.lg),

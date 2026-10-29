@@ -1,0 +1,5 @@
+### The Battle Arena screen: the caller's pet's battle stats and the opponents.
+class: Arena
+fields:
+  petStats: BattleStats
+  opponents: List<Opponent>

@@ -6,4 +6,10 @@ fields:
   opponentMove: BattleMove
   damageDealt: int
   damageTaken: int
+  ### Whether either side landed a critical hit this round.
+  playerCritical: bool
+  opponentCritical: bool
+  ### Short label for how the moves met, e.g. "Guard broken!"; empty when the
+  ### moves were the same.
+  clash: String
   message: String

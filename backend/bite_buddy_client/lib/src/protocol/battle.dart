@@ -12,6 +12,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:bite_buddy_client/src/protocol/protocol.dart' as _i7z1njky;
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import 'battle_move.dart' as _iz303hum;
 import 'battle_round.dart' as _imrf8vtu;
 import 'battle_status.dart' as _ib4xlijd;
 
@@ -34,6 +35,7 @@ abstract class Battle
     required this.status,
     required this.specialCooldown,
     required this.opponentSpecialCooldown,
+    this.opponentTell,
     this.lastRound,
     required this.coinsEarned,
     required this.xpEarned,
@@ -56,6 +58,7 @@ abstract class Battle
     required _ib4xlijd.BattleStatus status,
     required int specialCooldown,
     required int opponentSpecialCooldown,
+    _iz303hum.BattleMove? opponentTell,
     _imrf8vtu.BattleRound? lastRound,
     required int coinsEarned,
     required int xpEarned,
@@ -84,6 +87,11 @@ abstract class Battle
       specialCooldown: jsonSerialization['specialCooldown'] as int,
       opponentSpecialCooldown:
           jsonSerialization['opponentSpecialCooldown'] as int,
+      opponentTell: jsonSerialization['opponentTell'] == null
+          ? null
+          : _iz303hum.BattleMove.fromJson(
+              (jsonSerialization['opponentTell'] as String),
+            ),
       lastRound: jsonSerialization['lastRound'] == null
           ? null
           : _i7z1njky.Protocol().deserialize<_imrf8vtu.BattleRound>(
@@ -130,6 +138,9 @@ abstract class Battle
 
   int opponentSpecialCooldown;
 
+  /// What the opponent appears to be doing next (usually, not always, true).
+  _iz303hum.BattleMove? opponentTell;
+
   _imrf8vtu.BattleRound? lastRound;
 
   int coinsEarned;
@@ -158,6 +169,7 @@ abstract class Battle
     _ib4xlijd.BattleStatus? status,
     int? specialCooldown,
     int? opponentSpecialCooldown,
+    _iz303hum.BattleMove? opponentTell,
     _imrf8vtu.BattleRound? lastRound,
     int? coinsEarned,
     int? xpEarned,
@@ -182,6 +194,7 @@ abstract class Battle
       'status': status.toJson(),
       'specialCooldown': specialCooldown,
       'opponentSpecialCooldown': opponentSpecialCooldown,
+      if (opponentTell != null) 'opponentTell': opponentTell?.toJson(),
       if (lastRound != null) 'lastRound': lastRound?.toJson(),
       'coinsEarned': coinsEarned,
       'xpEarned': xpEarned,
@@ -208,6 +221,7 @@ abstract class Battle
       'status': status.toJson(),
       'specialCooldown': specialCooldown,
       'opponentSpecialCooldown': opponentSpecialCooldown,
+      if (opponentTell != null) 'opponentTell': opponentTell?.toJson(),
       if (lastRound != null) 'lastRound': lastRound?.toJsonForProtocol(),
       'coinsEarned': coinsEarned,
       'xpEarned': xpEarned,
@@ -240,6 +254,7 @@ class _BattleImpl extends Battle {
     required _ib4xlijd.BattleStatus status,
     required int specialCooldown,
     required int opponentSpecialCooldown,
+    _iz303hum.BattleMove? opponentTell,
     _imrf8vtu.BattleRound? lastRound,
     required int coinsEarned,
     required int xpEarned,
@@ -260,6 +275,7 @@ class _BattleImpl extends Battle {
          status: status,
          specialCooldown: specialCooldown,
          opponentSpecialCooldown: opponentSpecialCooldown,
+         opponentTell: opponentTell,
          lastRound: lastRound,
          coinsEarned: coinsEarned,
          xpEarned: xpEarned,
@@ -286,6 +302,7 @@ class _BattleImpl extends Battle {
     _ib4xlijd.BattleStatus? status,
     int? specialCooldown,
     int? opponentSpecialCooldown,
+    Object? opponentTell = _Undefined,
     Object? lastRound = _Undefined,
     int? coinsEarned,
     int? xpEarned,
@@ -308,6 +325,9 @@ class _BattleImpl extends Battle {
       specialCooldown: specialCooldown ?? this.specialCooldown,
       opponentSpecialCooldown:
           opponentSpecialCooldown ?? this.opponentSpecialCooldown,
+      opponentTell: opponentTell is _iz303hum.BattleMove?
+          ? opponentTell
+          : this.opponentTell,
       lastRound: lastRound is _imrf8vtu.BattleRound?
           ? lastRound
           : this.lastRound?.copyWith(),

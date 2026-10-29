@@ -4,6 +4,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../errors/app_errors.dart';
 import '../generated/protocol.dart';
+import '../utils/battle_engine.dart';
 import '../utils/catalog.dart';
 import '../utils/pet_stats.dart' as stats;
 import 'pet_service.dart';
@@ -14,17 +15,22 @@ class BattleService {
 
   BattleService({required this.pets, Random? rng}) : _rng = rng ?? Random();
 
-  static const int specialCooldownRounds = 3;
-  static const int maxRounds = 30;
-
-  Future<List<Opponent>> opponentsFor(
-    Session session,
-    UuidValue ownerId,
-  ) async {
+  // The arena: the pet's battle numbers and every opponent with an honest
+  // win chance
+  Future<Arena> arena(Session session, UuidValue ownerId) async {
     final pet = await pets.requireMine(session, ownerId);
-    return [
-      for (final o in opponents) o.toProtocol(winChance: _winChance(pet, o)),
-    ];
+    final fighter = stats.petFighter(pet);
+    return Arena(
+      petStats: BattleStats(
+        hp: fighter.maxHp,
+        attack: fighter.attack,
+        defense: fighter.defense,
+      ),
+      opponents: [
+        for (final o in opponents)
+          o.toProtocol(winChance: _winChance(fighter, o)),
+      ],
+    );
   }
 
   Future<BattleState> start(
@@ -68,6 +74,11 @@ class BattleService {
       }
 
       final maxHp = stats.petMaxHp(current);
+      final (firstMove, firstTell) = _planOpponentMove(
+        opponent,
+        hp: opponent.hp,
+        specialCooldown: 0,
+      );
       final battle = await Battle.db.insertRow(
         session,
         Battle(
@@ -84,6 +95,8 @@ class BattleService {
           status: BattleStatus.ongoing,
           specialCooldown: 0,
           opponentSpecialCooldown: 0,
+          opponentNextMove: firstMove,
+          opponentTell: firstTell,
           lastRound: null,
           coinsEarned: 0,
           xpEarned: 0,
@@ -133,13 +146,14 @@ class BattleService {
       final outOfRounds = next.round >= maxRounds;
       if (opponentDown || petDown || outOfRounds) {
         // On a double knockout or timeout, the side with more HP left wins
-        final won =
-            (opponentDown && !petDown) ||
-            (!opponentDown &&
-                !petDown &&
-                next.petHp / next.petMaxHp >=
-                    next.opponentHp / next.opponentMaxHp) ||
-            (opponentDown && petDown && next.petHp >= next.opponentHp);
+        final won = opponentDown != petDown
+            ? opponentDown
+            : petWinsTie(
+                next.petHp,
+                next.petMaxHp,
+                next.opponentHp,
+                next.opponentMaxHp,
+              );
         final (finished, updatedPet) = await _finish(
           session,
           next,
@@ -155,81 +169,128 @@ class BattleService {
     });
   }
 
-  // Both sides act at once: damage, defence and healing are applied together
+  // Both sides act at once. The opponent's move was decided last round (its
+  // tell is what the player saw); after resolving, the next one is planned.
   Battle _resolveRound(Battle b, OpponentData o, BattleMove playerMove) {
-    final opponentMove = _pickOpponentMove(b);
+    final opponentMove =
+        b.opponentNextMove ??
+        pickOpponentMove(
+          hp: b.opponentHp,
+          maxHp: b.opponentMaxHp,
+          specialCooldown: b.opponentSpecialCooldown,
+          rng: _rng,
+        );
 
-    var dealt = stats.baseDamage(b.petAttack, o.defense, _rng);
-    var taken = stats.baseDamage(o.attack, b.petDefense, _rng);
-
-    // Special hits harder. Defending means not attacking this round, and
-    // taking half damage.
-    if (playerMove == BattleMove.special) dealt = (dealt * 1.6).round();
-    if (opponentMove == BattleMove.special) taken = (taken * 1.6).round();
-    if (playerMove == BattleMove.defend) dealt = 0;
-    if (opponentMove == BattleMove.defend) taken = 0;
-    if (playerMove == BattleMove.defend) taken = (taken / 2).round();
-    if (opponentMove == BattleMove.defend) dealt = (dealt / 2).round();
-
-    final petHeal = playerMove == BattleMove.defend
-        ? (b.petMaxHp * 0.05).round()
-        : 0;
-    final oppHeal = opponentMove == BattleMove.defend
-        ? (b.opponentMaxHp * 0.05).round()
-        : 0;
+    final outcome = resolveRound(
+      petMove: playerMove,
+      opponentMove: opponentMove,
+      pet: Fighter(
+        maxHp: b.petMaxHp,
+        attack: b.petAttack,
+        defense: b.petDefense,
+      ),
+      opponent: o.fighter,
+      rng: _rng,
+    );
 
     final round = b.round + 1;
+    final opponentHp =
+        (b.opponentHp - outcome.damageToOpponent + outcome.opponentHeal).clamp(
+          0,
+          b.opponentMaxHp,
+        );
+    final opponentCooldown = opponentMove == BattleMove.special
+        ? specialCooldownRounds
+        : max(0, b.opponentSpecialCooldown - 1);
+    final (nextMove, nextTell) = _planOpponentMove(
+      o,
+      hp: opponentHp,
+      specialCooldown: opponentCooldown,
+    );
+
     return b.copyWith(
       round: round,
-      petHp: (b.petHp - taken + petHeal).clamp(0, b.petMaxHp),
-      opponentHp: (b.opponentHp - dealt + oppHeal).clamp(0, b.opponentMaxHp),
+      petHp: (b.petHp - outcome.damageToPet + outcome.petHeal).clamp(
+        0,
+        b.petMaxHp,
+      ),
+      opponentHp: opponentHp,
       specialCooldown: playerMove == BattleMove.special
           ? specialCooldownRounds
           : max(0, b.specialCooldown - 1),
-      opponentSpecialCooldown: opponentMove == BattleMove.special
-          ? specialCooldownRounds
-          : max(0, b.opponentSpecialCooldown - 1),
+      opponentSpecialCooldown: opponentCooldown,
+      opponentNextMove: nextMove,
+      opponentTell: nextTell,
       lastRound: BattleRound(
         round: round,
         playerMove: playerMove,
         opponentMove: opponentMove,
-        damageDealt: dealt,
-        damageTaken: taken,
-        message: _describe(o.name, playerMove, opponentMove, dealt, taken),
+        damageDealt: outcome.damageToOpponent,
+        damageTaken: outcome.damageToPet,
+        playerCritical: outcome.petCritical,
+        opponentCritical: outcome.opponentCritical,
+        clash: outcome.clash,
+        message: _describe(o.name, playerMove, opponentMove, outcome),
       ),
     );
   }
 
-  // Opponents fight like a player would: they lean on Special when it's ready
-  // and turtle up when they're low on HP.
-  BattleMove _pickOpponentMove(Battle b) {
-    final lowHp = b.opponentHp < b.opponentMaxHp * 0.35;
-    final specialReady = b.opponentSpecialCooldown == 0;
-    final roll = _rng.nextDouble();
-
-    if (specialReady && roll < (lowHp ? 0.45 : 0.25)) return BattleMove.special;
-    if (roll < (lowHp ? 0.75 : 0.45)) return BattleMove.defend;
-    return BattleMove.attack;
+  (BattleMove, BattleMove) _planOpponentMove(
+    OpponentData o, {
+    required int hp,
+    required int specialCooldown,
+  }) {
+    final move = pickOpponentMove(
+      hp: hp,
+      maxHp: o.hp,
+      specialCooldown: specialCooldown,
+      rng: _rng,
+    );
+    final tell = tellFor(
+      move: move,
+      reliability: o.tellReliability,
+      specialCooldown: specialCooldown,
+      rng: _rng,
+    );
+    return (move, tell);
   }
 
   String _describe(
     String opponentName,
     BattleMove player,
     BattleMove opponent,
-    int dealt,
-    int taken,
+    RoundOutcome o,
   ) {
-    final yours = switch (player) {
-      BattleMove.attack => 'You attack for $dealt',
-      BattleMove.special => 'Special hit! $dealt damage',
-      BattleMove.defend => 'You brace yourself',
+    final crit = o.petCritical ? ' Critical hit!' : '';
+    final theirCrit = o.opponentCritical ? ' Critical hit!' : '';
+    return switch ((player, opponent)) {
+      (BattleMove.attack, BattleMove.attack) =>
+        'You trade blows: you deal ${o.damageToOpponent},$crit '
+            '$opponentName deals ${o.damageToPet}.$theirCrit',
+      (BattleMove.special, BattleMove.special) =>
+        'Specials collide! You deal ${o.damageToOpponent},$crit '
+            '$opponentName deals ${o.damageToPet}.$theirCrit',
+      (BattleMove.defend, BattleMove.defend) =>
+        'You both hold back and catch your breath.',
+      (BattleMove.attack, BattleMove.special) =>
+        'You strike before $opponentName\'s special lands: '
+            '${o.damageToOpponent} damage.$crit',
+      (BattleMove.special, BattleMove.attack) =>
+        '$opponentName interrupts your special: '
+            '${o.damageToPet} damage.$theirCrit',
+      (BattleMove.special, BattleMove.defend) =>
+        'Your special smashes through $opponentName\'s guard: '
+            '${o.damageToOpponent} damage!$crit',
+      (BattleMove.defend, BattleMove.special) =>
+        '$opponentName\'s special smashes through your guard: '
+            '${o.damageToPet} damage.$theirCrit',
+      (BattleMove.defend, BattleMove.attack) =>
+        'You block and counter for ${o.damageToOpponent}!$crit '
+            'Only ${o.damageToPet} gets through.',
+      (BattleMove.attack, BattleMove.defend) =>
+        '$opponentName blocks and counters for ${o.damageToPet}.$theirCrit '
+            'Only ${o.damageToOpponent} gets through.',
     };
-    final theirs = switch (opponent) {
-      BattleMove.attack => '$opponentName strikes for $taken',
-      BattleMove.special => '$opponentName unleashes a special for $taken',
-      BattleMove.defend => '$opponentName blocks',
-    };
-    return '$yours. $theirs.';
   }
 
   // Ends the battle, pays out rewards and saves both rows
@@ -271,19 +332,35 @@ class BattleService {
     return (savedBattle, savedPet);
   }
 
-  int _winChance(Pet pet, OpponentData o) => stats.winChance(
-    petHp: stats.petMaxHp(pet),
-    petAtk: stats.petAttack(pet),
-    petDef: stats.petDefense(pet),
-    oppHp: o.hp,
-    oppAtk: o.attack,
-    oppDef: o.defense,
+  int _winChance(Fighter pet, OpponentData o) => simulateWinChance(
+    pet,
+    o.fighter,
+    tellReliability: o.tellReliability,
+    seed: _matchupSeed(pet, o),
   );
+
+  // Same matchup, same number, so the % doesn't jump around between visits
+  static int _matchupSeed(Fighter pet, OpponentData o) {
+    var seed = pet.maxHp * 1000003 + pet.attack * 10007 + pet.defense * 101;
+    for (final unit in o.key.codeUnits) {
+      seed = (seed * 31 + unit) & 0x7fffffff;
+    }
+    return seed;
+  }
 
   BattleState _state(Battle battle, Pet pet, OpponentData opponent) =>
       BattleState(
         battle: battle,
-        opponent: opponent.toProtocol(winChance: _winChance(pet, opponent)),
+        opponent: opponent.toProtocol(
+          winChance: _winChance(
+            Fighter(
+              maxHp: battle.petMaxHp,
+              attack: battle.petAttack,
+              defense: battle.petDefense,
+            ),
+            opponent,
+          ),
+        ),
         petName: pet.name,
         petSpeciesKey: pet.speciesKey,
       );

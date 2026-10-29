@@ -9,8 +9,9 @@ class BattleEndpoint extends Endpoint {
   @override
   bool get requireLogin => true;
 
-  Future<List<Opponent>> opponents(Session session) =>
-      battleService.opponentsFor(session, session.userId);
+  // The pet's battle stats and every opponent, with win chances
+  Future<Arena> arena(Session session) =>
+      battleService.arena(session, session.userId);
 
   Future<BattleState> start(Session session, String opponentKey) =>
       battleService.start(session, session.userId, opponentKey);

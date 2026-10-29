@@ -1,0 +1,41 @@
+{
+  "__className__": "serverpod.DatabaseMigration",
+  "actions": [
+    {
+      "__className__": "serverpod.DatabaseMigrationAction",
+      "type": "alterTable",
+      "alterTable": {
+        "__className__": "serverpod.TableMigration",
+        "name": "battle",
+        "schema": "public",
+        "addColumns": [
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "opponentNextMove",
+            "fieldName": "opponentNextMove",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:BattleMove?"
+          },
+          {
+            "__className__": "serverpod.ColumnDefinition",
+            "name": "opponentTell",
+            "fieldName": "opponentTell",
+            "columnType": 0,
+            "isNullable": true,
+            "dartType": "protocol:BattleMove?"
+          }
+        ],
+        "deleteColumns": [],
+        "modifyColumns": [],
+        "addIndexes": [],
+        "deleteIndexes": [],
+        "addForeignKeys": [],
+        "deleteForeignKeys": [],
+        "warnings": []
+      }
+    }
+  ],
+  "warnings": [],
+  "migrationApiVersion": 1
+}

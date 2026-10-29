@@ -12,6 +12,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _ida;
 import 'dart:typed_data' as _idt;
+import 'package:bite_buddy_client/src/protocol/arena.dart' as _ih1v9sxu;
 import 'package:bite_buddy_client/src/protocol/battle_move.dart' as _ih5s12ml;
 import 'package:bite_buddy_client/src/protocol/battle_state.dart' as _it997u85;
 import 'package:bite_buddy_client/src/protocol/feed_result.dart' as _ik3mz3kd;
@@ -20,7 +21,6 @@ import 'package:bite_buddy_client/src/protocol/leaderboard_entry.dart'
 import 'package:bite_buddy_client/src/protocol/meal.dart' as _is4r12e0;
 import 'package:bite_buddy_client/src/protocol/nutrition_insights.dart'
     as _iwtty9ju;
-import 'package:bite_buddy_client/src/protocol/opponent.dart' as _in0kp8ea;
 import 'package:bite_buddy_client/src/protocol/pet.dart' as _iqjbfwnu;
 import 'package:bite_buddy_client/src/protocol/pet_species.dart' as _i12uia3s;
 import 'package:http/http.dart' as _i85jenna;
@@ -263,10 +263,10 @@ class EndpointBattle extends _isc.EndpointRef {
   @override
   String get name => 'battle';
 
-  _ida.Future<List<_in0kp8ea.Opponent>> opponents() =>
-      caller.callServerEndpoint<List<_in0kp8ea.Opponent>>(
+  _ida.Future<_ih1v9sxu.Arena> arena() =>
+      caller.callServerEndpoint<_ih1v9sxu.Arena>(
         'battle',
-        'opponents',
+        'arena',
         {},
       );
 

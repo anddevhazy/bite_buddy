@@ -10,6 +10,10 @@ class BattleRoundEntity extends Equatable {
   final BattleMove opponentMove;
   final int damageDealt;
   final int damageTaken;
+  final bool playerCritical;
+  final bool opponentCritical;
+  // How the moves met, e.g. "Guard broken!"; empty when they were the same
+  final String clash;
   final String message;
 
   const BattleRoundEntity({
@@ -18,6 +22,9 @@ class BattleRoundEntity extends Equatable {
     required this.opponentMove,
     required this.damageDealt,
     required this.damageTaken,
+    required this.playerCritical,
+    required this.opponentCritical,
+    required this.clash,
     required this.message,
   });
 
@@ -38,6 +45,8 @@ class BattleEntity extends Equatable {
   final BattleStatus status;
   // Rounds until Special can be used again; 0 means ready
   final int specialCooldown;
+  // What the opponent seems to be about to do. Usually true, sometimes a bluff.
+  final BattleMove? opponentTell;
   final BattleRoundEntity? lastRound;
   final int coinsEarned;
   final int xpEarned;
@@ -55,6 +64,7 @@ class BattleEntity extends Equatable {
     required this.round,
     required this.status,
     required this.specialCooldown,
+    this.opponentTell,
     this.lastRound,
     required this.coinsEarned,
     required this.xpEarned,

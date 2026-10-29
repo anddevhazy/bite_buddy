@@ -10,22 +10,24 @@ class BattleInitial extends BattleState {}
 class OpponentsLoading extends BattleState {}
 
 class OpponentsLoaded extends BattleState {
-  final List<OpponentEntity> opponents;
+  final ArenaEntity arena;
 
-  OpponentsLoaded({required this.opponents});
+  OpponentsLoaded({required this.arena});
+
+  List<OpponentEntity> get opponents => arena.opponents;
 
   @override
-  List<Object?> get props => [opponents];
+  List<Object?> get props => [arena];
 }
 
 // Waiting for the server to set up a battle against [opponentKey]
 class BattleStarting extends OpponentsLoaded {
   final String opponentKey;
 
-  BattleStarting({required super.opponents, required this.opponentKey});
+  BattleStarting({required super.arena, required this.opponentKey});
 
   @override
-  List<Object?> get props => [opponents, opponentKey];
+  List<Object?> get props => [arena, opponentKey];
 }
 
 class InBattle extends BattleState {

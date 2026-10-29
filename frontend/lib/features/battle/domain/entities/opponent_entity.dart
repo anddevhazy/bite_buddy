@@ -10,7 +10,9 @@ class OpponentEntity extends Equatable {
   final int defense;
   final String difficulty;
   final int coinReward;
-  // Rough chance of winning against this opponent, 0-100
+  // How often its tells are true, 0-100. Tougher opponents bluff more.
+  final int tellReliability;
+  // Chance of winning if you read the tells, 0-100 (simulated on the server)
   final int winChance;
 
   const OpponentEntity({
@@ -23,10 +25,15 @@ class OpponentEntity extends Equatable {
     required this.defense,
     required this.difficulty,
     required this.coinReward,
+    required this.tellReliability,
     required this.winChance,
   });
 
-  int get power => ((attack + defense + hp / 5)).round();
+  String get bluffs => tellReliability >= 80
+      ? 'Rarely bluffs'
+      : tellReliability >= 70
+      ? 'Sometimes bluffs'
+      : 'Often bluffs';
 
   @override
   List<Object?> get props => [key, winChance];

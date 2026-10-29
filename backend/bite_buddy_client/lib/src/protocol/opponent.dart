@@ -25,6 +25,7 @@ abstract class Opponent
     required this.defense,
     required this.difficulty,
     required this.coinReward,
+    required this.tellReliability,
     required this.winChance,
   });
 
@@ -38,6 +39,7 @@ abstract class Opponent
     required int defense,
     required String difficulty,
     required int coinReward,
+    required int tellReliability,
     required int winChance,
   }) = _OpponentImpl;
 
@@ -52,6 +54,7 @@ abstract class Opponent
       defense: jsonSerialization['defense'] as int,
       difficulty: jsonSerialization['difficulty'] as String,
       coinReward: jsonSerialization['coinReward'] as int,
+      tellReliability: jsonSerialization['tellReliability'] as int,
       winChance: jsonSerialization['winChance'] as int,
     );
   }
@@ -74,7 +77,11 @@ abstract class Opponent
 
   int coinReward;
 
-  /// Rough chance the caller's pet wins, 0-100.
+  /// How often its tells are true, 0-100. Tougher opponents bluff more.
+  int tellReliability;
+
+  /// Chance the caller's pet wins, 0-100, from simulating the matchup with a
+  /// player who reads the tells (see utils/battle_engine.dart).
   int winChance;
 
   /// Returns a shallow copy of this [Opponent]
@@ -90,6 +97,7 @@ abstract class Opponent
     int? defense,
     String? difficulty,
     int? coinReward,
+    int? tellReliability,
     int? winChance,
   });
   @override
@@ -105,6 +113,7 @@ abstract class Opponent
       'defense': defense,
       'difficulty': difficulty,
       'coinReward': coinReward,
+      'tellReliability': tellReliability,
       'winChance': winChance,
     };
   }
@@ -122,6 +131,7 @@ abstract class Opponent
       'defense': defense,
       'difficulty': difficulty,
       'coinReward': coinReward,
+      'tellReliability': tellReliability,
       'winChance': winChance,
     };
   }
@@ -143,6 +153,7 @@ class _OpponentImpl extends Opponent {
     required int defense,
     required String difficulty,
     required int coinReward,
+    required int tellReliability,
     required int winChance,
   }) : super._(
          key: key,
@@ -154,6 +165,7 @@ class _OpponentImpl extends Opponent {
          defense: defense,
          difficulty: difficulty,
          coinReward: coinReward,
+         tellReliability: tellReliability,
          winChance: winChance,
        );
 
@@ -171,6 +183,7 @@ class _OpponentImpl extends Opponent {
     int? defense,
     String? difficulty,
     int? coinReward,
+    int? tellReliability,
     int? winChance,
   }) {
     return Opponent(
@@ -183,6 +196,7 @@ class _OpponentImpl extends Opponent {
       defense: defense ?? this.defense,
       difficulty: difficulty ?? this.difficulty,
       coinReward: coinReward ?? this.coinReward,
+      tellReliability: tellReliability ?? this.tellReliability,
       winChance: winChance ?? this.winChance,
     );
   }

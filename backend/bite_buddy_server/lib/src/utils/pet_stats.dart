@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:serverpod/serverpod.dart';
 
 import '../generated/protocol.dart';
+import 'battle_engine.dart';
 
 // All the game-balance numbers live here so they're easy to tune and test.
 
@@ -173,30 +174,14 @@ FeedResult feed(
 }
 
 // ── Battle stats ────────────────────────────────────────────────────────────
+// Level, health and nutrition decide how a pet fights (see battle_engine.dart)
 
 int petMaxHp(Pet pet) => (60 + pet.health * 0.4 + pet.level * 10).round();
 int petAttack(Pet pet) => (10 + pet.level * 4 + pet.nutrition / 5).round();
 int petDefense(Pet pet) => (6 + pet.level * 3 + pet.health / 10).round();
 
-int baseDamage(int attack, int defense, Random rng) {
-  final roll = 0.85 + rng.nextDouble() * 0.3;
-  return max(1, (attack * roll - defense * 0.5).round());
-}
-
-// Estimates how likely the pet is to win by comparing how many rounds each
-// side needs to knock the other out. Clamped so nothing is ever a sure thing.
-int winChance({
-  required int petHp,
-  required int petAtk,
-  required int petDef,
-  required int oppHp,
-  required int oppAtk,
-  required int oppDef,
-}) {
-  final petDmg = max(1, petAtk - oppDef * 0.5);
-  final oppDmg = max(1, oppAtk - petDef * 0.5);
-  final roundsToWin = oppHp / petDmg;
-  final roundsToLose = petHp / oppDmg;
-  final r = pow(roundsToLose / roundsToWin, 2);
-  return (100 * r / (1 + r)).round().clamp(5, 95);
-}
+Fighter petFighter(Pet pet) => Fighter(
+  maxHp: petMaxHp(pet),
+  attack: petAttack(pet),
+  defense: petDefense(pet),
+);

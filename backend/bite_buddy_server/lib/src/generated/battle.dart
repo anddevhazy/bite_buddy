@@ -12,6 +12,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:bite_buddy_server/src/generated/protocol.dart' as _i61ow1lb;
 import 'package:serverpod/serverpod.dart' as _is;
+import 'battle_move.dart' as _iz303hum;
 import 'battle_round.dart' as _imrf8vtu;
 import 'battle_status.dart' as _ib4xlijd;
 
@@ -33,6 +34,8 @@ abstract class Battle implements _is.TableRow<int?>, _is.ProtocolSerialization {
     required this.status,
     required this.specialCooldown,
     required this.opponentSpecialCooldown,
+    this.opponentNextMove,
+    this.opponentTell,
     this.lastRound,
     required this.coinsEarned,
     required this.xpEarned,
@@ -55,6 +58,8 @@ abstract class Battle implements _is.TableRow<int?>, _is.ProtocolSerialization {
     required _ib4xlijd.BattleStatus status,
     required int specialCooldown,
     required int opponentSpecialCooldown,
+    _iz303hum.BattleMove? opponentNextMove,
+    _iz303hum.BattleMove? opponentTell,
     _imrf8vtu.BattleRound? lastRound,
     required int coinsEarned,
     required int xpEarned,
@@ -83,6 +88,16 @@ abstract class Battle implements _is.TableRow<int?>, _is.ProtocolSerialization {
       specialCooldown: jsonSerialization['specialCooldown'] as int,
       opponentSpecialCooldown:
           jsonSerialization['opponentSpecialCooldown'] as int,
+      opponentNextMove: jsonSerialization['opponentNextMove'] == null
+          ? null
+          : _iz303hum.BattleMove.fromJson(
+              (jsonSerialization['opponentNextMove'] as String),
+            ),
+      opponentTell: jsonSerialization['opponentTell'] == null
+          ? null
+          : _iz303hum.BattleMove.fromJson(
+              (jsonSerialization['opponentTell'] as String),
+            ),
       lastRound: jsonSerialization['lastRound'] == null
           ? null
           : _i61ow1lb.Protocol().deserialize<_imrf8vtu.BattleRound>(
@@ -131,6 +146,13 @@ abstract class Battle implements _is.TableRow<int?>, _is.ProtocolSerialization {
 
   int opponentSpecialCooldown;
 
+  /// The move the opponent will make next round. Decided a round ahead so a
+  /// tell can hint at it; never sent to the app.
+  _iz303hum.BattleMove? opponentNextMove;
+
+  /// What the opponent appears to be doing next (usually, not always, true).
+  _iz303hum.BattleMove? opponentTell;
+
   _imrf8vtu.BattleRound? lastRound;
 
   int coinsEarned;
@@ -162,6 +184,8 @@ abstract class Battle implements _is.TableRow<int?>, _is.ProtocolSerialization {
     _ib4xlijd.BattleStatus? status,
     int? specialCooldown,
     int? opponentSpecialCooldown,
+    _iz303hum.BattleMove? opponentNextMove,
+    _iz303hum.BattleMove? opponentTell,
     _imrf8vtu.BattleRound? lastRound,
     int? coinsEarned,
     int? xpEarned,
@@ -186,6 +210,9 @@ abstract class Battle implements _is.TableRow<int?>, _is.ProtocolSerialization {
       'status': status.toJson(),
       'specialCooldown': specialCooldown,
       'opponentSpecialCooldown': opponentSpecialCooldown,
+      if (opponentNextMove != null)
+        'opponentNextMove': opponentNextMove?.toJson(),
+      if (opponentTell != null) 'opponentTell': opponentTell?.toJson(),
       if (lastRound != null) 'lastRound': lastRound?.toJson(),
       'coinsEarned': coinsEarned,
       'xpEarned': xpEarned,
@@ -212,6 +239,7 @@ abstract class Battle implements _is.TableRow<int?>, _is.ProtocolSerialization {
       'status': status.toJson(),
       'specialCooldown': specialCooldown,
       'opponentSpecialCooldown': opponentSpecialCooldown,
+      if (opponentTell != null) 'opponentTell': opponentTell?.toJson(),
       if (lastRound != null) 'lastRound': lastRound?.toJsonForProtocol(),
       'coinsEarned': coinsEarned,
       'xpEarned': xpEarned,
@@ -266,6 +294,8 @@ class _BattleImpl extends Battle {
     required _ib4xlijd.BattleStatus status,
     required int specialCooldown,
     required int opponentSpecialCooldown,
+    _iz303hum.BattleMove? opponentNextMove,
+    _iz303hum.BattleMove? opponentTell,
     _imrf8vtu.BattleRound? lastRound,
     required int coinsEarned,
     required int xpEarned,
@@ -286,6 +316,8 @@ class _BattleImpl extends Battle {
          status: status,
          specialCooldown: specialCooldown,
          opponentSpecialCooldown: opponentSpecialCooldown,
+         opponentNextMove: opponentNextMove,
+         opponentTell: opponentTell,
          lastRound: lastRound,
          coinsEarned: coinsEarned,
          xpEarned: xpEarned,
@@ -312,6 +344,8 @@ class _BattleImpl extends Battle {
     _ib4xlijd.BattleStatus? status,
     int? specialCooldown,
     int? opponentSpecialCooldown,
+    Object? opponentNextMove = _Undefined,
+    Object? opponentTell = _Undefined,
     Object? lastRound = _Undefined,
     int? coinsEarned,
     int? xpEarned,
@@ -334,6 +368,12 @@ class _BattleImpl extends Battle {
       specialCooldown: specialCooldown ?? this.specialCooldown,
       opponentSpecialCooldown:
           opponentSpecialCooldown ?? this.opponentSpecialCooldown,
+      opponentNextMove: opponentNextMove is _iz303hum.BattleMove?
+          ? opponentNextMove
+          : this.opponentNextMove,
+      opponentTell: opponentTell is _iz303hum.BattleMove?
+          ? opponentTell
+          : this.opponentTell,
       lastRound: lastRound is _imrf8vtu.BattleRound?
           ? lastRound
           : this.lastRound?.copyWith(),
@@ -416,6 +456,20 @@ class BattleUpdateTable extends _is.UpdateTable<BattleTable> {
         table.opponentSpecialCooldown,
         value,
       );
+
+  _is.ColumnValue<_iz303hum.BattleMove, _iz303hum.BattleMove> opponentNextMove(
+    _iz303hum.BattleMove? value,
+  ) => _is.ColumnValue(
+    table.opponentNextMove,
+    value,
+  );
+
+  _is.ColumnValue<_iz303hum.BattleMove, _iz303hum.BattleMove> opponentTell(
+    _iz303hum.BattleMove? value,
+  ) => _is.ColumnValue(
+    table.opponentTell,
+    value,
+  );
 
   _is.ColumnValue<_imrf8vtu.BattleRound, _imrf8vtu.BattleRound> lastRound(
     _imrf8vtu.BattleRound? value,
@@ -502,6 +556,16 @@ class BattleTable extends _is.Table<int?> {
       'opponentSpecialCooldown',
       this,
     );
+    opponentNextMove = _is.ColumnEnum(
+      'opponentNextMove',
+      this,
+      _is.EnumSerialization.byName,
+    );
+    opponentTell = _is.ColumnEnum(
+      'opponentTell',
+      this,
+      _is.EnumSerialization.byName,
+    );
     lastRound = _is.ColumnSerializable<_imrf8vtu.BattleRound>(
       'lastRound',
       this,
@@ -553,6 +617,13 @@ class BattleTable extends _is.Table<int?> {
 
   late final _is.ColumnInt opponentSpecialCooldown;
 
+  /// The move the opponent will make next round. Decided a round ahead so a
+  /// tell can hint at it; never sent to the app.
+  late final _is.ColumnEnum<_iz303hum.BattleMove> opponentNextMove;
+
+  /// What the opponent appears to be doing next (usually, not always, true).
+  late final _is.ColumnEnum<_iz303hum.BattleMove> opponentTell;
+
   late final _is.ColumnSerializable<_imrf8vtu.BattleRound> lastRound;
 
   late final _is.ColumnInt coinsEarned;
@@ -579,6 +650,8 @@ class BattleTable extends _is.Table<int?> {
     status,
     specialCooldown,
     opponentSpecialCooldown,
+    opponentNextMove,
+    opponentTell,
     lastRound,
     coinsEarned,
     xpEarned,

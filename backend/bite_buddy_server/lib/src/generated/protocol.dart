@@ -14,7 +14,6 @@
 import 'package:bite_buddy_server/src/generated/leaderboard_entry.dart'
     as _i5n4mhlw;
 import 'package:bite_buddy_server/src/generated/meal.dart' as _idk4xbnt;
-import 'package:bite_buddy_server/src/generated/opponent.dart' as _i4cu6vyo;
 import 'package:bite_buddy_server/src/generated/pet_species.dart' as _it8ve0l0;
 import 'package:serverpod/protocol.dart' as _isp;
 import 'package:serverpod/serverpod.dart' as _is;
@@ -22,10 +21,12 @@ import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _iacs;
 import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _iais;
+import 'arena.dart' as _iwiby7qv;
 import 'battle.dart' as _inh3lnzs;
 import 'battle_move.dart' as _iz303hum;
 import 'battle_round.dart' as _imrf8vtu;
 import 'battle_state.dart' as _iavxxxi0;
+import 'battle_stats.dart' as _ievndlqk;
 import 'battle_status.dart' as _ib4xlijd;
 import 'errors/bite_buddy_exception.dart' as _in42pmv9;
 import 'feed_result.dart' as _i6546n9y;
@@ -35,10 +36,12 @@ import 'nutrition_insights.dart' as _ik434gbd;
 import 'opponent.dart' as _i2ot5zrj;
 import 'pet.dart' as _ie9pyd3w;
 import 'pet_species.dart' as _it7bnlgl;
+export 'arena.dart';
 export 'battle.dart';
 export 'battle_move.dart';
 export 'battle_round.dart';
 export 'battle_state.dart';
+export 'battle_stats.dart';
 export 'battle_status.dart';
 export 'errors/bite_buddy_exception.dart';
 export 'feed_result.dart';
@@ -147,6 +150,18 @@ class Protocol extends _is.DatabaseSerializationManager {
           columnType: _isp.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'opponentNextMove',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'protocol:BattleMove?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'opponentTell',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'protocol:BattleMove?',
         ),
         _isp.ColumnDefinition(
           name: 'lastRound',
@@ -536,6 +551,9 @@ class Protocol extends _is.DatabaseSerializationManager {
       }
     }
 
+    if (t == _iwiby7qv.Arena) {
+      return _iwiby7qv.Arena.fromJson(data) as T;
+    }
     if (t == _inh3lnzs.Battle) {
       return _inh3lnzs.Battle.fromJson(data) as T;
     }
@@ -547,6 +565,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _iavxxxi0.BattleState) {
       return _iavxxxi0.BattleState.fromJson(data) as T;
+    }
+    if (t == _ievndlqk.BattleStats) {
+      return _ievndlqk.BattleStats.fromJson(data) as T;
     }
     if (t == _ib4xlijd.BattleStatus) {
       return _ib4xlijd.BattleStatus.fromJson(data) as T;
@@ -575,6 +596,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _it7bnlgl.PetSpecies) {
       return _it7bnlgl.PetSpecies.fromJson(data) as T;
     }
+    if (t == _is.getType<_iwiby7qv.Arena?>()) {
+      return (data != null ? _iwiby7qv.Arena.fromJson(data) : null) as T;
+    }
     if (t == _is.getType<_inh3lnzs.Battle?>()) {
       return (data != null ? _inh3lnzs.Battle.fromJson(data) : null) as T;
     }
@@ -586,6 +610,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _is.getType<_iavxxxi0.BattleState?>()) {
       return (data != null ? _iavxxxi0.BattleState.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_ievndlqk.BattleStats?>()) {
+      return (data != null ? _ievndlqk.BattleStats.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_ib4xlijd.BattleStatus?>()) {
       return (data != null ? _ib4xlijd.BattleStatus.fromJson(data) : null) as T;
@@ -617,14 +644,14 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _is.getType<_it7bnlgl.PetSpecies?>()) {
       return (data != null ? _it7bnlgl.PetSpecies.fromJson(data) : null) as T;
     }
-    if (t == List<String>) {
-      return (data as List).map((e) => deserialize<String>(e)).toList() as T;
-    }
-    if (t == List<_i4cu6vyo.Opponent>) {
+    if (t == List<_i2ot5zrj.Opponent>) {
       return (data as List)
-              .map((e) => deserialize<_i4cu6vyo.Opponent>(e))
+              .map((e) => deserialize<_i2ot5zrj.Opponent>(e))
               .toList()
           as T;
+    }
+    if (t == List<String>) {
+      return (data as List).map((e) => deserialize<String>(e)).toList() as T;
     }
     if (t == List<_i5n4mhlw.LeaderboardEntry>) {
       return (data as List)
@@ -656,10 +683,12 @@ class Protocol extends _is.DatabaseSerializationManager {
 
   static String? getClassNameForType(Type type) {
     return switch (type) {
+      _iwiby7qv.Arena => 'Arena',
       _inh3lnzs.Battle => 'Battle',
       _iz303hum.BattleMove => 'BattleMove',
       _imrf8vtu.BattleRound => 'BattleRound',
       _iavxxxi0.BattleState => 'BattleState',
+      _ievndlqk.BattleStats => 'BattleStats',
       _ib4xlijd.BattleStatus => 'BattleStatus',
       _in42pmv9.BiteBuddyException => 'BiteBuddyException',
       _i6546n9y.FeedResult => 'FeedResult',
@@ -683,6 +712,8 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
 
     switch (data) {
+      case _iwiby7qv.Arena():
+        return 'Arena';
       case _inh3lnzs.Battle():
         return 'Battle';
       case _iz303hum.BattleMove():
@@ -691,6 +722,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'BattleRound';
       case _iavxxxi0.BattleState():
         return 'BattleState';
+      case _ievndlqk.BattleStats():
+        return 'BattleStats';
       case _ib4xlijd.BattleStatus():
         return 'BattleStatus';
       case _in42pmv9.BiteBuddyException():
@@ -735,6 +768,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName is! String) {
       return super.deserializeByClassName(data);
     }
+    if (dataClassName == 'Arena') {
+      return deserialize<_iwiby7qv.Arena>(data['data']);
+    }
     if (dataClassName == 'Battle') {
       return deserialize<_inh3lnzs.Battle>(data['data']);
     }
@@ -746,6 +782,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'BattleState') {
       return deserialize<_iavxxxi0.BattleState>(data['data']);
+    }
+    if (dataClassName == 'BattleStats') {
+      return deserialize<_ievndlqk.BattleStats>(data['data']);
     }
     if (dataClassName == 'BattleStatus') {
       return deserialize<_ib4xlijd.BattleStatus>(data['data']);

@@ -16,6 +16,7 @@ class BattleModel extends BattleEntity {
     required super.round,
     required super.status,
     required super.specialCooldown,
+    super.opponentTell,
     super.lastRound,
     required super.coinsEarned,
     required super.xpEarned,
@@ -37,6 +38,7 @@ class BattleModel extends BattleEntity {
       round: b.round,
       status: BattleStatus.values.byName(b.status.name),
       specialCooldown: b.specialCooldown,
+      opponentTell: b.opponentTell == null ? null : toAppMove(b.opponentTell!),
       lastRound: last == null
           ? null
           : BattleRoundEntity(
@@ -45,6 +47,9 @@ class BattleModel extends BattleEntity {
               opponentMove: toAppMove(last.opponentMove),
               damageDealt: last.damageDealt,
               damageTaken: last.damageTaken,
+              playerCritical: last.playerCritical,
+              opponentCritical: last.opponentCritical,
+              clash: last.clash,
               message: last.message,
             ),
       coinsEarned: b.coinsEarned,

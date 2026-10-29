@@ -77,7 +77,6 @@ class _Arena extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final last = battle.lastRound;
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.lg),
       children: [
@@ -127,16 +126,11 @@ class _Arena extends StatelessWidget {
           ],
         ),
         const SizedBox(height: AppSpacing.lg),
-        GlassCard(
-          child: Text(
-            last?.message ??
-                'Your ${battle.petName} is battling ${battle.opponent.name}. '
-                    'Choose your move!',
-            textAlign: TextAlign.center,
-            style: AppTextStyles.bodyMedium,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.xl),
+        _RoundResult(battle: battle),
+        const SizedBox(height: AppSpacing.lg),
+        if (!battle.isOver && battle.opponentTell != null)
+          _Tell(battle: battle),
+        const SizedBox(height: AppSpacing.md),
         Text(
           'Choose Your Move',
           textAlign: TextAlign.center,
@@ -153,6 +147,121 @@ class _Arena extends StatelessWidget {
             ),
           ),
       ],
+    );
+  }
+}
+
+// What happened last round: how the moves met, then the play-by-play
+class _RoundResult extends StatelessWidget {
+  final BattleEntity battle;
+
+  const _RoundResult({required this.battle});
+
+  @override
+  Widget build(BuildContext context) {
+    final last = battle.lastRound;
+    if (last == null) {
+      return GlassCard(
+        child: Text(
+          'Your ${battle.petName} is battling ${battle.opponent.name}. '
+          'Watch for its tell, then pick the move that beats it!',
+          textAlign: TextAlign.center,
+          style: AppTextStyles.bodyMedium,
+        ),
+      );
+    }
+
+    // Did the player come out ahead this round?
+    final good = last.damageDealt > last.damageTaken;
+    final even = last.damageDealt == last.damageTaken;
+    return GlassCard(
+      borderColor: even
+          ? null
+          : good
+          ? AppColors.primary
+          : AppColors.error,
+      child: Column(
+        children: [
+          Text(
+            '${last.playerMove.emoji} ${last.playerMove.label}  vs  '
+            '${last.opponentMove.emoji} ${last.opponentMove.label}',
+            style: AppTextStyles.caption.copyWith(color: AppColors.white),
+          ),
+          if (last.clash.isNotEmpty) ...[
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              last.clash,
+              style: AppTextStyles.h3.copyWith(
+                color: even
+                    ? AppColors.white
+                    : good
+                    ? AppColors.primary
+                    : AppColors.error,
+              ),
+            ),
+          ],
+          if (last.playerCritical || last.opponentCritical) ...[
+            const SizedBox(height: AppSpacing.xs),
+            Text(
+              last.playerCritical && last.opponentCritical
+                  ? '💥 Critical hits on both sides!'
+                  : last.playerCritical
+                  ? '💥 You landed a critical hit!'
+                  : '💥 ${battle.opponent.name} landed a critical hit!',
+              style: AppTextStyles.bodyMedium.copyWith(color: AppColors.gold),
+            ),
+          ],
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            last.message,
+            textAlign: TextAlign.center,
+            style: AppTextStyles.bodyMedium,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// The opponent's tell for the coming round. Usually true; some opponents bluff.
+class _Tell extends StatelessWidget {
+  final BattleEntity battle;
+
+  const _Tell({required this.battle});
+
+  @override
+  Widget build(BuildContext context) {
+    final tell = battle.opponentTell!;
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.accent.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(AppSpacing.radius),
+        border: Border.all(color: AppColors.accent.withValues(alpha: 0.7)),
+      ),
+      child: Row(
+        children: [
+          Text(tell.emoji, style: const TextStyle(fontSize: 28)),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  tell.tellFor(battle.opponent.name),
+                  style: AppTextStyles.bodyLarge.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                Text(
+                  '${battle.opponent.bluffs}. Pick the move that beats it.',
+                  style: AppTextStyles.caption,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -10,7 +10,7 @@ emailIdp:
 jwtRefresh:
   - refreshAccessToken:
 battle:
-  - opponents:
+  - arena:
   - start:
   - move:
 leaderboard:

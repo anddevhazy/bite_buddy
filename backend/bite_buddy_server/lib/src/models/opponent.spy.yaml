@@ -10,5 +10,8 @@ fields:
   defense: int
   difficulty: String
   coinReward: int
-  ### Rough chance the caller's pet wins, 0-100.
+  ### How often its tells are true, 0-100. Tougher opponents bluff more.
+  tellReliability: int
+  ### Chance the caller's pet wins, 0-100, from simulating the matchup with a
+  ### player who reads the tells (see utils/battle_engine.dart).
   winChance: int

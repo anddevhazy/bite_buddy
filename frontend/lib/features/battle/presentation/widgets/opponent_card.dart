@@ -1,4 +1,5 @@
 import 'package:bite_buddy/features/battle/domain/entities/opponent_entity.dart';
+import 'package:bite_buddy/features/battle/presentation/widgets/stat_chips.dart';
 import 'package:bite_buddy/features/global/components/game_art.dart';
 import 'package:bite_buddy/features/global/components/game_button.dart';
 import 'package:bite_buddy/features/global/components/glass_card.dart';
@@ -19,6 +20,12 @@ class OpponentCard extends StatelessWidget {
     required this.loading,
     required this.onBattle,
   });
+
+  Color get _chanceColor => opponent.winChance >= 70
+      ? AppColors.primary
+      : opponent.winChance >= 35
+      ? AppColors.accent
+      : AppColors.error;
 
   @override
   Widget build(BuildContext context) {
@@ -47,14 +54,17 @@ class OpponentCard extends StatelessWidget {
                   style: AppTextStyles.caption,
                 ),
                 const SizedBox(height: AppSpacing.xs),
-                Text(
-                  '❤️ ${o.hp}  ⚔️ ${o.attack}  🛡️ ${o.defense}',
-                  style: AppTextStyles.caption.copyWith(color: AppColors.white),
+                StatChips(
+                  hp: o.hp,
+                  attack: o.attack,
+                  defense: o.defense,
+                  compact: true,
                 ),
+                const SizedBox(height: AppSpacing.xs),
                 Text(
-                  '⚡ Power: ${o.power}',
+                  '🎭 ${o.bluffs}',
                   style: AppTextStyles.caption.copyWith(
-                    color: AppColors.primary,
+                    color: AppColors.textMuted,
                   ),
                 ),
               ],
@@ -66,10 +76,13 @@ class OpponentCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  '${o.winChance}% win',
-                  style: AppTextStyles.caption.copyWith(
-                    color: AppColors.accent,
-                  ),
+                  o.winChance < 1 ? '<1% win' : '${o.winChance}% win',
+                  style: AppTextStyles.h3.copyWith(color: _chanceColor),
+                ),
+                Text(
+                  'if you read tells',
+                  textAlign: TextAlign.end,
+                  style: AppTextStyles.caption.copyWith(fontSize: 11),
                 ),
                 Text('💰 ${o.coinReward}', style: AppTextStyles.h3),
                 const SizedBox(height: AppSpacing.sm),

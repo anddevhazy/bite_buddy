@@ -144,10 +144,14 @@ class GuideContent {
       title: 'Battles',
       summary: 'Fight opponents to earn coins, XP and energy.',
       points: [
-        'Pick an opponent in the Battle Arena. The win % on its card is an '
-            "estimate of your chances based on both fighters' stats.",
-        "Your buddy's strength comes from its level, health and nutrition, so "
-            'eating well makes it a better fighter.',
+        'Your buddy fights with HP, ATK (attack) and DEF (defence), shown at '
+            'the top of the Battle Arena. They grow with its level, health and '
+            'nutrition, so eating well makes it a better fighter.',
+        'Each opponent card shows its stats and your chance of winning if you '
+            'read its tells (see Battle moves). Green is a likely win, orange '
+            'is close, red is a long shot.',
+        'Every hit varies a little, and critical hits land for extra damage, '
+            'so close fights can go either way.',
         'A battle ends when one side runs out of HP. If it lasts 30 rounds, '
             'whoever has more HP left wins.',
         'You fight one battle at a time. Starting a new one while another is '
@@ -157,16 +161,19 @@ class GuideContent {
     GuideTopic(
       id: GuideTopicId.battleMoves,
       emoji: '🎯',
-      title: 'Battle moves',
-      summary:
-          'Each round, you and your opponent choose a move at the same time.',
+      title: 'Battle moves and tells',
+      summary: 'Each move beats one other. Read the tell and counter it.',
       points: [
-        'Attack: a normal hit.',
-        'Special: hits 60% harder, then needs 3 rounds to recharge.',
-        "Defend: you don't attack, but you take half damage and recover a "
-            'little HP.',
-        'Your opponent plays the same way: it saves its special for the right '
-            'moment and defends when it is low on HP.',
+        'Attack beats Special: you strike first and the special fizzles.',
+        'Special beats Defend: it smashes through the guard for big damage. '
+            'After using it, Special needs 2 rounds to recharge.',
+        'Defend beats Attack: you block most of the hit and counter.',
+        'Before each round, your opponent shows a tell, like "gathering '
+            'power…" for a Special. Pick the move that beats it.',
+        "Tells are usually true, but some opponents bluff. Easy ones rarely "
+            'do; the toughest bluff often. Each card says how often.',
+        'When you both pick the same move, you trade hits; if you both '
+            'defend, you each recover a little HP.',
       ],
     ),
     GuideTopic(

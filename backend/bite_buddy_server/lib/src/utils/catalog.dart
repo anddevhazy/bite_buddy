@@ -1,4 +1,5 @@
 import '../generated/protocol.dart';
+import 'battle_engine.dart';
 
 // Pets a user can adopt. Add a species here and it shows up in the app.
 const List<PetSpeciesData> petSpecies = [
@@ -8,9 +9,10 @@ const List<PetSpeciesData> petSpecies = [
   PetSpeciesData('mystic', 'Mystic', 'Shadow Cat', 'legendary', '🐰'),
 ];
 
-// Opponents in the battle arena, weakest first.
+// Opponents in the battle arena, weakest first. The last number is how often
+// their tells are true (percent): tougher opponents bluff more.
 const List<OpponentData> opponents = [
-  OpponentData('wild_pup', 'Wild Pup', '🐕', 1, 80, 18, 10, 'Easy', 75),
+  OpponentData('wild_pup', 'Wild Pup', '🐕', 1, 80, 18, 10, 'Easy', 75, 85),
   OpponentData(
     'forest_guardian',
     'Forest Guardian',
@@ -21,6 +23,7 @@ const List<OpponentData> opponents = [
     16,
     'Medium',
     100,
+    75,
   ),
   OpponentData(
     'shadow_beast',
@@ -32,8 +35,20 @@ const List<OpponentData> opponents = [
     22,
     'Medium',
     125,
+    70,
   ),
-  OpponentData('storm_drake', 'Storm Drake', '🐉', 5, 200, 38, 30, 'Hard', 200),
+  OpponentData(
+    'storm_drake',
+    'Storm Drake',
+    '🐉',
+    5,
+    200,
+    38,
+    30,
+    'Hard',
+    200,
+    65,
+  ),
   OpponentData(
     'ancient_golem',
     'Ancient Golem',
@@ -44,6 +59,7 @@ const List<OpponentData> opponents = [
     42,
     'Legendary',
     350,
+    60,
   ),
 ];
 
@@ -95,6 +111,7 @@ class OpponentData {
   final int defense;
   final String difficulty;
   final int coinReward;
+  final int tellReliability;
 
   const OpponentData(
     this.key,
@@ -106,7 +123,10 @@ class OpponentData {
     this.defense,
     this.difficulty,
     this.coinReward,
+    this.tellReliability,
   );
+
+  Fighter get fighter => Fighter(maxHp: hp, attack: attack, defense: defense);
 
   Opponent toProtocol({required int winChance}) => Opponent(
     key: key,
@@ -118,6 +138,7 @@ class OpponentData {
     defense: defense,
     difficulty: difficulty,
     coinReward: coinReward,
+    tellReliability: tellReliability,
     winChance: winChance,
   );
 }

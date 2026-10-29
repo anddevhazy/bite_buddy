@@ -1,0 +1,6 @@
+### A fighter's numbers in battle.
+class: BattleStats
+fields:
+  hp: int
+  attack: int
+  defense: int

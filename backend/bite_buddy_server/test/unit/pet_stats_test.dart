@@ -193,41 +193,6 @@ void main() {
     });
   });
 
-  group('winChance', () {
-    test('is clamped to 5-95', () {
-      final easy = winChance(
-        petHp: 500,
-        petAtk: 100,
-        petDef: 100,
-        oppHp: 10,
-        oppAtk: 1,
-        oppDef: 1,
-      );
-      final hopeless = winChance(
-        petHp: 10,
-        petAtk: 1,
-        petDef: 1,
-        oppHp: 500,
-        oppAtk: 100,
-        oppDef: 100,
-      );
-      expect(easy, 95);
-      expect(hopeless, 5);
-    });
-
-    test('an even match is about 50%', () {
-      final even = winChance(
-        petHp: 100,
-        petAtk: 20,
-        petDef: 10,
-        oppHp: 100,
-        oppAtk: 20,
-        oppDef: 10,
-      );
-      expect(even, 50);
-    });
-  });
-
   test('gradeFor maps scores to A-F', () {
     expect([90, 75, 60, 45, 10].map(gradeFor), ['A', 'B', 'C', 'D', 'F']);
   });
