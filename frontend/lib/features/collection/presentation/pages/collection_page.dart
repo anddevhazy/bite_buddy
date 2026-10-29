@@ -257,7 +257,17 @@ class _Leaderboard extends StatelessWidget {
               style: AppTextStyles.bodyMedium,
             ),
           ),
-        for (final e in entries)
+        for (final (i, e) in entries.indexed) ...[
+          // Your own row, added below the top 50 with its real rank
+          if (i > 0 && e.rank != entries[i - 1].rank + 1)
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.md),
+              child: Text(
+                '⋯',
+                textAlign: TextAlign.center,
+                style: AppTextStyles.h2.copyWith(color: AppColors.textMuted),
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.md),
             child: GlassCard(
@@ -300,6 +310,7 @@ class _Leaderboard extends StatelessWidget {
               ),
             ),
           ),
+        ],
       ],
     );
   }

@@ -1,14 +1,19 @@
 import 'package:serverpod/serverpod.dart';
 
 import '../generated/protocol.dart';
+import '../utils/leaderboard.dart';
 
 class LeaderboardService {
   const LeaderboardService();
 
   static const int size = 50;
 
-  // Top pets by nutrition. Pets that never ate are left out so the board
-  // isn't padded with zeros.
+  // Top pets by nutrition, plus the caller's own pet if it ranks lower. Pets
+  // that never ate are left out so the board isn't padded with zeros.
+  //
+  // Every pet that has eaten is loaded so hunger decay can be applied before
+  // ranking (see rankLeaderboard). Fine for thousands of players; past that,
+  // move the decay into the query or save it on a schedule.
   Future<List<LeaderboardEntry>> top(
     Session session,
     UuidValue callerId,
@@ -16,21 +21,12 @@ class LeaderboardService {
     final pets = await Pet.db.find(
       session,
       where: (t) => t.mealsEaten > 0,
-      orderByList: (t) => [t.nutrition.desc(), t.level.desc()],
-      limit: size,
     );
-
-    return [
-      for (final (i, pet) in pets.indexed)
-        LeaderboardEntry(
-          rank: i + 1,
-          petId: pet.id!,
-          petName: pet.name,
-          speciesKey: pet.speciesKey,
-          level: pet.level,
-          nutrition: pet.nutrition,
-          isYou: pet.ownerId == callerId,
-        ),
-    ];
+    return rankLeaderboard(
+      pets,
+      callerId,
+      DateTime.now().toUtc(),
+      size: size,
+    );
   }
 }

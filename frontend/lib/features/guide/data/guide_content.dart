@@ -176,7 +176,12 @@ class GuideContent {
       points: [
         'Buddies are ranked by their nutrition score; ties go to the higher '
             'level.',
-        'Only buddies that have eaten at least one meal are listed.',
+        'It includes every player, and only buddies that have eaten at '
+            'least one meal are listed.',
+        'It shows the top 50. If your buddy ranks lower, your own rank is '
+            'shown at the bottom.',
+        'Scores drop for buddies that go hungry, even if their owner stops '
+            'opening the app, so you have to keep eating well to stay on top.',
         'Your buddy is marked "You" with a gold border.',
       ],
     ),
