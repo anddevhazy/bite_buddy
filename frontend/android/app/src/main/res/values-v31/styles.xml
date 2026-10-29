@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Android 12+ always shows its own launch screen: the app icon on a solid
-     colour. Match it to the splash art. -->
+<!-- Android 12+ always shows its own launch screen: an icon on a solid
+     colour. Match it to the splash art. The icon is the logo centred in a
+     288dp transparent square, because Android crops it to a 192dp circle;
+     some phones (e.g. TECNO) show nothing when given the launcher icon. -->
 <resources>
     <style name="LaunchTheme" parent="@android:style/Theme.Black.NoTitleBar">
         <item name="android:windowSplashScreenBackground">@color/splash_background</item>
-        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_icon</item>
     </style>
     <style name="NormalTheme" parent="@android:style/Theme.Black.NoTitleBar">
         <item name="android:windowBackground">@drawable/launch_background</item>

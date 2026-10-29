@@ -42,7 +42,8 @@ class GuideContent {
       summary: 'Fuel for battles, from 0 to 100.',
       points: [
         'It starts at 50.',
-        'Every meal adds 2 to 15 energy. Bigger meals (more calories) add more.',
+        'Every meal adds 5 to 15 energy. Healthier meals add more; eating '
+            'more food does not.',
         'You need at least 10 energy to start a battle.',
         'Winning a battle gives 8 energy; losing costs 10.',
       ],
@@ -71,6 +72,8 @@ class GuideContent {
       points: [
         'Level 1 needs 100 XP to reach level 2, level 2 needs 200, and so on.',
         'Every meal gives 10 XP, plus 5 more if it scores 70 or higher.',
+        'If your buddy is already at full health, any healing a meal would '
+            'have given turns into bonus XP instead.',
         'Winning a battle gives 20 XP plus 5 for each level of the opponent. '
             'Losing still gives 5 XP.',
         'Higher levels make your buddy stronger in battles.',
