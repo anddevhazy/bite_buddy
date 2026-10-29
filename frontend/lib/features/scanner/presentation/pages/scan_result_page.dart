@@ -1,3 +1,4 @@
+import 'package:bite_buddy/features/collection/presentation/bloc/collection_cubit.dart';
 import 'package:bite_buddy/features/global/components/app_toast.dart';
 import 'package:bite_buddy/features/global/components/forest_background.dart';
 import 'package:bite_buddy/features/global/components/game_button.dart';
@@ -38,6 +39,7 @@ class ScanResultPage extends StatelessWidget {
               if (state is MealFed) {
                 context.read<PetCubit>().updatePet(state.result.pet);
                 context.read<InsightsCubit>().load();
+                context.read<CollectionCubit>().load();
               }
               if (state is ScannerFailed && state.meal != null) {
                 AppToast.show(
@@ -129,7 +131,12 @@ class _MealPhoto extends StatelessWidget {
         ),
         child: ClipOval(
           child: photo == null
-              ? const ColoredBox(color: AppColors.card)
+              ? const ColoredBox(
+                  color: AppColors.card,
+                  child: Center(
+                    child: Text('🍽️', style: TextStyle(fontSize: 80)),
+                  ),
+                )
               : Image.memory(photo, fit: BoxFit.cover),
         ),
       ),

@@ -1,3 +1,7 @@
+import 'package:go_router/go_router.dart';
+import 'package:bite_buddy/features/scanner/presentation/bloc/scanner_cubit.dart';
+import 'package:bite_buddy/features/global/routes/routes.dart';
+import 'package:bite_buddy/features/global/components/game_button.dart';
 import 'package:bite_buddy/features/collection/domain/entities/leaderboard_entry_entity.dart';
 import 'package:bite_buddy/features/collection/presentation/bloc/collection_cubit.dart';
 import 'package:bite_buddy/features/global/components/app_error_view.dart';
@@ -146,12 +150,16 @@ class _MealList extends StatelessWidget {
       );
     }
     final dateFormat = DateFormat('MMM d, h:mm a');
+    final now = DateTime.now();
     return ListView.separated(
       itemCount: meals.length,
       separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.md),
       itemBuilder: (context, i) {
         final meal = meals[i];
+        final feedable = meal.canFeedAt(now);
         return GlassCard(
+          borderColor: feedable ? AppColors.accent : null,
+          onTap: feedable ? () => _openToFeed(context, meal) : null,
           child: Row(
             children: [
               CircleAvatar(
@@ -176,10 +184,31 @@ class _MealList extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text('${meal.healthScore}', style: AppTextStyles.stat),
-                  Text(
-                    meal.fed ? 'Fed' : 'Not fed',
-                    style: AppTextStyles.caption,
-                  ),
+                  if (feedable)
+                    SizedBox(
+                      width: 84,
+                      child: GameButton(
+                        label: 'Feed',
+                        style: GameButtonStyle.accent,
+                        height: 34,
+                        onPressed: () => _openToFeed(context, meal),
+                      ),
+                    )
+                  else
+                    Text(
+                      meal.fed ? '✓ Fed' : 'Expired',
+                      style: AppTextStyles.caption.copyWith(
+                        color: meal.fed ? AppColors.primary : null,
+                      ),
+                    ),
+                  if (feedable)
+                    Padding(
+                      padding: const EdgeInsets.only(top: AppSpacing.xs),
+                      child: Text(
+                        _timeLeft(meal.feedableUntil.difference(now)),
+                        style: AppTextStyles.caption,
+                      ),
+                    ),
                 ],
               ),
             ],
@@ -188,6 +217,18 @@ class _MealList extends StatelessWidget {
       },
     );
   }
+}
+
+// Opens the meal on the results screen, where its nutrition can be reviewed
+// and fed, just like right after a scan
+void _openToFeed(BuildContext context, MealEntity meal) {
+  context.read<ScannerCubit>().review(meal);
+  context.pushNamed(Routes.scanResultName);
+}
+
+String _timeLeft(Duration left) {
+  if (left.inMinutes < 60) return '${left.inMinutes.clamp(1, 59)}m left';
+  return '${left.inHours}h ${left.inMinutes % 60}m left';
 }
 
 class _Leaderboard extends StatelessWidget {

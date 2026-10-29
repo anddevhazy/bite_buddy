@@ -115,7 +115,10 @@ class GuideContent {
         'Screenshots, photos of a screen, downloaded or stock pictures and '
             'drawings are rejected, and the reason is shown.',
         "The same photo can't be scanned twice.",
-        'Feed a scanned meal within 3 hours, or it expires.',
+        'Scanning saves the meal; it only counts once you tap Feed. Check '
+            'the results, then feed it straight away, or later from your '
+            'meal log (Collection, Meals tab).',
+        'A scanned meal must be fed within 3 hours, or it expires.',
         'Your buddy can eat up to 8 meals in any 24 hours.',
       ],
     ),

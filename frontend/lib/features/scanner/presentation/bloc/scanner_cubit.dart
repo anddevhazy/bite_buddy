@@ -48,6 +48,13 @@ class ScannerCubit extends Cubit<ScannerState> {
     );
   }
 
+  // Show a meal scanned earlier (from the meal log) on the results screen.
+  // There's no photo for it; only the nutrition was saved.
+  void review(MealEntity meal) {
+    photo = null;
+    emit(MealAnalyzed(meal: meal));
+  }
+
   void reset() {
     photo = null;
     emit(ScannerIdle());

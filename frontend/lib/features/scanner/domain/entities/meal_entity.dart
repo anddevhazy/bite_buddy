@@ -36,6 +36,14 @@ class MealEntity extends Equatable {
     required this.createdAt,
   });
 
+  // How long after scanning a meal can still be fed. Mirrors feedWindow in
+  // the server's meal_service.dart, which has the final say.
+  static const Duration feedWindow = Duration(hours: 3);
+
+  DateTime get feedableUntil => createdAt.add(feedWindow);
+
+  bool canFeedAt(DateTime now) => !fed && now.isBefore(feedableUntil);
+
   @override
   List<Object?> get props => [id, fed];
 }
