@@ -29,6 +29,7 @@ abstract class Meal implements _is.TableRow<int?>, _is.ProtocolSerialization {
     required this.healthScore,
     required this.grade,
     required this.imageHash,
+    this.photoFingerprint,
     required this.fed,
     required this.createdAt,
   });
@@ -48,6 +49,7 @@ abstract class Meal implements _is.TableRow<int?>, _is.ProtocolSerialization {
     required int healthScore,
     required String grade,
     required String imageHash,
+    String? photoFingerprint,
     required bool fed,
     required DateTime createdAt,
   }) = _MealImpl;
@@ -70,6 +72,7 @@ abstract class Meal implements _is.TableRow<int?>, _is.ProtocolSerialization {
       healthScore: jsonSerialization['healthScore'] as int,
       grade: jsonSerialization['grade'] as String,
       imageHash: jsonSerialization['imageHash'] as String,
+      photoFingerprint: jsonSerialization['photoFingerprint'] as String?,
       fed: _is.BoolJsonExtension.fromJson(jsonSerialization['fed']),
       createdAt: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
@@ -114,6 +117,10 @@ abstract class Meal implements _is.TableRow<int?>, _is.ProtocolSerialization {
   /// SHA-256 of the uploaded photo, so the same photo can't be fed twice.
   String imageHash;
 
+  /// Visual fingerprint (see utils/photo_fingerprint.dart), so a re-shot of
+  /// the same plate can't be fed twice. Null for meals scanned before it.
+  String? photoFingerprint;
+
   /// Whether this meal has been fed to the pet yet.
   bool fed;
 
@@ -140,6 +147,7 @@ abstract class Meal implements _is.TableRow<int?>, _is.ProtocolSerialization {
     int? healthScore,
     String? grade,
     String? imageHash,
+    String? photoFingerprint,
     bool? fed,
     DateTime? createdAt,
   });
@@ -161,6 +169,7 @@ abstract class Meal implements _is.TableRow<int?>, _is.ProtocolSerialization {
       'healthScore': healthScore,
       'grade': grade,
       'imageHash': imageHash,
+      if (photoFingerprint != null) 'photoFingerprint': photoFingerprint,
       'fed': fed,
       'createdAt': createdAt.toJson(),
     };
@@ -184,6 +193,7 @@ abstract class Meal implements _is.TableRow<int?>, _is.ProtocolSerialization {
       'healthScore': healthScore,
       'grade': grade,
       'imageHash': imageHash,
+      if (photoFingerprint != null) 'photoFingerprint': photoFingerprint,
       'fed': fed,
       'createdAt': createdAt.toJson(),
     };
@@ -235,6 +245,7 @@ class _MealImpl extends Meal {
     required int healthScore,
     required String grade,
     required String imageHash,
+    String? photoFingerprint,
     required bool fed,
     required DateTime createdAt,
   }) : super._(
@@ -252,6 +263,7 @@ class _MealImpl extends Meal {
          healthScore: healthScore,
          grade: grade,
          imageHash: imageHash,
+         photoFingerprint: photoFingerprint,
          fed: fed,
          createdAt: createdAt,
        );
@@ -275,6 +287,7 @@ class _MealImpl extends Meal {
     int? healthScore,
     String? grade,
     String? imageHash,
+    Object? photoFingerprint = _Undefined,
     bool? fed,
     DateTime? createdAt,
   }) {
@@ -293,6 +306,9 @@ class _MealImpl extends Meal {
       healthScore: healthScore ?? this.healthScore,
       grade: grade ?? this.grade,
       imageHash: imageHash ?? this.imageHash,
+      photoFingerprint: photoFingerprint is String?
+          ? photoFingerprint
+          : this.photoFingerprint,
       fed: fed ?? this.fed,
       createdAt: createdAt ?? this.createdAt,
     );
@@ -368,6 +384,12 @@ class MealUpdateTable extends _is.UpdateTable<MealTable> {
     value,
   );
 
+  _is.ColumnValue<String, String> photoFingerprint(String? value) =>
+      _is.ColumnValue(
+        table.photoFingerprint,
+        value,
+      );
+
   _is.ColumnValue<bool, bool> fed(bool value) => _is.ColumnValue(
     table.fed,
     value,
@@ -435,6 +457,10 @@ class MealTable extends _is.Table<int?> {
       'imageHash',
       this,
     );
+    photoFingerprint = _is.ColumnString(
+      'photoFingerprint',
+      this,
+    );
     fed = _is.ColumnBool(
       'fed',
       this,
@@ -477,6 +503,10 @@ class MealTable extends _is.Table<int?> {
   /// SHA-256 of the uploaded photo, so the same photo can't be fed twice.
   late final _is.ColumnString imageHash;
 
+  /// Visual fingerprint (see utils/photo_fingerprint.dart), so a re-shot of
+  /// the same plate can't be fed twice. Null for meals scanned before it.
+  late final _is.ColumnString photoFingerprint;
+
   /// Whether this meal has been fed to the pet yet.
   late final _is.ColumnBool fed;
 
@@ -498,6 +528,7 @@ class MealTable extends _is.Table<int?> {
     healthScore,
     grade,
     imageHash,
+    photoFingerprint,
     fed,
     createdAt,
   ];

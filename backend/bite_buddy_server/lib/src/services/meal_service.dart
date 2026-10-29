@@ -6,6 +6,7 @@ import 'package:serverpod/serverpod.dart';
 import '../errors/app_errors.dart';
 import '../generated/protocol.dart';
 import '../utils/nutrition_insights.dart';
+import '../utils/photo_fingerprint.dart';
 import '../utils/pet_stats.dart' as stats;
 import 'nutrition_ai_service.dart';
 import 'pet_service.dart';
@@ -23,6 +24,9 @@ class MealService {
   static const Duration feedWindow = Duration(hours: 3);
   // Stops farming stats by scanning snack after snack
   static const int maxMealsPerDay = 8;
+  // Photos whose fingerprints differ in this many of 64 bits or fewer are
+  // treated as the same plate (see utils/photo_fingerprint.dart)
+  static const int maxSamePlateDistance = 10;
 
   Future<Meal> analyze(
     Session session,
@@ -60,6 +64,13 @@ class MealService {
       );
     }
 
+    // A new photo of a plate that was already scanned (the loophole the exact
+    // match above misses). Checked before the AI call, so it costs nothing.
+    final fingerprint = photoFingerprint(bytes);
+    if (fingerprint != null) {
+      await _rejectIfRecentlyScanned(session, ownerId, fingerprint);
+    }
+
     final analysis = await ai.analyze(session, bytes);
     if (!analysis.isFood || !analysis.isLivePhoto) {
       throw conflictError(
@@ -86,10 +97,41 @@ class MealService {
         healthScore: analysis.healthScore,
         grade: stats.gradeFor(analysis.healthScore),
         imageHash: imageHash,
+        photoFingerprint: fingerprint,
         fed: false,
         createdAt: DateTime.now().toUtc(),
       ),
     );
+  }
+
+  // Rejects the photo if it's a near-copy of one of the owner's scans from the
+  // last [feedWindow] (the window in which a meal can still be fed)
+  Future<void> _rejectIfRecentlyScanned(
+    Session session,
+    UuidValue ownerId,
+    String fingerprint,
+  ) async {
+    final since = DateTime.now().toUtc().subtract(feedWindow);
+    final recent = await Meal.db.find(
+      session,
+      where: (t) =>
+          t.ownerId.equals(ownerId) &
+          (t.createdAt > since) &
+          t.photoFingerprint.notEquals(null),
+    );
+    for (final meal in recent) {
+      if (fingerprintDistance(fingerprint, meal.photoFingerprint!) <=
+          maxSamePlateDistance) {
+        throw conflictError(
+          'DUPLICATE_PHOTO',
+          meal.fed
+              ? 'Looks like you already fed ${meal.name} from this plate. '
+                    'Scan your next meal!'
+              : 'You already scanned this plate. Feed it from your meal log '
+                    '(Collection, Meals tab).',
+        );
+      }
+    }
   }
 
   // [utcOffsetMinutes] is the phone's offset from UTC, so the streak follows

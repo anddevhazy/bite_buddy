@@ -19,6 +19,9 @@ fields:
   grade: String
   ### SHA-256 of the uploaded photo, so the same photo can't be fed twice.
   imageHash: String
+  ### Visual fingerprint (see utils/photo_fingerprint.dart), so a re-shot of
+  ### the same plate can't be fed twice. Null for meals scanned before it.
+  photoFingerprint: String?
   ### Whether this meal has been fed to the pet yet.
   fed: bool
   createdAt: DateTime

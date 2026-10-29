@@ -289,6 +289,12 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'String',
         ),
         _isp.ColumnDefinition(
+          name: 'photoFingerprint',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
           name: 'fed',
           columnType: _isp.ColumnType.boolean,
           isNullable: false,

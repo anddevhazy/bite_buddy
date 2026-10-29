@@ -114,7 +114,8 @@ class GuideContent {
             'shot, in good light.',
         'Screenshots, photos of a screen, downloaded or stock pictures and '
             'drawings are rejected, and the reason is shown.',
-        "The same photo can't be scanned twice.",
+        "A photo can't be scanned twice, and neither can a new photo of a "
+            'plate you scanned in the last 3 hours.',
         'Scanning saves the meal; it only counts once you tap Feed. Check '
             'the results, then feed it straight away, or later from your '
             'meal log (Collection, Meals tab).',
