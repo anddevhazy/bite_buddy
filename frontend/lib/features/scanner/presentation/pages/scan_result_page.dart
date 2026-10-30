@@ -1,3 +1,5 @@
+import 'package:bite_buddy/service_locator.dart';
+import 'package:bite_buddy/features/global/services/sound_service.dart';
 import 'package:bite_buddy/features/collection/presentation/bloc/collection_cubit.dart';
 import 'package:bite_buddy/features/global/components/app_toast.dart';
 import 'package:bite_buddy/features/global/components/forest_background.dart';
@@ -37,6 +39,9 @@ class ScanResultPage extends StatelessWidget {
           child: BlocConsumer<ScannerCubit, ScannerState>(
             listener: (context, state) {
               if (state is MealFed) {
+                sl<SoundService>().play(
+                  state.result.leveledUp ? Sfx.levelUp : Sfx.feed,
+                );
                 context.read<PetCubit>().updatePet(state.result.pet);
                 context.read<InsightsCubit>().load();
                 context.read<CollectionCubit>().load();

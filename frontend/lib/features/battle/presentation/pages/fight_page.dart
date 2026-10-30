@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:bite_buddy/service_locator.dart';
+import 'package:bite_buddy/features/global/services/sound_service.dart';
 import 'package:bite_buddy/features/battle/domain/entities/arena_run_entities.dart';
 import 'package:bite_buddy/features/battle/presentation/bloc/battle_cubit.dart';
 import 'package:bite_buddy/features/battle/presentation/game/arena_game.dart';
@@ -36,7 +38,9 @@ class _FightPageState extends State<FightPage> {
     petImage: AppImages.pet(widget.config.petSpeciesKey),
     opponentImage: AppImages.opponent(widget.config.opponent.key),
     backgroundImage: AppImages.arenaBackground,
+    sounds: _sounds,
   );
+  final SoundService _sounds = sl<SoundService>();
 
   _Stage _stage = _Stage.intro;
   int _countdown = 3;
@@ -63,12 +67,15 @@ class _FightPageState extends State<FightPage> {
       _stage = _Stage.countdown;
       _countdown = 3;
     });
+    _sounds.play(Sfx.countdown);
     _timer = Timer.periodic(const Duration(milliseconds: 700), (timer) {
       if (!mounted) return timer.cancel();
       if (_countdown > 1) {
         setState(() => _countdown--);
+        _sounds.play(Sfx.countdown);
       } else {
         timer.cancel();
+        _sounds.play(Sfx.fight);
         setState(() => _stage = _Stage.fighting);
         _game.running = true;
       }
@@ -104,6 +111,7 @@ class _FightPageState extends State<FightPage> {
         // Coins, XP and energy changed on the server
         context.read<PetCubit>().loadPet(silent: true);
         context.read<BattleCubit>().loadOpponents();
+        _sounds.play(r.won ? Sfx.victory : Sfx.defeat);
         setState(() {
           _stage = _Stage.result;
           _result = r;

@@ -1,3 +1,5 @@
+import 'package:bite_buddy/service_locator.dart';
+import 'package:bite_buddy/features/global/services/sound_service.dart';
 import 'package:bite_buddy/features/auth/presentation/bloc/auth_cubit.dart';
 import 'package:bite_buddy/features/global/components/game_art.dart';
 import 'package:bite_buddy/features/global/components/game_button.dart';
@@ -99,6 +101,22 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.xl),
+          ListenableBuilder(
+            listenable: sl<SoundService>(),
+            builder: (context, _) {
+              final sounds = sl<SoundService>();
+              return GlassCard(
+                child: SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  activeThumbColor: AppColors.primary,
+                  title: Text('🔊 Sound effects', style: AppTextStyles.h3),
+                  value: !sounds.muted,
+                  onChanged: (on) => sounds.setMuted(!on),
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: AppSpacing.md),
           GameButton(
             label: 'How to play',
             onPressed: () => context.pushNamed(Routes.guideName),

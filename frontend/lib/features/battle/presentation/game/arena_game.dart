@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:bite_buddy/features/global/services/sound_service.dart';
 import 'package:bite_buddy/features/battle/presentation/game/fight_engine.dart';
 import 'package:bite_buddy/features/global/constants/colors.dart';
 import 'package:bite_buddy/features/global/constants/text_styles.dart';
@@ -18,6 +19,8 @@ class ArenaGame extends FlameGame {
   final String petImage;
   final String opponentImage;
   final String backgroundImage;
+  // Null in tests
+  final SoundService? sounds;
 
   // Set by the page once the countdown finishes
   bool running = false;
@@ -27,6 +30,7 @@ class ArenaGame extends FlameGame {
     required this.petImage,
     required this.opponentImage,
     required this.backgroundImage,
+    this.sounds,
   });
 
   late final _FighterSprite _opponent;
@@ -170,6 +174,7 @@ class ArenaGame extends FlameGame {
     final p = _pet.home;
     switch (event) {
       case WindupStarted(:final combo):
+        sounds?.play(Sfx.windup, volume: 0.5);
         if (combo) _float('AGAIN!', o + Vector2(0, -20), AppColors.error);
       case FeintRevealed():
         _float('FAKE!', o, AppColors.gold);
@@ -179,15 +184,19 @@ class ArenaGame extends FlameGame {
           case StrikeResult.dodged:
             _float('DODGE!', p + Vector2(0, -60), AppColors.primary);
           case StrikeResult.parried:
+            sounds?.play(Sfx.perfectBlock);
             _float('PERFECT BLOCK!', p + Vector2(0, -60), AppColors.gold);
             _sparks(p + Vector2(0, -30), AppColors.gold, 22);
             HapticFeedback.mediumImpact();
           case StrikeResult.blocked:
+            sounds?.play(Sfx.block);
             _float('-$damage', p + Vector2(0, -50), AppColors.textMuted);
             _sparks(p + Vector2(0, -30), AppColors.white, 10);
             HapticFeedback.lightImpact();
           case StrikeResult.guardBroken:
           case StrikeResult.hit:
+            final big = critical || result == StrikeResult.guardBroken;
+            sounds?.play(big ? Sfx.heavyHit : Sfx.hit);
             _pet.hurt();
             _float(
               result == StrikeResult.guardBroken
@@ -211,6 +220,11 @@ class ArenaGame extends FlameGame {
           PlayerHitKind.blocked => ('Blocked -$damage', AppColors.textMuted),
           PlayerHitKind.normal => ('-$damage', AppColors.white),
         };
+        sounds?.play(switch (kind) {
+          PlayerHitKind.special => Sfx.special,
+          PlayerHitKind.blocked => Sfx.block,
+          _ => critical ? Sfx.heavyHit : Sfx.hit,
+        });
         _float(critical ? 'CRIT $label' : label, o + Vector2(0, -40), color);
         _sparks(
           o,
@@ -220,10 +234,12 @@ class ArenaGame extends FlameGame {
         if (kind == PlayerHitKind.special) _shake(16);
         HapticFeedback.selectionClick();
       case OpponentStunned():
+        sounds?.play(Sfx.stun);
         _sparks(o + Vector2(0, -_opponent.size.y * 0.4), AppColors.gold, 12);
       case DodgeStarted():
-        break;
+        sounds?.play(Sfx.dodge);
       case FightEnded(:final outcome):
+        sounds?.play(Sfx.knockout);
         (outcome == FightOutcome.won ? _opponent : _pet).knockedOut = true;
         _shake(18);
         HapticFeedback.heavyImpact();
