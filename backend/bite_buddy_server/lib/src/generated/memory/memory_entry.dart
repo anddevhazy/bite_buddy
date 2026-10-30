@@ -21,6 +21,7 @@ abstract class MemoryEntry
     required this.title,
     this.detail,
     required this.happenedAt,
+    this.keepsake,
   });
 
   factory MemoryEntry({
@@ -29,6 +30,7 @@ abstract class MemoryEntry
     required String title,
     String? detail,
     required DateTime happenedAt,
+    String? keepsake,
   }) = _MemoryEntryImpl;
 
   factory MemoryEntry.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -40,6 +42,7 @@ abstract class MemoryEntry
       happenedAt: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['happenedAt'],
       ),
+      keepsake: jsonSerialization['keepsake'] as String?,
     );
   }
 
@@ -54,6 +57,10 @@ abstract class MemoryEntry
 
   DateTime happenedAt;
 
+  /// "mintable" or "minted" for milestones that can become a keepsake NFT,
+  /// otherwise null.
+  String? keepsake;
+
   /// Returns a shallow copy of this [MemoryEntry]
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
@@ -63,6 +70,7 @@ abstract class MemoryEntry
     String? title,
     String? detail,
     DateTime? happenedAt,
+    String? keepsake,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -73,6 +81,7 @@ abstract class MemoryEntry
       'title': title,
       if (detail != null) 'detail': detail,
       'happenedAt': happenedAt.toJson(),
+      if (keepsake != null) 'keepsake': keepsake,
     };
   }
 
@@ -85,6 +94,7 @@ abstract class MemoryEntry
       'title': title,
       if (detail != null) 'detail': detail,
       'happenedAt': happenedAt.toJson(),
+      if (keepsake != null) 'keepsake': keepsake,
     };
   }
 
@@ -103,12 +113,14 @@ class _MemoryEntryImpl extends MemoryEntry {
     required String title,
     String? detail,
     required DateTime happenedAt,
+    String? keepsake,
   }) : super._(
          key: key,
          emoji: emoji,
          title: title,
          detail: detail,
          happenedAt: happenedAt,
+         keepsake: keepsake,
        );
 
   /// Returns a shallow copy of this [MemoryEntry]
@@ -121,6 +133,7 @@ class _MemoryEntryImpl extends MemoryEntry {
     String? title,
     Object? detail = _Undefined,
     DateTime? happenedAt,
+    Object? keepsake = _Undefined,
   }) {
     return MemoryEntry(
       key: key ?? this.key,
@@ -128,6 +141,7 @@ class _MemoryEntryImpl extends MemoryEntry {
       title: title ?? this.title,
       detail: detail is String? ? detail : this.detail,
       happenedAt: happenedAt ?? this.happenedAt,
+      keepsake: keepsake is String? ? keepsake : this.keepsake,
     );
   }
 }

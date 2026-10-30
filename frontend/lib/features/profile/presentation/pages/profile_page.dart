@@ -88,23 +88,31 @@ class ProfilePage extends StatelessWidget {
           ],
           const TrophyShelf(),
           const SizedBox(height: AppSpacing.xl),
-          Text('Wallet', style: AppTextStyles.h2),
+          Text('My collection', style: AppTextStyles.h2),
           const SizedBox(height: AppSpacing.md),
           GlassCard(
+            onTap: () => context.pushNamed(Routes.keepsakesName),
             padding: const EdgeInsets.all(AppSpacing.lg),
             child: Row(
               children: [
-                const Text('🔐', style: TextStyle(fontSize: 32)),
+                const Text('💎', style: TextStyle(fontSize: 32)),
                 const SizedBox(width: AppSpacing.md),
                 Expanded(
-                  child: Text(
-                    'Coming soon: your buddy as an NFT on Base, '
-                    'with no seed phrase to manage.',
-                    style: AppTextStyles.bodyMedium.copyWith(
-                      color: AppColors.textMuted,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Keepsake NFTs', style: AppTextStyles.h3),
+                      Text(
+                        'Your wallet on Base, your buddy\'s certificate and '
+                        'cards for big milestones.',
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: AppColors.textMuted,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+                const Icon(Icons.chevron_right_rounded),
               ],
             ),
           ),

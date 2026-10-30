@@ -7,6 +7,7 @@ import 'package:bite_buddy/features/global/components/glass_card.dart';
 import 'package:bite_buddy/features/global/constants/colors.dart';
 import 'package:bite_buddy/features/global/constants/spacing.dart';
 import 'package:bite_buddy/features/global/constants/text_styles.dart';
+import 'package:bite_buddy/features/global/routes/routes.dart';
 import 'package:bite_buddy/features/guide/domain/entities/guide_topic.dart';
 import 'package:bite_buddy/features/guide/presentation/widgets/info_button.dart';
 import 'package:bite_buddy/features/memory/domain/entities/memory_book_entity.dart';
@@ -392,7 +393,20 @@ class _MemoryTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(memory.title, style: AppTextStyles.bodyLarge),
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          memory.title,
+                          style: AppTextStyles.bodyLarge,
+                        ),
+                      ),
+                      if (memory.keepsake case final status?) ...[
+                        const SizedBox(width: AppSpacing.sm),
+                        _KeepsakeChip(minted: status == 'minted'),
+                      ],
+                    ],
+                  ),
                   if (memory.detail case final detail?)
                     Text(detail, style: AppTextStyles.bodyMedium),
                   Text(
@@ -406,6 +420,34 @@ class _MemoryTile extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// On milestones that can become a keepsake NFT; opens My collection
+class _KeepsakeChip extends StatelessWidget {
+  final bool minted;
+
+  const _KeepsakeChip({required this.minted});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = minted ? AppColors.primary : AppColors.gold;
+    return InkWell(
+      borderRadius: BorderRadius.circular(10),
+      onTap: () => context.pushNamed(Routes.keepsakesName),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.15),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: color.withValues(alpha: 0.6)),
+        ),
+        child: Text(
+          minted ? '💎 NFT' : '💎 Mint NFT',
+          style: AppTextStyles.caption.copyWith(color: color, fontSize: 11),
+        ),
       ),
     );
   }

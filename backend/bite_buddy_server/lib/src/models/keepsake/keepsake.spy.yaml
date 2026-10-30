@@ -1,0 +1,36 @@
+### A minted keepsake NFT. Its id is the token id on the contract.
+class: Keepsake
+table: keepsake
+fields:
+  ownerId: UuidValue
+  ### What it's for: certificate, streak_30, level_10, meals_100, trophy_...
+  key: String
+  ### Keepsakes of the same kind are numbered in the order they're minted,
+  ### e.g. every 30-day streak shares one count.
+  editionGroup: String
+  edition: int
+  title: String
+  emoji: String
+  petName: String
+  speciesKey: String
+  ### The pet's photo at mint time, only if the owner allowed it.
+  portraitId: int?
+  ### A paw instead of a picture: the buddy is the owner's own pet and they
+  ### chose not to show its photo.
+  showPaw: bool, default=false
+  ### One line about that moment, e.g. "Avg meal score 82 that month".
+  stat: String?
+  earnedAt: DateTime
+  walletAddress: String
+  ### Null while the mint is being sent.
+  txHash: String?
+  ### 8453 for Base, 84532 for Base Sepolia, 0 for test mode.
+  chainId: int
+  mintedAt: DateTime
+indexes:
+  keepsake_owner_key_idx:
+    fields: ownerId, key
+    unique: true
+  keepsake_edition_idx:
+    fields: editionGroup, edition
+    unique: true

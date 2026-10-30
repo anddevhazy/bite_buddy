@@ -19,6 +19,9 @@ duel:
   - challenge:
   - get:
   - move:
+keepsake:
+  - mine:
+  - mint:
 leaderboard:
   - top:
 league:
@@ -50,3 +53,7 @@ streak:
   - invite:
   - accept:
   - remove:
+wallet:
+  - mine:
+  - create:
+  - setShowPetPhoto:

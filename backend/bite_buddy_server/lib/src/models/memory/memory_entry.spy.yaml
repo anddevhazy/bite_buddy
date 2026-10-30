@@ -7,3 +7,6 @@ fields:
   title: String
   detail: String?
   happenedAt: DateTime
+  ### "mintable" or "minted" for milestones that can become a keepsake NFT,
+  ### otherwise null.
+  keepsake: String?

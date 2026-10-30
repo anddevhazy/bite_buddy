@@ -20,6 +20,14 @@ insightsServer:
   publicPort: 8081
   publicScheme: http
 
+# Configuration for the web server: public keepsake NFT metadata and card
+# pictures (lib/src/web/keepsake_routes.dart).
+webServer:
+  port: 8082
+  publicHost: localhost
+  publicPort: 8082
+  publicScheme: http
+
 database:
   host: localhost
   port: 8090

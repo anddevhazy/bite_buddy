@@ -65,7 +65,7 @@ class ChooseBuddyPage extends StatelessWidget {
                   const SizedBox(height: AppSpacing.lg),
                   const PageHeader(
                     title: 'Choose Your Buddy',
-                    subtitle: 'Select your NFT pet companion',
+                    subtitle: 'Pick the buddy you\'ll feed with real meals',
                   ),
                   const SizedBox(height: AppSpacing.xl),
                   GridView.count(

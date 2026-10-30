@@ -1,0 +1,18 @@
+### A player's wallet on Base, where their keepsakes are minted.
+class: CryptoWallet
+table: crypto_wallet
+fields:
+  ownerId: UuidValue
+  ### 0x-prefixed, lowercase.
+  address: String
+  ### True for a stand-in wallet made while no wallet provider is set up:
+  ### nothing minted to it is on a real blockchain.
+  isTest: bool
+  ### Whether their own pet's photo ("My own pet") may appear on their
+  ### keepsakes, which are public. Otherwise a paw card is used.
+  showPetPhoto: bool
+  createdAt: DateTime
+indexes:
+  crypto_wallet_owner_idx:
+    fields: ownerId
+    unique: true

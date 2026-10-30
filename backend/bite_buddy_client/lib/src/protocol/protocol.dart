@@ -11,6 +11,8 @@
 // ignore_for_file: dead_code, unnecessary_type_check
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:bite_buddy_client/src/protocol/keepsake/keepsake_view.dart'
+    as _ix55zikt;
 import 'package:bite_buddy_client/src/protocol/leaderboard_entry.dart'
     as _iw02fr1r;
 import 'package:bite_buddy_client/src/protocol/league/league_summary.dart'
@@ -42,6 +44,10 @@ import 'battle_move.dart' as _iz303hum;
 import 'battle_stats.dart' as _ievndlqk;
 import 'errors/bite_buddy_exception.dart' as _in42pmv9;
 import 'feed_result.dart' as _i6546n9y;
+import 'keepsake/crypto_wallet.dart' as _i25w50ur;
+import 'keepsake/keepsake.dart' as _ie4a5ye5;
+import 'keepsake/keepsake_view.dart' as _in77ynx5;
+import 'keepsake/wallet_view.dart' as _i5v1whbl;
 import 'leaderboard_entry.dart' as _ikawkn1p;
 import 'league/duel.dart' as _i4ouuzm2;
 import 'league/duel_round.dart' as _i9ikuwzg;
@@ -90,6 +96,10 @@ export 'battle_move.dart';
 export 'battle_stats.dart';
 export 'errors/bite_buddy_exception.dart';
 export 'feed_result.dart';
+export 'keepsake/crypto_wallet.dart';
+export 'keepsake/keepsake.dart';
+export 'keepsake/keepsake_view.dart';
+export 'keepsake/wallet_view.dart';
 export 'leaderboard_entry.dart';
 export 'league/duel.dart';
 export 'league/duel_round.dart';
@@ -199,6 +209,18 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _i6546n9y.FeedResult) {
       return _i6546n9y.FeedResult.fromJson(data) as T;
+    }
+    if (t == _i25w50ur.CryptoWallet) {
+      return _i25w50ur.CryptoWallet.fromJson(data) as T;
+    }
+    if (t == _ie4a5ye5.Keepsake) {
+      return _ie4a5ye5.Keepsake.fromJson(data) as T;
+    }
+    if (t == _in77ynx5.KeepsakeView) {
+      return _in77ynx5.KeepsakeView.fromJson(data) as T;
+    }
+    if (t == _i5v1whbl.WalletView) {
+      return _i5v1whbl.WalletView.fromJson(data) as T;
     }
     if (t == _ikawkn1p.LeaderboardEntry) {
       return _ikawkn1p.LeaderboardEntry.fromJson(data) as T;
@@ -349,6 +371,18 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _isc.getType<_i6546n9y.FeedResult?>()) {
       return (data != null ? _i6546n9y.FeedResult.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_i25w50ur.CryptoWallet?>()) {
+      return (data != null ? _i25w50ur.CryptoWallet.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_ie4a5ye5.Keepsake?>()) {
+      return (data != null ? _ie4a5ye5.Keepsake.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_in77ynx5.KeepsakeView?>()) {
+      return (data != null ? _in77ynx5.KeepsakeView.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_i5v1whbl.WalletView?>()) {
+      return (data != null ? _i5v1whbl.WalletView.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_ikawkn1p.LeaderboardEntry?>()) {
       return (data != null ? _ikawkn1p.LeaderboardEntry.fromJson(data) : null)
@@ -524,6 +558,12 @@ class Protocol extends _isc.SerializationManager {
               .toList()
           as T;
     }
+    if (t == List<_ix55zikt.KeepsakeView>) {
+      return (data as List)
+              .map((e) => deserialize<_ix55zikt.KeepsakeView>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_iw02fr1r.LeaderboardEntry>) {
       return (data as List)
               .map((e) => deserialize<_iw02fr1r.LeaderboardEntry>(e))
@@ -594,6 +634,10 @@ class Protocol extends _isc.SerializationManager {
       _ievndlqk.BattleStats => 'BattleStats',
       _in42pmv9.BiteBuddyException => 'BiteBuddyException',
       _i6546n9y.FeedResult => 'FeedResult',
+      _i25w50ur.CryptoWallet => 'CryptoWallet',
+      _ie4a5ye5.Keepsake => 'Keepsake',
+      _in77ynx5.KeepsakeView => 'KeepsakeView',
+      _i5v1whbl.WalletView => 'WalletView',
       _ikawkn1p.LeaderboardEntry => 'LeaderboardEntry',
       _i4ouuzm2.Duel => 'Duel',
       _i9ikuwzg.DuelRound => 'DuelRound',
@@ -669,6 +713,14 @@ class Protocol extends _isc.SerializationManager {
         return 'BiteBuddyException';
       case _i6546n9y.FeedResult():
         return 'FeedResult';
+      case _i25w50ur.CryptoWallet():
+        return 'CryptoWallet';
+      case _ie4a5ye5.Keepsake():
+        return 'Keepsake';
+      case _in77ynx5.KeepsakeView():
+        return 'KeepsakeView';
+      case _i5v1whbl.WalletView():
+        return 'WalletView';
       case _ikawkn1p.LeaderboardEntry():
         return 'LeaderboardEntry';
       case _i4ouuzm2.Duel():
@@ -799,6 +851,18 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'FeedResult') {
       return deserialize<_i6546n9y.FeedResult>(data['data']);
+    }
+    if (dataClassName == 'CryptoWallet') {
+      return deserialize<_i25w50ur.CryptoWallet>(data['data']);
+    }
+    if (dataClassName == 'Keepsake') {
+      return deserialize<_ie4a5ye5.Keepsake>(data['data']);
+    }
+    if (dataClassName == 'KeepsakeView') {
+      return deserialize<_in77ynx5.KeepsakeView>(data['data']);
+    }
+    if (dataClassName == 'WalletView') {
+      return deserialize<_i5v1whbl.WalletView>(data['data']);
     }
     if (dataClassName == 'LeaderboardEntry') {
       return deserialize<_ikawkn1p.LeaderboardEntry>(data['data']);

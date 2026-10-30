@@ -18,6 +18,15 @@ insightsServer:
   publicPort: 443
   publicScheme: https
 
+# Keepsake NFT metadata must be reachable by wallets, so this has to be a
+# real public https host before minting on Base mainnet. It's also the
+# BASE_URI the contract is deployed with (https://<host>/keepsakes/).
+webServer:
+  port: 8082
+  publicHost: web.examplepod.com
+  publicPort: 443
+  publicScheme: https
+
 database:
   host: database.private-production.examplepod.com
   port: 5432

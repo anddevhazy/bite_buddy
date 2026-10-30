@@ -6,6 +6,7 @@ import 'package:bite_buddy/features/collection/presentation/pages/collection_pag
 import 'package:bite_buddy/features/global/components/main_shell.dart';
 import 'package:bite_buddy/features/global/pages/splash_screen.dart';
 import 'package:bite_buddy/features/guide/presentation/pages/guide_page.dart';
+import 'package:bite_buddy/features/keepsakes/presentation/pages/keepsakes_page.dart';
 import 'package:bite_buddy/features/league/presentation/pages/duel_page.dart';
 import 'package:bite_buddy/features/league/presentation/pages/league_detail_page.dart';
 import 'package:bite_buddy/features/memory/presentation/pages/memory_book_page.dart';
@@ -60,6 +61,10 @@ class Routes {
 
   static const String duelPath = '/duel/:id';
   static const String duelName = 'duel';
+
+  // Wallet and keepsake NFTs
+  static const String keepsakesPath = '/keepsakes';
+  static const String keepsakesName = 'keepsakes';
 
   static const String memoryBookPath = '/memoryBook';
   static const String memoryBookName = 'memoryBook';
@@ -172,6 +177,12 @@ class Routes {
         name: myPetPhotoName,
         parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const MyPetPhotoPage(),
+      ),
+      GoRoute(
+        path: keepsakesPath,
+        name: keepsakesName,
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => const KeepsakesPage(),
       ),
       GoRoute(
         path: memoryBookPath,

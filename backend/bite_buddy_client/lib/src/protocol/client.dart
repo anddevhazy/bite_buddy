@@ -23,6 +23,10 @@ import 'package:bite_buddy_client/src/protocol/arena_run_result.dart'
     as _iqi7iz9b;
 import 'package:bite_buddy_client/src/protocol/battle_move.dart' as _ih5s12ml;
 import 'package:bite_buddy_client/src/protocol/feed_result.dart' as _ik3mz3kd;
+import 'package:bite_buddy_client/src/protocol/keepsake/keepsake_view.dart'
+    as _ix55zikt;
+import 'package:bite_buddy_client/src/protocol/keepsake/wallet_view.dart'
+    as _i4aissj4;
 import 'package:bite_buddy_client/src/protocol/leaderboard_entry.dart'
     as _iw02fr1r;
 import 'package:bite_buddy_client/src/protocol/league/duel_view.dart'
@@ -376,6 +380,28 @@ class EndpointDuel extends _isc.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointKeepsake extends _isc.EndpointRef {
+  EndpointKeepsake(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'keepsake';
+
+  _ida.Future<List<_ix55zikt.KeepsakeView>> mine() =>
+      caller.callServerEndpoint<List<_ix55zikt.KeepsakeView>>(
+        'keepsake',
+        'mine',
+        {},
+      );
+
+  _ida.Future<_ix55zikt.KeepsakeView> mint(String key) =>
+      caller.callServerEndpoint<_ix55zikt.KeepsakeView>(
+        'keepsake',
+        'mint',
+        {'key': key},
+      );
+}
+
+/// {@category Endpoint}
 class EndpointLeaderboard extends _isc.EndpointRef {
   EndpointLeaderboard(_isc.EndpointCaller caller) : super(caller);
 
@@ -612,6 +638,35 @@ class EndpointStreak extends _isc.EndpointRef {
   );
 }
 
+/// {@category Endpoint}
+class EndpointWallet extends _isc.EndpointRef {
+  EndpointWallet(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'wallet';
+
+  _ida.Future<_i4aissj4.WalletView?> mine() =>
+      caller.callServerEndpoint<_i4aissj4.WalletView?>(
+        'wallet',
+        'mine',
+        {},
+      );
+
+  _ida.Future<_i4aissj4.WalletView> create(bool showPetPhoto) =>
+      caller.callServerEndpoint<_i4aissj4.WalletView>(
+        'wallet',
+        'create',
+        {'showPetPhoto': showPetPhoto},
+      );
+
+  _ida.Future<_i4aissj4.WalletView> setShowPetPhoto(bool show) =>
+      caller.callServerEndpoint<_i4aissj4.WalletView>(
+        'wallet',
+        'setShowPetPhoto',
+        {'show': show},
+      );
+}
+
 class Modules {
   Modules(Client client) {
     serverpod_auth_idp = _iaic.Caller(client);
@@ -655,6 +710,7 @@ class Client extends _isc.ServerpodClientShared {
     activity = EndpointActivity(this);
     battle = EndpointBattle(this);
     duel = EndpointDuel(this);
+    keepsake = EndpointKeepsake(this);
     leaderboard = EndpointLeaderboard(this);
     league = EndpointLeague(this);
     meal = EndpointMeal(this);
@@ -662,6 +718,7 @@ class Client extends _isc.ServerpodClientShared {
     pet = EndpointPet(this);
     portrait = EndpointPortrait(this);
     streak = EndpointStreak(this);
+    wallet = EndpointWallet(this);
     modules = Modules(this);
   }
 
@@ -674,6 +731,8 @@ class Client extends _isc.ServerpodClientShared {
   late final EndpointBattle battle;
 
   late final EndpointDuel duel;
+
+  late final EndpointKeepsake keepsake;
 
   late final EndpointLeaderboard leaderboard;
 
@@ -689,6 +748,8 @@ class Client extends _isc.ServerpodClientShared {
 
   late final EndpointStreak streak;
 
+  late final EndpointWallet wallet;
+
   late final Modules modules;
 
   @override
@@ -698,6 +759,7 @@ class Client extends _isc.ServerpodClientShared {
     'activity': activity,
     'battle': battle,
     'duel': duel,
+    'keepsake': keepsake,
     'leaderboard': leaderboard,
     'league': league,
     'meal': meal,
@@ -705,6 +767,7 @@ class Client extends _isc.ServerpodClientShared {
     'pet': pet,
     'portrait': portrait,
     'streak': streak,
+    'wallet': wallet,
   };
 
   @override

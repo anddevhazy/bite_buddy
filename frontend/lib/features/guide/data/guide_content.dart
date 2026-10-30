@@ -358,6 +358,29 @@ class GuideContent {
             'levels, new rivals beaten and trophies.',
       ],
     ),
+    GuideTopic(
+      id: GuideTopicId.keepsakes,
+      emoji: '💎',
+      title: 'Keepsake NFTs',
+      summary: 'Collect NFTs on Base for your buddy and its big moments.',
+      points: [
+        'Open My collection from Profile and create your wallet. It\'s a '
+            'crypto wallet on Base, the blockchain, with no seed phrase to '
+            'manage.',
+        'Mint your buddy certificate first, then a card for each big '
+            'milestone: 7, 30, 100 and 365-day streaks, levels 10, 25 and 50, '
+            '100 and 500 meals, and every weekly league trophy.',
+        'Each card shows your buddy, the date and a stat from that moment. '
+            'Editions are numbered in the order players mint them, so an '
+            'early #12 stays #12 forever.',
+        'Keepsakes are soulbound: they stay in your wallet and can\'t be sold '
+            'or sent to anyone. Minting is free; Bite Buddy pays the fees.',
+        'NFTs are public. If your buddy is your own pet, you choose whether '
+            'its photo or a paw print goes on your cards.',
+        'Test mode: until Bite Buddy goes live on Base, wallets and '
+            'keepsakes are not on the blockchain yet.',
+      ],
+    ),
   ];
 
   static GuideTopic byId(GuideTopicId id) =>

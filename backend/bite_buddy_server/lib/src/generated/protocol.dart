@@ -11,6 +11,8 @@
 // ignore_for_file: dead_code, unnecessary_type_check
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:bite_buddy_server/src/generated/keepsake/keepsake_view.dart'
+    as _ircwhn0j;
 import 'package:bite_buddy_server/src/generated/leaderboard_entry.dart'
     as _i5n4mhlw;
 import 'package:bite_buddy_server/src/generated/league/league_summary.dart'
@@ -44,6 +46,10 @@ import 'battle_move.dart' as _iz303hum;
 import 'battle_stats.dart' as _ievndlqk;
 import 'errors/bite_buddy_exception.dart' as _in42pmv9;
 import 'feed_result.dart' as _i6546n9y;
+import 'keepsake/crypto_wallet.dart' as _i25w50ur;
+import 'keepsake/keepsake.dart' as _ie4a5ye5;
+import 'keepsake/keepsake_view.dart' as _in77ynx5;
+import 'keepsake/wallet_view.dart' as _i5v1whbl;
 import 'leaderboard_entry.dart' as _ikawkn1p;
 import 'league/duel.dart' as _i4ouuzm2;
 import 'league/duel_round.dart' as _i9ikuwzg;
@@ -92,6 +98,10 @@ export 'battle_move.dart';
 export 'battle_stats.dart';
 export 'errors/bite_buddy_exception.dart';
 export 'feed_result.dart';
+export 'keepsake/crypto_wallet.dart';
+export 'keepsake/keepsake.dart';
+export 'keepsake/keepsake_view.dart';
+export 'keepsake/wallet_view.dart';
 export 'leaderboard_entry.dart';
 export 'league/duel.dart';
 export 'league/duel_round.dart';
@@ -345,6 +355,68 @@ class Protocol extends _is.DatabaseSerializationManager {
           ],
           type: 'btree',
           isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'crypto_wallet',
+      dartName: 'CryptoWallet',
+      schema: 'public',
+      module: 'bite_buddy',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'ownerId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'address',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'isTest',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+        ),
+        _isp.ColumnDefinition(
+          name: 'showPetPhoto',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+        ),
+        _isp.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'crypto_wallet_owner_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'ownerId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
           isPrimary: false,
         ),
       ],
@@ -607,6 +679,156 @@ class Protocol extends _is.DatabaseSerializationManager {
           ],
           type: 'btree',
           isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'keepsake',
+      dartName: 'Keepsake',
+      schema: 'public',
+      module: 'bite_buddy',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'ownerId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'key',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'editionGroup',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'edition',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'title',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'emoji',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'petName',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'speciesKey',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'portraitId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'showPaw',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(
+          name: 'stat',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'earnedAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _isp.ColumnDefinition(
+          name: 'walletAddress',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'txHash',
+          columnType: _isp.ColumnType.text,
+          isNullable: true,
+          dartType: 'String?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'chainId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'mintedAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'keepsake_owner_key_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'ownerId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'key',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'keepsake_edition_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'editionGroup',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'edition',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
           isPrimary: false,
         ),
       ],
@@ -1535,6 +1757,18 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _i6546n9y.FeedResult) {
       return _i6546n9y.FeedResult.fromJson(data) as T;
     }
+    if (t == _i25w50ur.CryptoWallet) {
+      return _i25w50ur.CryptoWallet.fromJson(data) as T;
+    }
+    if (t == _ie4a5ye5.Keepsake) {
+      return _ie4a5ye5.Keepsake.fromJson(data) as T;
+    }
+    if (t == _in77ynx5.KeepsakeView) {
+      return _in77ynx5.KeepsakeView.fromJson(data) as T;
+    }
+    if (t == _i5v1whbl.WalletView) {
+      return _i5v1whbl.WalletView.fromJson(data) as T;
+    }
     if (t == _ikawkn1p.LeaderboardEntry) {
       return _ikawkn1p.LeaderboardEntry.fromJson(data) as T;
     }
@@ -1684,6 +1918,18 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _is.getType<_i6546n9y.FeedResult?>()) {
       return (data != null ? _i6546n9y.FeedResult.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i25w50ur.CryptoWallet?>()) {
+      return (data != null ? _i25w50ur.CryptoWallet.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_ie4a5ye5.Keepsake?>()) {
+      return (data != null ? _ie4a5ye5.Keepsake.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_in77ynx5.KeepsakeView?>()) {
+      return (data != null ? _in77ynx5.KeepsakeView.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i5v1whbl.WalletView?>()) {
+      return (data != null ? _i5v1whbl.WalletView.fromJson(data) : null) as T;
     }
     if (t == _is.getType<_ikawkn1p.LeaderboardEntry?>()) {
       return (data != null ? _ikawkn1p.LeaderboardEntry.fromJson(data) : null)
@@ -1859,6 +2105,12 @@ class Protocol extends _is.DatabaseSerializationManager {
               .toList()
           as T;
     }
+    if (t == List<_ircwhn0j.KeepsakeView>) {
+      return (data as List)
+              .map((e) => deserialize<_ircwhn0j.KeepsakeView>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_i5n4mhlw.LeaderboardEntry>) {
       return (data as List)
               .map((e) => deserialize<_i5n4mhlw.LeaderboardEntry>(e))
@@ -1932,6 +2184,10 @@ class Protocol extends _is.DatabaseSerializationManager {
       _ievndlqk.BattleStats => 'BattleStats',
       _in42pmv9.BiteBuddyException => 'BiteBuddyException',
       _i6546n9y.FeedResult => 'FeedResult',
+      _i25w50ur.CryptoWallet => 'CryptoWallet',
+      _ie4a5ye5.Keepsake => 'Keepsake',
+      _in77ynx5.KeepsakeView => 'KeepsakeView',
+      _i5v1whbl.WalletView => 'WalletView',
       _ikawkn1p.LeaderboardEntry => 'LeaderboardEntry',
       _i4ouuzm2.Duel => 'Duel',
       _i9ikuwzg.DuelRound => 'DuelRound',
@@ -2007,6 +2263,14 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'BiteBuddyException';
       case _i6546n9y.FeedResult():
         return 'FeedResult';
+      case _i25w50ur.CryptoWallet():
+        return 'CryptoWallet';
+      case _ie4a5ye5.Keepsake():
+        return 'Keepsake';
+      case _in77ynx5.KeepsakeView():
+        return 'KeepsakeView';
+      case _i5v1whbl.WalletView():
+        return 'WalletView';
       case _ikawkn1p.LeaderboardEntry():
         return 'LeaderboardEntry';
       case _i4ouuzm2.Duel():
@@ -2141,6 +2405,18 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'FeedResult') {
       return deserialize<_i6546n9y.FeedResult>(data['data']);
+    }
+    if (dataClassName == 'CryptoWallet') {
+      return deserialize<_i25w50ur.CryptoWallet>(data['data']);
+    }
+    if (dataClassName == 'Keepsake') {
+      return deserialize<_ie4a5ye5.Keepsake>(data['data']);
+    }
+    if (dataClassName == 'KeepsakeView') {
+      return deserialize<_in77ynx5.KeepsakeView>(data['data']);
+    }
+    if (dataClassName == 'WalletView') {
+      return deserialize<_i5v1whbl.WalletView>(data['data']);
     }
     if (dataClassName == 'LeaderboardEntry') {
       return deserialize<_ikawkn1p.LeaderboardEntry>(data['data']);
@@ -2292,6 +2568,10 @@ class Protocol extends _is.DatabaseSerializationManager {
         return _igd8tknp.ActivityDay.t;
       case _isxurcys.ArenaRun:
         return _isxurcys.ArenaRun.t;
+      case _i25w50ur.CryptoWallet:
+        return _i25w50ur.CryptoWallet.t;
+      case _ie4a5ye5.Keepsake:
+        return _ie4a5ye5.Keepsake.t;
       case _i4ouuzm2.Duel:
         return _i4ouuzm2.Duel.t;
       case _iu6wab7g.League:

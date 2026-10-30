@@ -24,6 +24,7 @@ import '../auth/jwt_refresh_endpoint.dart' as _inwq3ztq;
 import '../endpoints/activity_endpoint.dart' as _ijhtbkuk;
 import '../endpoints/battle_endpoint.dart' as _ilghbeth;
 import '../endpoints/duel_endpoint.dart' as _iq9xj8m5;
+import '../endpoints/keepsake_endpoint.dart' as _iinpdtz3;
 import '../endpoints/leaderboard_endpoint.dart' as _iy80ldha;
 import '../endpoints/league_endpoint.dart' as _ixxtv0ct;
 import '../endpoints/meal_endpoint.dart' as _indvr2gf;
@@ -31,6 +32,7 @@ import '../endpoints/memory_endpoint.dart' as _i0ojblse;
 import '../endpoints/pet_endpoint.dart' as _ic7gura5;
 import '../endpoints/portrait_endpoint.dart' as _ipr4708j;
 import '../endpoints/streak_endpoint.dart' as _ii2s5alo;
+import '../endpoints/wallet_endpoint.dart' as _iid0rsw0;
 
 class Endpoints extends _is.EndpointDispatch {
   @override
@@ -64,6 +66,12 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'duel',
+          null,
+        ),
+      'keepsake': _iinpdtz3.KeepsakeEndpoint()
+        ..initialize(
+          server,
+          'keepsake',
           null,
         ),
       'leaderboard': _iy80ldha.LeaderboardEndpoint()
@@ -106,6 +114,12 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'streak',
+          null,
+        ),
+      'wallet': _iid0rsw0.WalletEndpoint()
+        ..initialize(
+          server,
+          'wallet',
           null,
         ),
     };
@@ -482,6 +496,41 @@ class Endpoints extends _is.EndpointDispatch {
                 params['duelId'],
                 params['move'],
               ),
+        ),
+      },
+    );
+    connectors['keepsake'] = _is.EndpointConnector(
+      name: 'keepsake',
+      endpoint: endpoints['keepsake']!,
+      methodConnectors: {
+        'mine': _is.MethodConnector(
+          name: 'mine',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['keepsake'] as _iinpdtz3.KeepsakeEndpoint)
+                  .mine(session),
+        ),
+        'mint': _is.MethodConnector(
+          name: 'mint',
+          params: {
+            'key': _is.ParameterDescription(
+              name: 'key',
+              type: _is.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['keepsake'] as _iinpdtz3.KeepsakeEndpoint).mint(
+                    session,
+                    params['key'],
+                  ),
         ),
       },
     );
@@ -907,6 +956,61 @@ class Endpoints extends _is.EndpointDispatch {
                   (endpoints['streak'] as _ii2s5alo.StreakEndpoint).remove(
                     session,
                     params['streakId'],
+                  ),
+        ),
+      },
+    );
+    connectors['wallet'] = _is.EndpointConnector(
+      name: 'wallet',
+      endpoint: endpoints['wallet']!,
+      methodConnectors: {
+        'mine': _is.MethodConnector(
+          name: 'mine',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['wallet'] as _iid0rsw0.WalletEndpoint).mine(
+                session,
+              ),
+        ),
+        'create': _is.MethodConnector(
+          name: 'create',
+          params: {
+            'showPetPhoto': _is.ParameterDescription(
+              name: 'showPetPhoto',
+              type: _is.getType<bool>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['wallet'] as _iid0rsw0.WalletEndpoint).create(
+                    session,
+                    params['showPetPhoto'],
+                  ),
+        ),
+        'setShowPetPhoto': _is.MethodConnector(
+          name: 'setShowPetPhoto',
+          params: {
+            'show': _is.ParameterDescription(
+              name: 'show',
+              type: _is.getType<bool>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['wallet'] as _iid0rsw0.WalletEndpoint)
+                  .setShowPetPhoto(
+                    session,
+                    params['show'],
                   ),
         ),
       },

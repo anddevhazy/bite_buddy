@@ -1,0 +1,25 @@
+### A keepsake the caller has minted, or can mint now.
+class: KeepsakeView
+fields:
+  key: String
+  title: String
+  emoji: String
+  ### certificate, streak, level, meals or trophy, for the card's colours.
+  kind: String
+  earnedAt: DateTime
+  minted: bool
+  ### Set once minted.
+  tokenId: int?
+  edition: int?
+  stat: String?
+  petName: String
+  speciesKey: String
+  portraitId: int?
+  ### Show a paw instead of the buddy's picture (see Keepsake.showPaw).
+  showPaw: bool
+  isTest: bool?
+  ### The mint transaction on a block explorer; null in test mode.
+  txUrl: String?
+  ### The NFT's metadata and card image, as wallets see them.
+  metadataUrl: String?
+  imageUrl: String?

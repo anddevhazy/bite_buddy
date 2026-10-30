@@ -2,6 +2,7 @@ import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:serverpod_auth_idp_server/providers/email.dart';
 
 import 'src/generated/serverpod.dart';
+import 'src/web/keepsake_routes.dart';
 
 /// The starting point of the Serverpod server.
 void run(List<String> args) async {
@@ -17,6 +18,9 @@ void run(List<String> args) async {
       ),
     ],
   );
+
+  // Public keepsake NFT metadata and card pictures, read by wallets
+  pod.webServer.addRoute(KeepsakeRoute(), 'keepsakes/**');
 
   await pod.start();
 }

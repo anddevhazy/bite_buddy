@@ -1,0 +1,10 @@
+### The caller's wallet, as the app shows it.
+class: WalletView
+fields:
+  address: String
+  isTest: bool
+  ### e.g. "Base" or "Test mode"
+  networkName: String
+  showPetPhoto: bool
+  ### Link to the wallet on a block explorer; null in test mode.
+  explorerUrl: String?

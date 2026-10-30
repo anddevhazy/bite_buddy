@@ -1,6 +1,7 @@
 import 'activity_service.dart';
 import 'battle_service.dart';
 import 'duel_service.dart';
+import 'keepsake_service.dart';
 import 'leaderboard_service.dart';
 import 'memory_service.dart';
 import 'league_service.dart';
@@ -29,4 +30,8 @@ final leagueService = LeagueService(pets: petService, duels: duelService);
 final portraitService = PortraitService(
   ai: nutritionAiService,
   pets: petService,
+);
+final keepsakeService = KeepsakeService(
+  pets: petService,
+  memories: memoryService,
 );

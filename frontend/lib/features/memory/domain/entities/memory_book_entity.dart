@@ -67,6 +67,8 @@ class MemoryEntryEntity extends Equatable {
   final String title;
   final String? detail;
   final DateTime happenedAt;
+  // "mintable" or "minted" for milestones that can be a keepsake NFT
+  final String? keepsake;
 
   const MemoryEntryEntity({
     required this.key,
@@ -74,10 +76,11 @@ class MemoryEntryEntity extends Equatable {
     required this.title,
     required this.happenedAt,
     this.detail,
+    this.keepsake,
   });
 
   @override
-  List<Object?> get props => [key, happenedAt];
+  List<Object?> get props => [key, happenedAt, keepsake];
 }
 
 class FeedingDayEntity extends Equatable {

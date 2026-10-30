@@ -23,6 +23,7 @@ enum GuideTopicId {
   homeWidget,
   ownPet,
   memoryBook,
+  keepsakes,
 }
 
 // One section of the "How to play" guide

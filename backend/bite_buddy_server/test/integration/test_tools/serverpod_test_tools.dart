@@ -25,6 +25,10 @@ import 'package:bite_buddy_server/src/generated/arena_run_result.dart'
     as _ixewx7ov;
 import 'package:bite_buddy_server/src/generated/battle_move.dart' as _itk175y8;
 import 'package:bite_buddy_server/src/generated/feed_result.dart' as _ien0ctj9;
+import 'package:bite_buddy_server/src/generated/keepsake/keepsake_view.dart'
+    as _ircwhn0j;
+import 'package:bite_buddy_server/src/generated/keepsake/wallet_view.dart'
+    as _iq59oj8q;
 import 'package:bite_buddy_server/src/generated/leaderboard_entry.dart'
     as _i5n4mhlw;
 import 'package:bite_buddy_server/src/generated/league/duel_view.dart'
@@ -197,6 +201,8 @@ class TestEndpoints {
 
   late final _DuelEndpoint duel;
 
+  late final _KeepsakeEndpoint keepsake;
+
   late final _LeaderboardEndpoint leaderboard;
 
   late final _LeagueEndpoint league;
@@ -210,6 +216,8 @@ class TestEndpoints {
   late final _PortraitEndpoint portrait;
 
   late final _StreakEndpoint streak;
+
+  late final _WalletEndpoint wallet;
 }
 
 class _InternalTestEndpoints extends TestEndpoints
@@ -239,6 +247,10 @@ class _InternalTestEndpoints extends TestEndpoints
       endpoints,
       serializationManager,
     );
+    keepsake = _KeepsakeEndpoint(
+      endpoints,
+      serializationManager,
+    );
     leaderboard = _LeaderboardEndpoint(
       endpoints,
       serializationManager,
@@ -264,6 +276,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     streak = _StreakEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    wallet = _WalletEndpoint(
       endpoints,
       serializationManager,
     );
@@ -847,6 +863,78 @@ class _DuelEndpoint {
                   _localCallContext.arguments,
                 )
                 as _ida.Future<_icu96zeg.DuelView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _KeepsakeEndpoint {
+  _KeepsakeEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<List<_ircwhn0j.KeepsakeView>> mine(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'keepsake',
+            method: 'mine',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'keepsake',
+          methodName: 'mine',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_ircwhn0j.KeepsakeView>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_ircwhn0j.KeepsakeView> mint(
+    _ist.TestSessionBuilder sessionBuilder,
+    String key,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'keepsake',
+            method: 'mint',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'keepsake',
+          methodName: 'mint',
+          parameters: _ist.testObjectToJson({'key': key}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_ircwhn0j.KeepsakeView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1670,6 +1758,109 @@ class _StreakEndpoint {
                   _localCallContext.arguments,
                 )
                 as _ida.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _WalletEndpoint {
+  _WalletEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<_iq59oj8q.WalletView?> mine(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'wallet',
+            method: 'mine',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'wallet',
+          methodName: 'mine',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iq59oj8q.WalletView?>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_iq59oj8q.WalletView> create(
+    _ist.TestSessionBuilder sessionBuilder,
+    bool showPetPhoto,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'wallet',
+            method: 'create',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'wallet',
+          methodName: 'create',
+          parameters: _ist.testObjectToJson({'showPetPhoto': showPetPhoto}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iq59oj8q.WalletView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_iq59oj8q.WalletView> setShowPetPhoto(
+    _ist.TestSessionBuilder sessionBuilder,
+    bool show,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'wallet',
+            method: 'setShowPetPhoto',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'wallet',
+          methodName: 'setShowPetPhoto',
+          parameters: _ist.testObjectToJson({'show': show}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iq59oj8q.WalletView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

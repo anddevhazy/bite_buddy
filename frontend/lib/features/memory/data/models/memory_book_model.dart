@@ -19,6 +19,7 @@ class MemoryBookModel {
           title: m.title,
           detail: m.detail,
           happenedAt: m.happenedAt.toLocal(),
+          keepsake: m.keepsake,
         ),
     ],
     // Local days arrive as UTC midnight; keep them as plain dates
