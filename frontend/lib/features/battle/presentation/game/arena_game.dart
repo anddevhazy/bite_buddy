@@ -1,12 +1,15 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:bite_buddy/features/global/services/sound_service.dart';
 import 'package:bite_buddy/features/battle/presentation/game/fight_engine.dart';
 import 'package:bite_buddy/features/global/constants/colors.dart';
 import 'package:bite_buddy/features/global/constants/text_styles.dart';
+import 'package:flame/cache.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/particles.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 
@@ -19,6 +22,10 @@ class ArenaGame extends FlameGame {
   final String petImage;
   final String opponentImage;
   final String backgroundImage;
+  // Animation sheets made from Flow clips (assets/images/anim/<name>.json).
+  // A character without them is drawn from its still picture.
+  final String? petAnimations;
+  final String? opponentAnimations;
   // Null in tests
   final SoundService? sounds;
 
@@ -30,6 +37,8 @@ class ArenaGame extends FlameGame {
     required this.petImage,
     required this.opponentImage,
     required this.backgroundImage,
+    this.petAnimations,
+    this.opponentAnimations,
     this.sounds,
   });
 
@@ -43,6 +52,12 @@ class ArenaGame extends FlameGame {
   double _shakeStrength = 0;
   final _rng = Random();
 
+  // Whether each fighter is drawn from Flow animations (for tests)
+  @visibleForTesting
+  bool get opponentAnimated => _opponent.animated;
+  @visibleForTesting
+  bool get petAnimated => _pet.animated;
+
   @override
   Color backgroundColor() => AppColors.background;
 
@@ -55,10 +70,20 @@ class ArenaGame extends FlameGame {
     _glow = _Glow()..priority = 1;
     add(_glow);
 
-    _opponent = _FighterSprite(await Sprite.load(opponentImage, images: images))
-      ..priority = 2;
-    _pet = _FighterSprite(await Sprite.load(petImage, images: images))
-      ..priority = 3;
+    _opponent =
+        await _FighterSprite.load(
+            images,
+            picture: opponentImage,
+            animations: opponentAnimations,
+          )
+          ..priority = 2;
+    _pet =
+        await _FighterSprite.load(
+            images,
+            picture: petImage,
+            animations: petAnimations,
+          )
+          ..priority = 3;
     addAll([_opponent, _pet]);
 
     _warning = _Label(size: 46)..priority = 4;
@@ -77,11 +102,11 @@ class ArenaGame extends FlameGame {
   void _layout(Vector2 size) {
     final opponentSize = min(size.x * 0.62, size.y * 0.5);
     _opponent
-      ..size = Vector2.all(opponentSize)
+      ..fitInto(opponentSize)
       ..home = Vector2(size.x / 2, size.y * 0.36);
     final petSize = min(size.x * 0.4, size.y * 0.32);
     _pet
-      ..size = Vector2.all(petSize)
+      ..fitInto(petSize)
       ..home = Vector2(size.x * 0.27, size.y * 0.8);
     _glow.radius = opponentSize * 0.5;
   }
@@ -173,13 +198,17 @@ class ArenaGame extends FlameGame {
     final o = _opponent.home;
     final p = _pet.home;
     switch (event) {
-      case WindupStarted(:final combo):
+      case WindupStarted(:final combo, :final durationMs):
+        _opponent.play(_Pose.windup, overMs: durationMs);
         sounds?.play(Sfx.windup, volume: 0.5);
         if (combo) _float('AGAIN!', o + Vector2(0, -20), AppColors.error);
       case FeintRevealed():
+        _opponent.play(_Pose.idle);
         _float('FAKE!', o, AppColors.gold);
       case OpponentStruck(:final result, :final damage, :final critical):
-        _opponent.lunge(toward: p);
+        _opponent.play(_Pose.strike);
+        // An animated strike already lunges; a still picture needs the help
+        if (!_opponent.animated) _opponent.lunge(toward: p);
         switch (result) {
           case StrikeResult.dodged:
             _float('DODGE!', p + Vector2(0, -60), AppColors.primary);
@@ -294,10 +323,14 @@ class _Cover extends SpriteComponent {
   }
 }
 
-// A fighter picture with its own small animations: a gentle bob, lunging at
-// the other fighter, flashing when hit, growing during a windup, wobbling
-// when stunned, sliding aside on a dodge, and falling over when knocked out
-class _FighterSprite extends SpriteComponent {
+enum _Pose { idle, windup, strike }
+
+// A fighter, drawn from its Flow animations when it has them (idle, wind-up,
+// strike), or else from its still picture. On top of either it adds small
+// effects: a gentle bob, lunging, flashing when hit, growing during a
+// windup, wobbling when stunned, sliding aside on a dodge, and falling over
+// when knocked out.
+class _FighterSprite extends SpriteAnimationGroupComponent<_Pose> {
   Vector2 home = Vector2.zero();
   double grow = 0;
   double wobble = 0;
@@ -305,13 +338,121 @@ class _FighterSprite extends SpriteComponent {
   bool faded = false;
   bool knockedOut = false;
 
+  // True when drawn from Flow animations rather than a still picture
+  final bool animated;
+  // Width / height of a frame
+  final double aspect;
+
   double _time = 0;
   double _lunge = 0;
   Vector2 _lungeTarget = Vector2.zero();
   double _hurt = 0;
   double _shift = 0;
 
-  _FighterSprite(Sprite sprite) : super(sprite: sprite, anchor: Anchor.center);
+  _FighterSprite._({
+    required Map<_Pose, SpriteAnimation> animations,
+    required this.animated,
+    required this.aspect,
+  }) : super(
+         animations: animations,
+         current: _Pose.idle,
+         anchor: Anchor.center,
+         autoResize: false,
+         size: Vector2.all(1),
+       ) {
+    // A strike plays once, then it's back to idle
+    animationTickers?[_Pose.strike]?.onComplete = () => current = _Pose.idle;
+  }
+
+  static Future<_FighterSprite> load(
+    Images images, {
+    required String picture,
+    String? animations,
+  }) async {
+    if (animations != null) {
+      try {
+        return await _fromSheets(images, animations);
+      } catch (_) {
+        // No sheets for this character yet: use the still picture
+      }
+    }
+    final still = SpriteAnimation.spriteList([
+      await Sprite.load(picture, images: images),
+    ], stepTime: 1);
+    return _FighterSprite._(
+      animations: {for (final pose in _Pose.values) pose: still},
+      animated: false,
+      aspect: 1,
+    );
+  }
+
+  static Future<_FighterSprite> _fromSheets(
+    Images images,
+    String jsonPath,
+  ) async {
+    final meta = jsonDecode(await rootBundle.loadString(jsonPath)) as Map;
+    final frameSize = Vector2(
+      (meta['frameWidth'] as num).toDouble(),
+      (meta['frameHeight'] as num).toDouble(),
+    );
+    final folder = jsonPath.substring(0, jsonPath.lastIndexOf('/') + 1);
+    final sheets = meta['animations'] as Map;
+
+    Future<SpriteAnimation> sheet(String name) async {
+      final a = sheets[name] as Map;
+      return SpriteAnimation.fromFrameData(
+        await images.load('$folder${a['file']}'),
+        SpriteAnimationData.sequenced(
+          amount: a['frames'] as int,
+          amountPerRow: a['columns'] as int,
+          stepTime: 1 / (a['fps'] as num),
+          textureSize: frameSize,
+          loop: a['loops'] as bool,
+        ),
+      );
+    }
+
+    final idle = await sheet('idle');
+    return _FighterSprite._(
+      animations: {
+        _Pose.idle: idle,
+        // A character may have an idle but not (yet) its attack
+        _Pose.windup: sheets.containsKey('windup')
+            ? await sheet('windup')
+            : idle,
+        _Pose.strike: sheets.containsKey('strike')
+            ? await sheet('strike')
+            : idle,
+      },
+      animated: true,
+      aspect: frameSize.x / frameSize.y,
+    );
+  }
+
+  // Sizes the fighter to [height], keeping its frames' shape. Animated frames
+  // are cropped tight, so they're drawn a bit smaller than a still picture
+  // (which has empty space around the character) to look the same size.
+  void fitInto(double height) {
+    final h = animated ? height * 0.85 : height;
+    size = Vector2(h * aspect, h);
+  }
+
+  // Switches pose. [overMs] stretches a one-shot animation (the wind-up) to
+  // last exactly that long, so it lines up with the attack's real timing.
+  void play(_Pose pose, {int? overMs}) {
+    final animation = animations?[pose];
+    if (overMs != null && animation != null && !animation.loop) {
+      final step = overMs / 1000 / animation.frames.length;
+      for (final frame in animation.frames) {
+        frame.stepTime = step;
+      }
+    }
+    if (current == pose) {
+      animationTickers?[pose]?.reset();
+    } else {
+      current = pose;
+    }
+  }
 
   void lunge({required Vector2 toward}) {
     _lunge = 1;
@@ -329,7 +470,8 @@ class _FighterSprite extends SpriteComponent {
     // Ease toward the dodge position rather than teleporting
     _shift += (dodgeShift - _shift) * min(1, dt * 18);
 
-    final bob = knockedOut ? 0 : sin(_time * 2.4) * 5;
+    // Animated fighters already move; only still pictures need a bob
+    final bob = knockedOut || animated ? 0 : sin(_time * 2.4) * 5;
     // Out and back: peaks halfway through the lunge
     final lungeAmount = sin(_lunge * pi) * 0.35;
     final lungeOffset = (_lungeTarget - home) * lungeAmount;
@@ -338,6 +480,8 @@ class _FighterSprite extends SpriteComponent {
 
     scale = Vector2.all(1 + grow);
     angle = knockedOut ? min(angle + dt * 4, pi / 2) : wobble * sin(_time * 18);
+    // Freeze the animation once knocked out
+    playing = !knockedOut;
 
     final opacity = knockedOut ? 0.55 : (faded ? 0.45 : 1.0);
     paint.color = Color.fromRGBO(255, 255, 255, opacity);

@@ -10,8 +10,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'fight_engine_test.dart' show rules;
 
-// Loads the real arena scene with the real art and plays a fight through it,
-// so every animation path runs at least once
+// Loads the real arena scene with the real art (an animated opponent and a
+// still-picture pet) and plays a fight through it, so every animation path
+// runs at least once
 void main() {
   testWidgets('the arena scene loads and animates a whole fight', (
     tester,
@@ -23,8 +24,8 @@ void main() {
         petSpeciesKey: 'thunder',
         petStats: BattleStatsEntity(hp: 115, attack: 27, defense: 21),
         opponent: OpponentEntity(
-          key: 'shadow_beast',
-          name: 'Shadow Beast',
+          key: 'wild_pup',
+          name: 'Wild Pup',
           emoji: '',
           level: 3,
           hp: 150,
@@ -47,21 +48,28 @@ void main() {
     final game = ArenaGame(
       engine: engine,
       petImage: AppImages.pet('thunder'),
-      opponentImage: AppImages.opponent('shadow_beast'),
+      opponentImage: AppImages.opponent('wild_pup'),
       backgroundImage: AppImages.arenaBackground,
+      // Wild Pup has Flow animations; Thunder doesn't yet (still picture)
+      opponentAnimations: AppImages.animations('opp_wild_pup'),
+      petAnimations: AppImages.animations('pet_thunder'),
     );
 
     await tester.runAsync(() async {
       await tester.pumpWidget(
-        MaterialApp(home: Scaffold(body: GameWidget(game: game))),
+        MaterialApp(
+          home: Scaffold(body: GameWidget(game: game)),
+        ),
       );
       // Image decoding happens off the test clock
-      for (var i = 0; i < 20 && !game.isLoaded; i++) {
+      for (var i = 0; i < 60 && !game.isLoaded; i++) {
         await Future<void>.delayed(const Duration(milliseconds: 50));
         await tester.pump();
       }
     });
     expect(game.isLoaded, isTrue);
+    expect(game.opponentAnimated, isTrue);
+    expect(game.petAnimated, isFalse);
 
     game.running = true;
     var frames = 0;

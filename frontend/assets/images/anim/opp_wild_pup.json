@@ -1,0 +1,27 @@
+{
+  "frameWidth": 264,
+  "frameHeight": 320,
+  "animations": {
+    "idle": {
+      "file": "opp_wild_pup_idle.webp",
+      "frames": 63,
+      "columns": 8,
+      "fps": 8,
+      "loops": true
+    },
+    "windup": {
+      "file": "opp_wild_pup_windup.webp",
+      "frames": 18,
+      "columns": 8,
+      "fps": 10,
+      "loops": false
+    },
+    "strike": {
+      "file": "opp_wild_pup_strike.webp",
+      "frames": 15,
+      "columns": 8,
+      "fps": 12,
+      "loops": false
+    }
+  }
+}

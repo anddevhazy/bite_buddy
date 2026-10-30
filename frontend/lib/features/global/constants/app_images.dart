@@ -9,6 +9,11 @@ class AppImages {
   // One image per species key from the server's catalog
   static String pet(String speciesKey) => 'assets/images/pet_$speciesKey.png';
 
+  // Animation sheets made from Google Flow clips (design/tools/
+  // flow_to_sprites.py). Characters without them use their still picture.
+  static String animations(String characterKey) =>
+      'assets/images/anim/$characterKey.json';
+
   // One image per opponent key from the server's catalog
   static String opponent(String opponentKey) =>
       'assets/images/opp_$opponentKey.png';

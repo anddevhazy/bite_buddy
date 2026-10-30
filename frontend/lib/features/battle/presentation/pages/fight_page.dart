@@ -38,6 +38,10 @@ class _FightPageState extends State<FightPage> {
     petImage: AppImages.pet(widget.config.petSpeciesKey),
     opponentImage: AppImages.opponent(widget.config.opponent.key),
     backgroundImage: AppImages.arenaBackground,
+    petAnimations: AppImages.animations('pet_${widget.config.petSpeciesKey}'),
+    opponentAnimations: AppImages.animations(
+      'opp_${widget.config.opponent.key}',
+    ),
     sounds: _sounds,
   );
   final SoundService _sounds = sl<SoundService>();
