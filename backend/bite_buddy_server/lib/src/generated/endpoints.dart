@@ -20,7 +20,9 @@ import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
 import '../auth/email_idp_endpoint.dart' as _iuc1hd5t;
 import '../auth/jwt_refresh_endpoint.dart' as _inwq3ztq;
 import '../endpoints/battle_endpoint.dart' as _ilghbeth;
+import '../endpoints/duel_endpoint.dart' as _iq9xj8m5;
 import '../endpoints/leaderboard_endpoint.dart' as _iy80ldha;
+import '../endpoints/league_endpoint.dart' as _ixxtv0ct;
 import '../endpoints/meal_endpoint.dart' as _indvr2gf;
 import '../endpoints/pet_endpoint.dart' as _ic7gura5;
 
@@ -46,10 +48,22 @@ class Endpoints extends _is.EndpointDispatch {
           'battle',
           null,
         ),
+      'duel': _iq9xj8m5.DuelEndpoint()
+        ..initialize(
+          server,
+          'duel',
+          null,
+        ),
       'leaderboard': _iy80ldha.LeaderboardEndpoint()
         ..initialize(
           server,
           'leaderboard',
+          null,
+        ),
+      'league': _ixxtv0ct.LeagueEndpoint()
+        ..initialize(
+          server,
+          'league',
           null,
         ),
       'meal': _indvr2gf.MealEndpoint()
@@ -330,6 +344,79 @@ class Endpoints extends _is.EndpointDispatch {
         ),
       },
     );
+    connectors['duel'] = _is.EndpointConnector(
+      name: 'duel',
+      endpoint: endpoints['duel']!,
+      methodConnectors: {
+        'challenge': _is.MethodConnector(
+          name: 'challenge',
+          params: {
+            'leagueId': _is.ParameterDescription(
+              name: 'leagueId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+            'opponentMemberId': _is.ParameterDescription(
+              name: 'opponentMemberId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['duel'] as _iq9xj8m5.DuelEndpoint).challenge(
+                    session,
+                    params['leagueId'],
+                    params['opponentMemberId'],
+                  ),
+        ),
+        'get': _is.MethodConnector(
+          name: 'get',
+          params: {
+            'duelId': _is.ParameterDescription(
+              name: 'duelId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['duel'] as _iq9xj8m5.DuelEndpoint).get(
+                session,
+                params['duelId'],
+              ),
+        ),
+        'move': _is.MethodConnector(
+          name: 'move',
+          params: {
+            'duelId': _is.ParameterDescription(
+              name: 'duelId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+            'move': _is.ParameterDescription(
+              name: 'move',
+              type: _is.getType<_itk175y8.BattleMove>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['duel'] as _iq9xj8m5.DuelEndpoint).move(
+                session,
+                params['duelId'],
+                params['move'],
+              ),
+        ),
+      },
+    );
     connectors['leaderboard'] = _is.EndpointConnector(
       name: 'leaderboard',
       endpoint: endpoints['leaderboard']!,
@@ -344,6 +431,107 @@ class Endpoints extends _is.EndpointDispatch {
               ) async =>
                   (endpoints['leaderboard'] as _iy80ldha.LeaderboardEndpoint)
                       .top(session),
+        ),
+      },
+    );
+    connectors['league'] = _is.EndpointConnector(
+      name: 'league',
+      endpoint: endpoints['league']!,
+      methodConnectors: {
+        'myLeagues': _is.MethodConnector(
+          name: 'myLeagues',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['league'] as _ixxtv0ct.LeagueEndpoint)
+                  .myLeagues(session),
+        ),
+        'create': _is.MethodConnector(
+          name: 'create',
+          params: {
+            'name': _is.ParameterDescription(
+              name: 'name',
+              type: _is.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['league'] as _ixxtv0ct.LeagueEndpoint).create(
+                    session,
+                    params['name'],
+                  ),
+        ),
+        'join': _is.MethodConnector(
+          name: 'join',
+          params: {
+            'inviteCode': _is.ParameterDescription(
+              name: 'inviteCode',
+              type: _is.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['league'] as _ixxtv0ct.LeagueEndpoint).join(
+                session,
+                params['inviteCode'],
+              ),
+        ),
+        'detail': _is.MethodConnector(
+          name: 'detail',
+          params: {
+            'leagueId': _is.ParameterDescription(
+              name: 'leagueId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['league'] as _ixxtv0ct.LeagueEndpoint).detail(
+                    session,
+                    params['leagueId'],
+                  ),
+        ),
+        'leave': _is.MethodConnector(
+          name: 'leave',
+          params: {
+            'leagueId': _is.ParameterDescription(
+              name: 'leagueId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['league'] as _ixxtv0ct.LeagueEndpoint).leave(
+                    session,
+                    params['leagueId'],
+                  ),
+        ),
+        'trophies': _is.MethodConnector(
+          name: 'trophies',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['league'] as _ixxtv0ct.LeagueEndpoint)
+                  .trophies(session),
         ),
       },
     );

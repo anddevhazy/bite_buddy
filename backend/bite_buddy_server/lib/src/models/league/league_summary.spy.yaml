@@ -1,0 +1,11 @@
+### A league in the caller's list of leagues.
+class: LeagueSummary
+fields:
+  id: int
+  name: String
+  memberCount: int
+  myRank: int
+  myScore: int
+  seasonEndsAt: DateTime
+  ### Friend battles in this league waiting for the caller's move.
+  yourTurnCount: int

@@ -18,6 +18,13 @@ import 'package:bite_buddy_client/src/protocol/battle_state.dart' as _it997u85;
 import 'package:bite_buddy_client/src/protocol/feed_result.dart' as _ik3mz3kd;
 import 'package:bite_buddy_client/src/protocol/leaderboard_entry.dart'
     as _iw02fr1r;
+import 'package:bite_buddy_client/src/protocol/league/duel_view.dart'
+    as _iy1luie2;
+import 'package:bite_buddy_client/src/protocol/league/league_detail.dart'
+    as _il8zp1zv;
+import 'package:bite_buddy_client/src/protocol/league/league_summary.dart'
+    as _i4dmvkfy;
+import 'package:bite_buddy_client/src/protocol/league/trophy.dart' as _iaaiiecv;
 import 'package:bite_buddy_client/src/protocol/meal.dart' as _is4r12e0;
 import 'package:bite_buddy_client/src/protocol/nutrition_insights.dart'
     as _iwtty9ju;
@@ -291,6 +298,45 @@ class EndpointBattle extends _isc.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointDuel extends _isc.EndpointRef {
+  EndpointDuel(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'duel';
+
+  _ida.Future<_iy1luie2.DuelView> challenge(
+    int leagueId,
+    int opponentMemberId,
+  ) => caller.callServerEndpoint<_iy1luie2.DuelView>(
+    'duel',
+    'challenge',
+    {
+      'leagueId': leagueId,
+      'opponentMemberId': opponentMemberId,
+    },
+  );
+
+  _ida.Future<_iy1luie2.DuelView> get(int duelId) =>
+      caller.callServerEndpoint<_iy1luie2.DuelView>(
+        'duel',
+        'get',
+        {'duelId': duelId},
+      );
+
+  _ida.Future<_iy1luie2.DuelView> move(
+    int duelId,
+    _ih5s12ml.BattleMove move,
+  ) => caller.callServerEndpoint<_iy1luie2.DuelView>(
+    'duel',
+    'move',
+    {
+      'duelId': duelId,
+      'move': move,
+    },
+  );
+}
+
+/// {@category Endpoint}
 class EndpointLeaderboard extends _isc.EndpointRef {
   EndpointLeaderboard(_isc.EndpointCaller caller) : super(caller);
 
@@ -301,6 +347,55 @@ class EndpointLeaderboard extends _isc.EndpointRef {
       caller.callServerEndpoint<List<_iw02fr1r.LeaderboardEntry>>(
         'leaderboard',
         'top',
+        {},
+      );
+}
+
+/// {@category Endpoint}
+class EndpointLeague extends _isc.EndpointRef {
+  EndpointLeague(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'league';
+
+  _ida.Future<List<_i4dmvkfy.LeagueSummary>> myLeagues() =>
+      caller.callServerEndpoint<List<_i4dmvkfy.LeagueSummary>>(
+        'league',
+        'myLeagues',
+        {},
+      );
+
+  _ida.Future<_il8zp1zv.LeagueDetail> create(String name) =>
+      caller.callServerEndpoint<_il8zp1zv.LeagueDetail>(
+        'league',
+        'create',
+        {'name': name},
+      );
+
+  _ida.Future<_il8zp1zv.LeagueDetail> join(String inviteCode) =>
+      caller.callServerEndpoint<_il8zp1zv.LeagueDetail>(
+        'league',
+        'join',
+        {'inviteCode': inviteCode},
+      );
+
+  _ida.Future<_il8zp1zv.LeagueDetail> detail(int leagueId) =>
+      caller.callServerEndpoint<_il8zp1zv.LeagueDetail>(
+        'league',
+        'detail',
+        {'leagueId': leagueId},
+      );
+
+  _ida.Future<void> leave(int leagueId) => caller.callServerEndpoint<void>(
+    'league',
+    'leave',
+    {'leagueId': leagueId},
+  );
+
+  _ida.Future<List<_iaaiiecv.Trophy>> trophies() =>
+      caller.callServerEndpoint<List<_iaaiiecv.Trophy>>(
+        'league',
+        'trophies',
         {},
       );
 }
@@ -421,7 +516,9 @@ class Client extends _isc.ServerpodClientShared {
     emailIdp = EndpointEmailIdp(this);
     jwtRefresh = EndpointJwtRefresh(this);
     battle = EndpointBattle(this);
+    duel = EndpointDuel(this);
     leaderboard = EndpointLeaderboard(this);
+    league = EndpointLeague(this);
     meal = EndpointMeal(this);
     pet = EndpointPet(this);
     modules = Modules(this);
@@ -433,7 +530,11 @@ class Client extends _isc.ServerpodClientShared {
 
   late final EndpointBattle battle;
 
+  late final EndpointDuel duel;
+
   late final EndpointLeaderboard leaderboard;
+
+  late final EndpointLeague league;
 
   late final EndpointMeal meal;
 
@@ -446,7 +547,9 @@ class Client extends _isc.ServerpodClientShared {
     'emailIdp': emailIdp,
     'jwtRefresh': jwtRefresh,
     'battle': battle,
+    'duel': duel,
     'leaderboard': leaderboard,
+    'league': league,
     'meal': meal,
     'pet': pet,
   };

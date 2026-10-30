@@ -1,10 +1,12 @@
 import 'package:bite_buddy/features/auth/presentation/pages/sign_in_page.dart';
-import 'package:bite_buddy/features/battle/presentation/pages/battle_arena_page.dart';
+import 'package:bite_buddy/features/battle/presentation/pages/battle_tab_page.dart';
 import 'package:bite_buddy/features/battle/presentation/pages/battle_page.dart';
 import 'package:bite_buddy/features/collection/presentation/pages/collection_page.dart';
 import 'package:bite_buddy/features/global/components/main_shell.dart';
 import 'package:bite_buddy/features/global/pages/splash_screen.dart';
 import 'package:bite_buddy/features/guide/presentation/pages/guide_page.dart';
+import 'package:bite_buddy/features/league/presentation/pages/duel_page.dart';
+import 'package:bite_buddy/features/league/presentation/pages/league_detail_page.dart';
 import 'package:bite_buddy/features/pet/presentation/pages/choose_buddy_page.dart';
 import 'package:bite_buddy/features/pet/presentation/pages/pet_home_page.dart';
 import 'package:bite_buddy/features/profile/presentation/pages/profile_page.dart';
@@ -48,6 +50,12 @@ class Routes {
 
   static const String guidePath = '/guide';
   static const String guideName = 'guide';
+
+  static const String leaguePath = '/league/:id';
+  static const String leagueName = 'league';
+
+  static const String duelPath = '/duel/:id';
+  static const String duelName = 'duel';
 
   static void goToSignIn() {
     if (router.state.matchedLocation != signInPath) {
@@ -112,7 +120,7 @@ class Routes {
               GoRoute(
                 path: battleArenaPath,
                 name: battleArenaName,
-                builder: (context, state) => const BattleArenaPage(),
+                builder: (context, state) => const BattleTabPage(),
               ),
             ],
           ),
@@ -132,6 +140,20 @@ class Routes {
         name: scanResultName,
         parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const ScanResultPage(),
+      ),
+      GoRoute(
+        path: leaguePath,
+        name: leagueName,
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) =>
+            LeagueDetailPage(leagueId: int.parse(state.pathParameters['id']!)),
+      ),
+      GoRoute(
+        path: duelPath,
+        name: duelName,
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) =>
+            DuelPage(duelId: int.parse(state.pathParameters['id']!)),
       ),
       GoRoute(
         path: guidePath,

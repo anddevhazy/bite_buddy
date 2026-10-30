@@ -13,8 +13,19 @@ battle:
   - arena:
   - start:
   - move:
+duel:
+  - challenge:
+  - get:
+  - move:
 leaderboard:
   - top:
+league:
+  - myLeagues:
+  - create:
+  - join:
+  - detail:
+  - leave:
+  - trophies:
 meal:
   - analyze:
   - feed:

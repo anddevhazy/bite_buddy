@@ -1,0 +1,13 @@
+### What happened in one round of a duel, from side A's point of view. Stored
+### on the duel; turned into the caller's point of view by DuelView.
+class: DuelRound
+fields:
+  round: int
+  ### Null when that side missed the deadline.
+  aMove: BattleMove?
+  bMove: BattleMove?
+  damageToA: int
+  damageToB: int
+  aCritical: bool
+  bCritical: bool
+  clash: String

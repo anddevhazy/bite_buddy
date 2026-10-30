@@ -1,0 +1,12 @@
+### One duel round as the caller sees it.
+class: DuelRoundView
+fields:
+  round: int
+  myMove: BattleMove?
+  theirMove: BattleMove?
+  damageDealt: int
+  damageTaken: int
+  myCritical: bool
+  theirCritical: bool
+  clash: String
+  message: String

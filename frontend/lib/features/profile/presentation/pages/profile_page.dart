@@ -10,6 +10,7 @@ import 'package:bite_buddy/features/global/constants/text_styles.dart';
 import 'package:bite_buddy/features/pet/presentation/bloc/pet_cubit.dart';
 import 'package:bite_buddy/features/global/routes/routes.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bite_buddy/features/league/presentation/widgets/trophy_shelf.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -75,6 +76,8 @@ class ProfilePage extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.xl),
           ],
+          const TrophyShelf(),
+          const SizedBox(height: AppSpacing.xl),
           Text('Wallet', style: AppTextStyles.h2),
           const SizedBox(height: AppSpacing.md),
           GlassCard(

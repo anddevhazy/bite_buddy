@@ -12,6 +12,8 @@ enum GuideTopicId {
   grades,
   battles,
   battleMoves,
+  leagues,
+  friendBattles,
   leaderboard,
   weeklySummary,
 }

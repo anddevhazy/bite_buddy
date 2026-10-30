@@ -20,6 +20,14 @@ import 'package:bite_buddy_server/src/generated/battle_state.dart' as _i8mv9gfm;
 import 'package:bite_buddy_server/src/generated/feed_result.dart' as _ien0ctj9;
 import 'package:bite_buddy_server/src/generated/leaderboard_entry.dart'
     as _i5n4mhlw;
+import 'package:bite_buddy_server/src/generated/league/duel_view.dart'
+    as _icu96zeg;
+import 'package:bite_buddy_server/src/generated/league/league_detail.dart'
+    as _i96v2ko3;
+import 'package:bite_buddy_server/src/generated/league/league_summary.dart'
+    as _iol6rmxl;
+import 'package:bite_buddy_server/src/generated/league/trophy.dart'
+    as _i17xpjnn;
 import 'package:bite_buddy_server/src/generated/meal.dart' as _idk4xbnt;
 import 'package:bite_buddy_server/src/generated/nutrition_insights.dart'
     as _irm6gbir;
@@ -168,7 +176,11 @@ class TestEndpoints {
 
   late final _BattleEndpoint battle;
 
+  late final _DuelEndpoint duel;
+
   late final _LeaderboardEndpoint leaderboard;
+
+  late final _LeagueEndpoint league;
 
   late final _MealEndpoint meal;
 
@@ -194,7 +206,15 @@ class _InternalTestEndpoints extends TestEndpoints
       endpoints,
       serializationManager,
     );
+    duel = _DuelEndpoint(
+      endpoints,
+      serializationManager,
+    );
     leaderboard = _LeaderboardEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    league = _LeagueEndpoint(
       endpoints,
       serializationManager,
     );
@@ -634,6 +654,118 @@ class _BattleEndpoint {
   }
 }
 
+class _DuelEndpoint {
+  _DuelEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<_icu96zeg.DuelView> challenge(
+    _ist.TestSessionBuilder sessionBuilder,
+    int leagueId,
+    int opponentMemberId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'duel',
+            method: 'challenge',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'duel',
+          methodName: 'challenge',
+          parameters: _ist.testObjectToJson({
+            'leagueId': leagueId,
+            'opponentMemberId': opponentMemberId,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_icu96zeg.DuelView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_icu96zeg.DuelView> get(
+    _ist.TestSessionBuilder sessionBuilder,
+    int duelId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'duel',
+            method: 'get',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'duel',
+          methodName: 'get',
+          parameters: _ist.testObjectToJson({'duelId': duelId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_icu96zeg.DuelView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_icu96zeg.DuelView> move(
+    _ist.TestSessionBuilder sessionBuilder,
+    int duelId,
+    _itk175y8.BattleMove move,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'duel',
+            method: 'move',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'duel',
+          methodName: 'move',
+          parameters: _ist.testObjectToJson({
+            'duelId': duelId,
+            'move': move,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_icu96zeg.DuelView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
 class _LeaderboardEndpoint {
   _LeaderboardEndpoint(
     this._endpointDispatch,
@@ -667,6 +799,201 @@ class _LeaderboardEndpoint {
                   _localCallContext.arguments,
                 )
                 as _ida.Future<List<_i5n4mhlw.LeaderboardEntry>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _LeagueEndpoint {
+  _LeagueEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<List<_iol6rmxl.LeagueSummary>> myLeagues(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'league',
+            method: 'myLeagues',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'league',
+          methodName: 'myLeagues',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_iol6rmxl.LeagueSummary>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_i96v2ko3.LeagueDetail> create(
+    _ist.TestSessionBuilder sessionBuilder,
+    String name,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'league',
+            method: 'create',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'league',
+          methodName: 'create',
+          parameters: _ist.testObjectToJson({'name': name}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_i96v2ko3.LeagueDetail>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_i96v2ko3.LeagueDetail> join(
+    _ist.TestSessionBuilder sessionBuilder,
+    String inviteCode,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'league',
+            method: 'join',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'league',
+          methodName: 'join',
+          parameters: _ist.testObjectToJson({'inviteCode': inviteCode}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_i96v2ko3.LeagueDetail>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_i96v2ko3.LeagueDetail> detail(
+    _ist.TestSessionBuilder sessionBuilder,
+    int leagueId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'league',
+            method: 'detail',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'league',
+          methodName: 'detail',
+          parameters: _ist.testObjectToJson({'leagueId': leagueId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_i96v2ko3.LeagueDetail>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<void> leave(
+    _ist.TestSessionBuilder sessionBuilder,
+    int leagueId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'league',
+            method: 'leave',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'league',
+          methodName: 'leave',
+          parameters: _ist.testObjectToJson({'leagueId': leagueId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<List<_i17xpjnn.Trophy>> trophies(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'league',
+            method: 'trophies',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'league',
+          methodName: 'trophies',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_i17xpjnn.Trophy>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

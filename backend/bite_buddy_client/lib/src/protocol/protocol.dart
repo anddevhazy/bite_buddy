@@ -13,6 +13,9 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:bite_buddy_client/src/protocol/leaderboard_entry.dart'
     as _iw02fr1r;
+import 'package:bite_buddy_client/src/protocol/league/league_summary.dart'
+    as _i4dmvkfy;
+import 'package:bite_buddy_client/src/protocol/league/trophy.dart' as _iaaiiecv;
 import 'package:bite_buddy_client/src/protocol/meal.dart' as _is4r12e0;
 import 'package:bite_buddy_client/src/protocol/pet_species.dart' as _i12uia3s;
 import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
@@ -30,6 +33,18 @@ import 'battle_status.dart' as _ib4xlijd;
 import 'errors/bite_buddy_exception.dart' as _in42pmv9;
 import 'feed_result.dart' as _i6546n9y;
 import 'leaderboard_entry.dart' as _ikawkn1p;
+import 'league/duel.dart' as _i4ouuzm2;
+import 'league/duel_round.dart' as _i9ikuwzg;
+import 'league/duel_round_view.dart' as _iwzwahda;
+import 'league/duel_status.dart' as _i1rc3le2;
+import 'league/duel_view.dart' as _ihf53btn;
+import 'league/league.dart' as _iu6wab7g;
+import 'league/league_detail.dart' as _i535uegq;
+import 'league/league_member.dart' as _ixajhlyi;
+import 'league/league_standing.dart' as _itpdgapo;
+import 'league/league_summary.dart' as _idqobzdi;
+import 'league/season_result.dart' as _i7znqzmr;
+import 'league/trophy.dart' as _ij1ocmo2;
 import 'meal.dart' as _ixnoudrx;
 import 'nutrition_insights.dart' as _ik434gbd;
 import 'opponent.dart' as _i2ot5zrj;
@@ -45,6 +60,18 @@ export 'battle_status.dart';
 export 'errors/bite_buddy_exception.dart';
 export 'feed_result.dart';
 export 'leaderboard_entry.dart';
+export 'league/duel.dart';
+export 'league/duel_round.dart';
+export 'league/duel_round_view.dart';
+export 'league/duel_status.dart';
+export 'league/duel_view.dart';
+export 'league/league.dart';
+export 'league/league_detail.dart';
+export 'league/league_member.dart';
+export 'league/league_standing.dart';
+export 'league/league_summary.dart';
+export 'league/season_result.dart';
+export 'league/trophy.dart';
 export 'meal.dart';
 export 'nutrition_insights.dart';
 export 'opponent.dart';
@@ -116,6 +143,42 @@ class Protocol extends _isc.SerializationManager {
     if (t == _ikawkn1p.LeaderboardEntry) {
       return _ikawkn1p.LeaderboardEntry.fromJson(data) as T;
     }
+    if (t == _i4ouuzm2.Duel) {
+      return _i4ouuzm2.Duel.fromJson(data) as T;
+    }
+    if (t == _i9ikuwzg.DuelRound) {
+      return _i9ikuwzg.DuelRound.fromJson(data) as T;
+    }
+    if (t == _iwzwahda.DuelRoundView) {
+      return _iwzwahda.DuelRoundView.fromJson(data) as T;
+    }
+    if (t == _i1rc3le2.DuelStatus) {
+      return _i1rc3le2.DuelStatus.fromJson(data) as T;
+    }
+    if (t == _ihf53btn.DuelView) {
+      return _ihf53btn.DuelView.fromJson(data) as T;
+    }
+    if (t == _iu6wab7g.League) {
+      return _iu6wab7g.League.fromJson(data) as T;
+    }
+    if (t == _i535uegq.LeagueDetail) {
+      return _i535uegq.LeagueDetail.fromJson(data) as T;
+    }
+    if (t == _ixajhlyi.LeagueMember) {
+      return _ixajhlyi.LeagueMember.fromJson(data) as T;
+    }
+    if (t == _itpdgapo.LeagueStanding) {
+      return _itpdgapo.LeagueStanding.fromJson(data) as T;
+    }
+    if (t == _idqobzdi.LeagueSummary) {
+      return _idqobzdi.LeagueSummary.fromJson(data) as T;
+    }
+    if (t == _i7znqzmr.SeasonResult) {
+      return _i7znqzmr.SeasonResult.fromJson(data) as T;
+    }
+    if (t == _ij1ocmo2.Trophy) {
+      return _ij1ocmo2.Trophy.fromJson(data) as T;
+    }
     if (t == _ixnoudrx.Meal) {
       return _ixnoudrx.Meal.fromJson(data) as T;
     }
@@ -163,6 +226,45 @@ class Protocol extends _isc.SerializationManager {
       return (data != null ? _ikawkn1p.LeaderboardEntry.fromJson(data) : null)
           as T;
     }
+    if (t == _isc.getType<_i4ouuzm2.Duel?>()) {
+      return (data != null ? _i4ouuzm2.Duel.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_i9ikuwzg.DuelRound?>()) {
+      return (data != null ? _i9ikuwzg.DuelRound.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_iwzwahda.DuelRoundView?>()) {
+      return (data != null ? _iwzwahda.DuelRoundView.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_i1rc3le2.DuelStatus?>()) {
+      return (data != null ? _i1rc3le2.DuelStatus.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_ihf53btn.DuelView?>()) {
+      return (data != null ? _ihf53btn.DuelView.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_iu6wab7g.League?>()) {
+      return (data != null ? _iu6wab7g.League.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_i535uegq.LeagueDetail?>()) {
+      return (data != null ? _i535uegq.LeagueDetail.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_ixajhlyi.LeagueMember?>()) {
+      return (data != null ? _ixajhlyi.LeagueMember.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_itpdgapo.LeagueStanding?>()) {
+      return (data != null ? _itpdgapo.LeagueStanding.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_idqobzdi.LeagueSummary?>()) {
+      return (data != null ? _idqobzdi.LeagueSummary.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_i7znqzmr.SeasonResult?>()) {
+      return (data != null ? _i7znqzmr.SeasonResult.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_ij1ocmo2.Trophy?>()) {
+      return (data != null ? _ij1ocmo2.Trophy.fromJson(data) : null) as T;
+    }
     if (t == _isc.getType<_ixnoudrx.Meal?>()) {
       return (data != null ? _ixnoudrx.Meal.fromJson(data) : null) as T;
     }
@@ -185,12 +287,42 @@ class Protocol extends _isc.SerializationManager {
               .toList()
           as T;
     }
+    if (t == List<_iz303hum.BattleMove?>) {
+      return (data as List)
+              .map((e) => deserialize<_iz303hum.BattleMove?>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_itpdgapo.LeagueStanding>) {
+      return (data as List)
+              .map((e) => deserialize<_itpdgapo.LeagueStanding>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_ihf53btn.DuelView>) {
+      return (data as List)
+              .map((e) => deserialize<_ihf53btn.DuelView>(e))
+              .toList()
+          as T;
+    }
     if (t == List<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toList() as T;
     }
     if (t == List<_iw02fr1r.LeaderboardEntry>) {
       return (data as List)
               .map((e) => deserialize<_iw02fr1r.LeaderboardEntry>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i4dmvkfy.LeagueSummary>) {
+      return (data as List)
+              .map((e) => deserialize<_i4dmvkfy.LeagueSummary>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_iaaiiecv.Trophy>) {
+      return (data as List)
+              .map((e) => deserialize<_iaaiiecv.Trophy>(e))
               .toList()
           as T;
     }
@@ -225,6 +357,18 @@ class Protocol extends _isc.SerializationManager {
       _in42pmv9.BiteBuddyException => 'BiteBuddyException',
       _i6546n9y.FeedResult => 'FeedResult',
       _ikawkn1p.LeaderboardEntry => 'LeaderboardEntry',
+      _i4ouuzm2.Duel => 'Duel',
+      _i9ikuwzg.DuelRound => 'DuelRound',
+      _iwzwahda.DuelRoundView => 'DuelRoundView',
+      _i1rc3le2.DuelStatus => 'DuelStatus',
+      _ihf53btn.DuelView => 'DuelView',
+      _iu6wab7g.League => 'League',
+      _i535uegq.LeagueDetail => 'LeagueDetail',
+      _ixajhlyi.LeagueMember => 'LeagueMember',
+      _itpdgapo.LeagueStanding => 'LeagueStanding',
+      _idqobzdi.LeagueSummary => 'LeagueSummary',
+      _i7znqzmr.SeasonResult => 'SeasonResult',
+      _ij1ocmo2.Trophy => 'Trophy',
       _ixnoudrx.Meal => 'Meal',
       _ik434gbd.NutritionInsights => 'NutritionInsights',
       _i2ot5zrj.Opponent => 'Opponent',
@@ -264,6 +408,30 @@ class Protocol extends _isc.SerializationManager {
         return 'FeedResult';
       case _ikawkn1p.LeaderboardEntry():
         return 'LeaderboardEntry';
+      case _i4ouuzm2.Duel():
+        return 'Duel';
+      case _i9ikuwzg.DuelRound():
+        return 'DuelRound';
+      case _iwzwahda.DuelRoundView():
+        return 'DuelRoundView';
+      case _i1rc3le2.DuelStatus():
+        return 'DuelStatus';
+      case _ihf53btn.DuelView():
+        return 'DuelView';
+      case _iu6wab7g.League():
+        return 'League';
+      case _i535uegq.LeagueDetail():
+        return 'LeagueDetail';
+      case _ixajhlyi.LeagueMember():
+        return 'LeagueMember';
+      case _itpdgapo.LeagueStanding():
+        return 'LeagueStanding';
+      case _idqobzdi.LeagueSummary():
+        return 'LeagueSummary';
+      case _i7znqzmr.SeasonResult():
+        return 'SeasonResult';
+      case _ij1ocmo2.Trophy():
+        return 'Trophy';
       case _ixnoudrx.Meal():
         return 'Meal';
       case _ik434gbd.NutritionInsights():
@@ -325,6 +493,42 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'LeaderboardEntry') {
       return deserialize<_ikawkn1p.LeaderboardEntry>(data['data']);
+    }
+    if (dataClassName == 'Duel') {
+      return deserialize<_i4ouuzm2.Duel>(data['data']);
+    }
+    if (dataClassName == 'DuelRound') {
+      return deserialize<_i9ikuwzg.DuelRound>(data['data']);
+    }
+    if (dataClassName == 'DuelRoundView') {
+      return deserialize<_iwzwahda.DuelRoundView>(data['data']);
+    }
+    if (dataClassName == 'DuelStatus') {
+      return deserialize<_i1rc3le2.DuelStatus>(data['data']);
+    }
+    if (dataClassName == 'DuelView') {
+      return deserialize<_ihf53btn.DuelView>(data['data']);
+    }
+    if (dataClassName == 'League') {
+      return deserialize<_iu6wab7g.League>(data['data']);
+    }
+    if (dataClassName == 'LeagueDetail') {
+      return deserialize<_i535uegq.LeagueDetail>(data['data']);
+    }
+    if (dataClassName == 'LeagueMember') {
+      return deserialize<_ixajhlyi.LeagueMember>(data['data']);
+    }
+    if (dataClassName == 'LeagueStanding') {
+      return deserialize<_itpdgapo.LeagueStanding>(data['data']);
+    }
+    if (dataClassName == 'LeagueSummary') {
+      return deserialize<_idqobzdi.LeagueSummary>(data['data']);
+    }
+    if (dataClassName == 'SeasonResult') {
+      return deserialize<_i7znqzmr.SeasonResult>(data['data']);
+    }
+    if (dataClassName == 'Trophy') {
+      return deserialize<_ij1ocmo2.Trophy>(data['data']);
     }
     if (dataClassName == 'Meal') {
       return deserialize<_ixnoudrx.Meal>(data['data']);

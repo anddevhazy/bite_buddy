@@ -1,0 +1,16 @@
+### The final standings of one finished weekly season. Its unique index is
+### what stops a season being paid out twice.
+class: SeasonResult
+table: season_result
+fields:
+  leagueId: int
+  ### Monday 00:00 UTC of the season's week.
+  weekStart: DateTime
+  ### Null when nobody scored or the league had fewer than 2 members.
+  winnerUserId: UuidValue?
+  standings: List<LeagueStanding>
+  createdAt: DateTime
+indexes:
+  season_result_unique_idx:
+    fields: leagueId, weekStart
+    unique: true

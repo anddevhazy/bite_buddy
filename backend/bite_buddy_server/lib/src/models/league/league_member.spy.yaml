@@ -1,0 +1,13 @@
+### One user's membership of a league.
+class: LeagueMember
+table: league_member
+fields:
+  leagueId: int
+  userId: UuidValue
+  joinedAt: DateTime
+indexes:
+  league_member_unique_idx:
+    fields: leagueId, userId
+    unique: true
+  league_member_user_idx:
+    fields: userId

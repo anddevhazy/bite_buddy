@@ -1,0 +1,13 @@
+### Awarded to a league's weekly winner, shown on their profile.
+class: Trophy
+table: trophy
+fields:
+  userId: UuidValue
+  leagueId: int
+  leagueName: String
+  weekStart: DateTime
+  score: int
+  createdAt: DateTime
+indexes:
+  trophy_user_idx:
+    fields: userId

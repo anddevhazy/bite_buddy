@@ -97,6 +97,7 @@ class GuideContent {
       title: 'Coins',
       summary: 'Your reward for winning battles.',
       points: [
+        'Win a week in a friend league for 500 coins.',
         'Each opponent pays a set number of coins when you beat it, shown on '
             'its card in the Battle Arena. Tougher opponents pay more.',
         'Losing a battle pays nothing.',
@@ -174,6 +175,45 @@ class GuideContent {
             'do; the toughest bluff often. Each card says how often.',
         'When you both pick the same move, you trade hits; if you both '
             'defend, you each recover a little HP.',
+      ],
+    ),
+    GuideTopic(
+      id: GuideTopicId.leagues,
+      emoji: '🏆',
+      title: 'Friend leagues',
+      summary: 'Compete with friends in weekly seasons.',
+      points: [
+        'Create a league and share its invite code, or join a friend\'s '
+            '(Battle tab, then Friends). Up to 20 people per league, and you '
+            'can be in several.',
+        'Seasons run Monday to Sunday (they start at midnight UTC, which is '
+            '1am in Nigeria). A new one starts automatically.',
+        'Your season score is 70% feeding and 30% friend battles.',
+        'Feeding: your average meal health score, scaled by how many of the 7 '
+            'days you fed your buddy. Eating well every day beats eating a '
+            'lot on one day.',
+        'Battles: 20 points per win against a league friend, up to 100. Only '
+            '2 wins against the same friend count each season.',
+        'The weekly winner gets 500 coins and a trophy on their profile. '
+            'Ties go to the better feeding score.',
+      ],
+    ),
+    GuideTopic(
+      id: GuideTopicId.friendBattles,
+      emoji: '🤺',
+      title: 'Friend battles',
+      summary: 'Turn-based battles you play in your own time.',
+      points: [
+        'Challenge anyone in your league from the season table.',
+        'Each round, you both pick a move in secret. It plays out once both '
+            'moves are in, using the usual rules: Attack beats Special, '
+            'Special beats Defend, Defend beats Attack.',
+        'There are no tells against a friend. Watch their last few moves '
+            'instead and guess what they\'ll do next.',
+        'You have 24 hours to make each move. Miss one and your buddy does '
+            'nothing that round; miss two in a row and you forfeit.',
+        "Friend battles don't cost energy or pay coins: they count toward "
+            'your league season score.',
       ],
     ),
     GuideTopic(

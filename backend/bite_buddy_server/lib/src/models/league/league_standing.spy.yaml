@@ -1,0 +1,19 @@
+### One member's row in a league's season table. Scores are 0-100; the total
+### is 70% feeding and 30% battles.
+class: LeagueStanding
+fields:
+  rank: int
+  ### The member's id in this league, used to challenge them.
+  memberId: int
+  petName: String
+  speciesKey: String
+  level: int
+  ### Average health score of the meals fed this season.
+  averageMealScore: int
+  daysFed: int
+  feedingScore: int
+  ### Duel wins this season that count toward the score.
+  wins: int
+  battleScore: int
+  totalScore: int
+  isYou: bool

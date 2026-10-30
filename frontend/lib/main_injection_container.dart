@@ -3,6 +3,7 @@ import 'package:bite_buddy/features/battle/battle_injection_container.dart';
 import 'package:bite_buddy/features/collection/collection_injection_container.dart';
 import 'package:bite_buddy/features/global/core/config/flavor_config.dart';
 import 'package:bite_buddy/features/insights/insights_injection_container.dart';
+import 'package:bite_buddy/features/league/league_injection_container.dart';
 import 'package:bite_buddy/features/pet/pet_injection_container.dart';
 import 'package:bite_buddy/features/scanner/scanner_injection_container.dart';
 import 'package:bite_buddy/service_locator.dart';
@@ -32,4 +33,5 @@ Future<void> init() async {
   await collectionInjectionContainer();
   await battleInjectionContainer();
   await insightsInjectionContainer();
+  await leagueInjectionContainer();
 }

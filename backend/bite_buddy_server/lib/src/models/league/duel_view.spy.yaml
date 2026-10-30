@@ -1,0 +1,34 @@
+### A duel as one of its two players sees it: "my" side and "their" side.
+class: DuelView
+fields:
+  id: int
+  leagueId: int
+  myPetName: String
+  mySpeciesKey: String
+  theirPetName: String
+  theirSpeciesKey: String
+  myHp: int
+  myMaxHp: int
+  theirHp: int
+  theirMaxHp: int
+  myAttack: int
+  myDefense: int
+  theirAttack: int
+  theirDefense: int
+  mySpecialCooldown: int
+  round: int
+  roundDeadline: DateTime
+  ### True if the caller still has to pick a move this round.
+  yourTurn: bool
+  ### True if the other player has already picked theirs.
+  theyHaveMoved: bool
+  ### Rounds the caller has missed in a row (two means a forfeit).
+  youMissed: int
+  ### The other player's last few moves, newest last (null = missed).
+  theirRecentMoves: List<BattleMove?>
+  lastRound: DuelRoundView?
+  status: DuelStatus
+  ### Set when finished: won, lost or draw.
+  result: String?
+  ### Set when finished: how it ended, e.g. "Knockout" or "Forfeit".
+  endReason: String?

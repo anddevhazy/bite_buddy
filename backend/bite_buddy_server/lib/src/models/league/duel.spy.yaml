@@ -1,0 +1,52 @@
+### A turn-based battle between two league friends, played asynchronously:
+### each round both pick a move in secret, and the round resolves once both
+### have (or the deadline passes). Side A challenged side B.
+class: Duel
+table: duel
+fields:
+  leagueId: int
+  ### Monday of the season week it was started in; its wins count there.
+  weekStart: DateTime
+  aUserId: UuidValue
+  bUserId: UuidValue
+  aPetName: String
+  bPetName: String
+  aSpeciesKey: String
+  bSpeciesKey: String
+  ### Fighter stats, fixed when the duel starts.
+  aMaxHp: int
+  bMaxHp: int
+  aAttack: int
+  bAttack: int
+  aDefense: int
+  bDefense: int
+  aHp: int
+  bHp: int
+  aSpecialCooldown: int
+  bSpecialCooldown: int
+  ### This round's secret moves. Never sent to the app.
+  aMove: BattleMove?, scope=serverOnly
+  bMove: BattleMove?, scope=serverOnly
+  ### Rounds each side has missed in a row; two means they forfeit.
+  aMissed: int
+  bMissed: int
+  ### Every move each side has made, oldest first (null for a missed round).
+  aHistory: List<BattleMove?>
+  bHistory: List<BattleMove?>
+  round: int
+  roundDeadline: DateTime
+  status: DuelStatus
+  ### Null while ongoing, and for a draw.
+  winnerUserId: UuidValue?
+  ### How it ended: "Knockout", "Forfeit" or "Time's up". Null while ongoing.
+  endReason: String?
+  lastRound: DuelRound?
+  createdAt: DateTime
+  finishedAt: DateTime?
+indexes:
+  duel_league_idx:
+    fields: leagueId
+  duel_a_idx:
+    fields: aUserId
+  duel_b_idx:
+    fields: bUserId

@@ -1,0 +1,5 @@
+enum: DuelStatus
+serialized: byName
+values:
+  - ongoing
+  - finished

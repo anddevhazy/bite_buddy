@@ -1,0 +1,13 @@
+### A group of friends competing in weekly seasons.
+class: League
+table: league
+fields:
+  name: String
+  ### Short code friends type in to join, e.g. "K7Q2MX".
+  inviteCode: String
+  ownerId: UuidValue
+  createdAt: DateTime
+indexes:
+  league_invite_code_idx:
+    fields: inviteCode
+    unique: true
