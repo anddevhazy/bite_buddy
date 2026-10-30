@@ -6,7 +6,5 @@ import 'package:bite_buddy/features/portrait/domain/entities/portrait_draft_enti
 abstract class PortraitRemoteDataSource {
   Future<PortraitDraftEntity> create(Uint8List photo);
 
-  Future<PetEntity> apply(int portraitId);
-
-  Future<PetEntity> clear();
+  Future<PetEntity> adopt(int portraitId, String name);
 }

@@ -757,12 +757,17 @@ class Endpoints extends _is.EndpointDispatch {
                     params['photo'],
                   ),
         ),
-        'apply': _is.MethodConnector(
-          name: 'apply',
+        'adopt': _is.MethodConnector(
+          name: 'adopt',
           params: {
             'portraitId': _is.ParameterDescription(
               name: 'portraitId',
               type: _is.getType<int>(),
+              nullable: false,
+            ),
+            'name': _is.ParameterDescription(
+              name: 'name',
+              type: _is.getType<String>(),
               nullable: false,
             ),
           },
@@ -771,20 +776,11 @@ class Endpoints extends _is.EndpointDispatch {
                 _is.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['portrait'] as _ipr4708j.PortraitEndpoint).apply(
+                  (endpoints['portrait'] as _ipr4708j.PortraitEndpoint).adopt(
                     session,
                     params['portraitId'],
+                    params['name'],
                   ),
-        ),
-        'clear': _is.MethodConnector(
-          name: 'clear',
-          params: {},
-          call:
-              (
-                _is.Session session,
-                Map<String, dynamic> params,
-              ) async => (endpoints['portrait'] as _ipr4708j.PortraitEndpoint)
-                  .clear(session),
         ),
         'image': _is.MethodConnector(
           name: 'image',

@@ -31,10 +31,6 @@ class PortraitRemoteDataSourceImpl implements PortraitRemoteDataSource {
   }
 
   @override
-  Future<PetEntity> apply(int portraitId) async =>
-      PetModel.fromProtocol(await client.portrait.apply(portraitId));
-
-  @override
-  Future<PetEntity> clear() async =>
-      PetModel.fromProtocol(await client.portrait.clear());
+  Future<PetEntity> adopt(int portraitId, String name) async =>
+      PetModel.fromProtocol(await client.portrait.adopt(portraitId, name));
 }

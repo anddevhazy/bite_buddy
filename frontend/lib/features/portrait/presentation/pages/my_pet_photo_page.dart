@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:bite_buddy/features/global/components/app_toast.dart';
 import 'package:bite_buddy/features/global/components/buddy_picture.dart';
 import 'package:bite_buddy/features/global/components/forest_background.dart';
@@ -8,6 +10,7 @@ import 'package:bite_buddy/features/global/constants/text_styles.dart';
 import 'package:bite_buddy/features/guide/domain/entities/guide_topic.dart';
 import 'package:bite_buddy/features/guide/presentation/widgets/info_button.dart';
 import 'package:bite_buddy/features/pet/presentation/bloc/pet_cubit.dart';
+import 'package:bite_buddy/features/pet/presentation/widgets/name_buddy_sheet.dart';
 import 'package:bite_buddy/features/portrait/presentation/bloc/portrait_cubit.dart';
 import 'package:bite_buddy/service_locator.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +18,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
-// "Use my own pet": turn a photo of the user's real pet into their buddy
+// "My own pet", the fifth choice on the buddy picker: a photo of the user's
+// real pet becomes their buddy. Once it's adopted, the picker underneath
+// moves on to the home screen.
 class MyPetPhotoPage extends StatelessWidget {
   const MyPetPhotoPage({super.key});
 
@@ -33,7 +38,6 @@ class _MyPetPhotoView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pet = context.read<PetCubit>().pet;
     return Scaffold(
       body: ForestBackground(
         child: SafeArea(
@@ -45,16 +49,8 @@ class _MyPetPhotoView extends StatelessWidget {
                   message: state.message,
                   type: ToastType.error,
                 );
-              } else if (state is PortraitApplied) {
+              } else if (state is PortraitAdopted) {
                 context.read<PetCubit>().updatePet(state.pet);
-                AppToast.show(
-                  context: context,
-                  message: state.pet.portraitId == null
-                      ? '${state.pet.name} is back to their buddy look'
-                      : '${state.pet.name} has a new look!',
-                  type: ToastType.success,
-                );
-                context.pop();
               }
             },
             builder: (context, state) {
@@ -75,7 +71,7 @@ class _MyPetPhotoView extends StatelessWidget {
                       ),
                       Expanded(
                         child: Text(
-                          'Use my own pet',
+                          'My own pet',
                           textAlign: TextAlign.center,
                           style: AppTextStyles.h2,
                         ),
@@ -85,7 +81,7 @@ class _MyPetPhotoView extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSpacing.lg),
                   ...switch (state) {
-                    PortraitReady(:final draft, :final applying) => [
+                    PortraitReady(:final draft, :final adopting) => [
                       Center(
                         child: PortraitCircle(bytes: draft.image, size: 220),
                       ),
@@ -97,14 +93,14 @@ class _MyPetPhotoView extends StatelessWidget {
                       ),
                       const SizedBox(height: AppSpacing.xl),
                       GameButton(
-                        label: 'Use this picture',
-                        isLoading: applying,
-                        onPressed: () => context.read<PortraitCubit>().apply(),
+                        label: 'Name your buddy',
+                        isLoading: adopting,
+                        onPressed: () => _name(context, draft.image),
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       if (draft.triesLeftToday > 0)
                         TextButton(
-                          onPressed: applying
+                          onPressed: adopting
                               ? null
                               : () => context.read<PortraitCubit>().startOver(),
                           child: Text(
@@ -130,8 +126,8 @@ class _MyPetPhotoView extends StatelessWidget {
                     _ => [
                       Text(
                         'Take or choose a photo of your real pet and it '
-                        'becomes how your buddy looks everywhere: on My Pet, '
-                        'in battles, leagues and your home-screen widget.',
+                        'becomes your buddy, everywhere: on My Pet, in '
+                        'battles, leagues and your home-screen widget.',
                         style: AppTextStyles.bodyMedium,
                       ),
                       const SizedBox(height: AppSpacing.sm),
@@ -151,14 +147,6 @@ class _MyPetPhotoView extends StatelessWidget {
                         label: 'Choose from gallery',
                         onPressed: () => _pick(context, ImageSource.gallery),
                       ),
-                      if (pet?.portraitId != null) ...[
-                        const SizedBox(height: AppSpacing.lg),
-                        TextButton(
-                          onPressed: () =>
-                              context.read<PortraitCubit>().clear(),
-                          child: const Text('Go back to my buddy picture'),
-                        ),
-                      ],
                     ],
                   },
                 ],
@@ -168,6 +156,22 @@ class _MyPetPhotoView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _name(BuildContext context, Uint8List picture) async {
+    final name = await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.card,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (_) =>
+          NameBuddySheet(picture: PortraitCircle(bytes: picture, size: 90)),
+    );
+    if (name != null && context.mounted) {
+      await context.read<PortraitCubit>().adopt(name);
+    }
   }
 
   Future<void> _pick(BuildContext context, ImageSource source) async {

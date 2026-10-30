@@ -45,8 +45,9 @@ class PetService {
     Session session,
     UuidValue ownerId,
     String speciesKey,
-    String name,
-  ) async {
+    String name, {
+    int? portraitId,
+  }) async {
     if (findSpecies(speciesKey) == null) {
       throw invalidInputError('Unknown pet species.');
     }
@@ -70,7 +71,7 @@ class PetService {
         speciesKey: speciesKey,
         name: trimmed,
         now: DateTime.now().toUtc(),
-      ),
+      ).copyWith(portraitId: portraitId),
     );
   }
 }

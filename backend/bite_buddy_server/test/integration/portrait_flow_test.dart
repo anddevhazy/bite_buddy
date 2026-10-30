@@ -8,7 +8,7 @@ import 'package:test/test.dart';
 
 import 'test_tools/serverpod_test_tools.dart';
 
-// "Use my own pet". The AI check isn't called here: portraits are inserted
+// "My own pet" on the buddy picker. The AI check isn't called here: portraits are inserted
 // directly, and the upload checks tested are the ones that run before it.
 void main() {
   withServerpod('Pet portraits', (sessionBuilder, endpoints) {
@@ -27,8 +27,8 @@ void main() {
       bobId = const Uuid().v4obj();
       alice = signIn(aliceId);
       bob = signIn(bobId);
-      final key = (await endpoints.pet.listSpecies(alice)).first.key;
-      await endpoints.pet.adopt(alice, key, 'Fluffy');
+      // Alice is new and will pick "My own pet"; Bob has a normal buddy
+      final key = (await endpoints.pet.listSpecies(bob)).first.key;
       await endpoints.pet.adopt(bob, key, 'Rex');
     });
 
@@ -48,30 +48,42 @@ void main() {
       File('test/fixtures/app_bg.jpg').readAsBytesSync(),
     );
 
-    test('a portrait goes on the pet and shows up for friends', () async {
+    test('adopting with a portrait picks a species and shows the picture '
+        'to friends', () async {
       final draft = await portrait(aliceId);
 
-      // Nobody else can see a draft
+      // Nobody else can see a draft, or adopt with it
       await expectLater(
         endpoints.portrait.image(bob, draft.id!),
         throwsA(isA<BiteBuddyException>()),
       );
-      // ...or use someone else's
       await expectLater(
-        endpoints.portrait.apply(bob, draft.id!),
+        endpoints.portrait.adopt(signIn(const Uuid().v4obj()), draft.id!, 'X'),
         throwsA(isA<BiteBuddyException>()),
       );
 
-      final pet = await endpoints.portrait.apply(alice, draft.id!);
+      final pet = await endpoints.portrait.adopt(alice, draft.id!, 'Biscuit');
+      expect(pet.name, 'Biscuit');
       expect(pet.portraitId, draft.id);
+      final species = await endpoints.pet.listSpecies(alice);
+      expect(species.map((s) => s.key), contains(pet.speciesKey));
+
       expect(
         (await endpoints.portrait.image(bob, draft.id!)).lengthInBytes,
         3,
       );
 
-      final cleared = await endpoints.portrait.clear(alice);
-      expect(cleared.portraitId, isNull);
-      expect((await endpoints.pet.getMyPet(alice))!.portraitId, isNull);
+      // One pet per user, however it was adopted
+      await expectLater(
+        endpoints.portrait.adopt(alice, draft.id!, 'Again'),
+        throwsA(isA<BiteBuddyException>()),
+      );
+      await expectLater(
+        endpoints.portrait.create(bob, photo),
+        throwsA(
+          isA<BiteBuddyException>().having((e) => e.code, 'code', 'PET_EXISTS'),
+        ),
+      );
     });
 
     test('bad uploads are refused before the AI is asked', () async {

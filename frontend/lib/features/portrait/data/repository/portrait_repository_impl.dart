@@ -23,18 +23,9 @@ class PortraitRepositoryImpl implements PortraitRepository {
   }
 
   @override
-  Future<Either<Failure, PetEntity>> apply(int portraitId) async {
+  Future<Either<Failure, PetEntity>> adopt(int portraitId, String name) async {
     try {
-      return Right(await remoteDataSource.apply(portraitId));
-    } catch (e) {
-      return Left(FailureMapper.fromException(e));
-    }
-  }
-
-  @override
-  Future<Either<Failure, PetEntity>> clear() async {
-    try {
-      return Right(await remoteDataSource.clear());
+      return Right(await remoteDataSource.adopt(portraitId, name));
     } catch (e) {
       return Left(FailureMapper.fromException(e));
     }

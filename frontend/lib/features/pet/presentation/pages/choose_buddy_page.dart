@@ -1,7 +1,6 @@
 import 'package:bite_buddy/features/global/components/app_toast.dart';
 import 'package:bite_buddy/features/global/components/forest_background.dart';
 import 'package:bite_buddy/features/global/components/game_art.dart';
-import 'package:bite_buddy/features/global/components/game_button.dart';
 import 'package:bite_buddy/features/global/components/glass_card.dart';
 import 'package:bite_buddy/features/global/components/page_header.dart';
 import 'package:bite_buddy/features/global/constants/app_images.dart';
@@ -12,6 +11,7 @@ import 'package:bite_buddy/features/global/constants/text_styles.dart';
 import 'package:bite_buddy/features/global/routes/routes.dart';
 import 'package:bite_buddy/features/pet/domain/entities/pet_species_entity.dart';
 import 'package:bite_buddy/features/pet/presentation/bloc/pet_cubit.dart';
+import 'package:bite_buddy/features/pet/presentation/widgets/name_buddy_sheet.dart';
 import 'package:bite_buddy/features/pet/presentation/widgets/pet_avatar.dart';
 import 'package:bite_buddy/features/guide/presentation/widgets/info_button.dart';
 import 'package:bite_buddy/features/guide/domain/entities/guide_topic.dart';
@@ -85,6 +85,12 @@ class ChooseBuddyPage extends StatelessWidget {
                         ),
                     ],
                   ),
+                  const SizedBox(height: AppSpacing.md),
+                  _OwnPetCard(
+                    onTap: state is Adopting
+                        ? null
+                        : () => context.pushNamed(Routes.myPetPhotoName),
+                  ),
                   if (state is Adopting) ...[
                     const SizedBox(height: AppSpacing.lg),
                     const Center(
@@ -110,7 +116,10 @@ class ChooseBuddyPage extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (_) => _NameSheet(species: species),
+      builder: (_) => NameBuddySheet(
+        picture: PetAvatar(speciesKey: species.key, size: 90),
+        initialName: species.name,
+      ),
     );
     if (name != null && context.mounted) {
       context.read<PetCubit>().adopt(species.key, name);
@@ -165,67 +174,47 @@ class _BuddyCard extends StatelessWidget {
   }
 }
 
-class _NameSheet extends StatefulWidget {
-  final PetSpeciesEntity species;
+// The fifth choice: a buddy made from a photo of the user's real pet
+class _OwnPetCard extends StatelessWidget {
+  final VoidCallback? onTap;
 
-  const _NameSheet({required this.species});
-
-  @override
-  State<_NameSheet> createState() => _NameSheetState();
-}
-
-class _NameSheetState extends State<_NameSheet> {
-  late final TextEditingController _controller = TextEditingController(
-    text: widget.species.name,
-  );
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+  const _OwnPetCard({required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        AppSpacing.lg,
-        AppSpacing.lg,
-        AppSpacing.lg,
-        MediaQuery.of(context).viewInsets.bottom + AppSpacing.lg,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+    return GlassCard(
+      onTap: onTap,
+      padding: const EdgeInsets.all(AppSpacing.md),
+      child: Row(
         children: [
-          PetAvatar(speciesKey: widget.species.key, size: 90),
-          Text('Name your buddy', style: AppTextStyles.h2),
-          const SizedBox(height: AppSpacing.md),
-          TextField(
-            controller: _controller,
-            maxLength: 20,
-            textAlign: TextAlign.center,
-            style: AppTextStyles.h3,
-            cursorColor: AppColors.primary,
-            decoration: InputDecoration(
-              counterStyle: AppTextStyles.caption,
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: const BorderSide(color: AppColors.glassBorder),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: const BorderSide(color: AppColors.primary),
-              ),
+          Container(
+            width: 72,
+            height: 72,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.primary.withValues(alpha: 0.2),
+              border: Border.all(color: AppColors.primary, width: 3),
+            ),
+            child: const Icon(
+              Icons.photo_camera_rounded,
+              color: AppColors.primary,
+              size: 32,
             ),
           ),
-          const SizedBox(height: AppSpacing.md),
-          GameButton(
-            label: 'Adopt',
-            onPressed: () {
-              final name = _controller.text.trim();
-              if (name.isNotEmpty) Navigator.pop(context, name);
-            },
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('My own pet', style: AppTextStyles.h3),
+                Text(
+                  'Turn a photo of your real pet into your buddy',
+                  style: AppTextStyles.caption,
+                ),
+              ],
+            ),
           ),
+          const InfoButton(topics: [GuideTopicId.ownPet]),
         ],
       ),
     );

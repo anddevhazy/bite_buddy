@@ -326,19 +326,17 @@ class GuideContent {
     GuideTopic(
       id: GuideTopicId.ownPet,
       emoji: '📸',
-      title: 'Use my own pet',
+      title: 'My own pet',
       summary: 'Turn a photo of your real pet into your buddy.',
       points: [
-        'Tap "Use my own pet" on My Pet, then take or choose a photo.',
+        'When choosing your buddy, tap "My own pet", then take or choose a '
+            'photo.',
         'Use a clear photo of just your pet. Photos with people in them are '
             'refused, and so is anything that isn\'t a real animal.',
         'Your buddy then shows your pet\'s picture everywhere: My Pet, '
             'battles, leagues, shared streaks and the home-screen widget. '
             'Friends see it too.',
-        'It only changes the look. Your buddy keeps its stats, level and '
-            'species powers.',
-        'You can make up to 3 pictures a day, and go back to the original '
-            'buddy picture at any time.',
+        'You can make up to 3 pictures a day while choosing.',
       ],
     ),
   ];

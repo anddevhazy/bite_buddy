@@ -40,8 +40,7 @@ pet:
   - adopt:
 portrait:
   - create:
-  - apply:
-  - clear:
+  - adopt:
   - image:
 streak:
   - mine:

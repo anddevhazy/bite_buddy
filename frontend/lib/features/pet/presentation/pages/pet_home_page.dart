@@ -116,15 +116,6 @@ class _PetHome extends StatelessWidget {
           ),
         ),
         Center(child: Text(pet.name, style: AppTextStyles.h2)),
-        Center(
-          child: TextButton.icon(
-            onPressed: () => context.pushNamed(Routes.myPetPhotoName),
-            icon: const Icon(Icons.photo_camera_rounded, size: 18),
-            label: Text(
-              pet.portraitId == null ? 'Use my own pet' : 'Change picture',
-            ),
-          ),
-        ),
         const SizedBox(height: AppSpacing.sm),
         Center(
           child: Container(

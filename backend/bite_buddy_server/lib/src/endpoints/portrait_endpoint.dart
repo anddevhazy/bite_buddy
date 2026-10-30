@@ -6,7 +6,8 @@ import '../generated/protocol.dart';
 import '../services/services.dart';
 import '../utils/session_user.dart';
 
-// client.portrait: turning a photo of your real pet into your buddy
+// client.portrait: "My own pet", turning a photo of your real pet into
+// your buddy
 class PortraitEndpoint extends Endpoint {
   @override
   bool get requireLogin => true;
@@ -16,11 +17,10 @@ class PortraitEndpoint extends Endpoint {
   Future<PortraitDraft> create(Session session, ByteData photo) =>
       portraitService.create(session, session.userId, photo);
 
-  Future<Pet> apply(Session session, int portraitId) =>
-      portraitService.apply(session, session.userId, portraitId);
-
-  Future<Pet> clear(Session session) =>
-      portraitService.clear(session, session.userId);
+  // Adopts a buddy that looks like the pet in the draft. Its species is
+  // picked automatically.
+  Future<Pet> adopt(Session session, int portraitId, String name) =>
+      portraitService.adopt(session, session.userId, portraitId, name);
 
   Future<ByteData> image(Session session, int portraitId) =>
       portraitService.image(session, session.userId, portraitId);

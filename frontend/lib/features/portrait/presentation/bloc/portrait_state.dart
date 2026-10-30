@@ -13,12 +13,12 @@ class PortraitMaking extends PortraitState {}
 
 class PortraitReady extends PortraitState {
   final PortraitDraftEntity draft;
-  final bool applying;
+  final bool adopting;
 
-  PortraitReady({required this.draft, this.applying = false});
+  PortraitReady({required this.draft, this.adopting = false});
 
   @override
-  List<Object?> get props => [draft, applying];
+  List<Object?> get props => [draft, adopting];
 }
 
 class PortraitFailed extends PortraitState {
@@ -32,11 +32,11 @@ class PortraitFailed extends PortraitState {
   List<Object?> get props => [failure.message];
 }
 
-// The picture is on the pet now
-class PortraitApplied extends PortraitState {
+// The buddy is adopted
+class PortraitAdopted extends PortraitState {
   final PetEntity pet;
 
-  PortraitApplied({required this.pet});
+  PortraitAdopted({required this.pet});
 
   @override
   List<Object?> get props => [pet];

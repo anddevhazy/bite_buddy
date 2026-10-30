@@ -60,7 +60,8 @@ class Routes {
   static const String duelPath = '/duel/:id';
   static const String duelName = 'duel';
 
-  // "Use my own pet": a photo of their real pet becomes their buddy
+  // "My own pet" on the buddy picker: a photo of their real pet becomes
+  // their buddy
   static const String myPetPhotoPath = '/myPetPhoto';
   static const String myPetPhotoName = 'myPetPhoto';
 

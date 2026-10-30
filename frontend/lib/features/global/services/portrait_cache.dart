@@ -4,7 +4,7 @@ import 'dart:ui' as ui;
 import 'package:bite_buddy_client/bite_buddy_client.dart';
 import 'package:flutter/painting.dart';
 
-// Pictures of users' real pets ("Use my own pet"), fetched once per app run
+// Pictures of users' real pets ("My own pet"), fetched once per app run
 // and shared by every screen that shows a buddy.
 class PortraitCache {
   final Client client;

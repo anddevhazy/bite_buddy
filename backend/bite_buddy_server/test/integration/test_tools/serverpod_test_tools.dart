@@ -1398,52 +1398,26 @@ class _PortraitEndpoint {
     });
   }
 
-  _ida.Future<_i9zqw63y.Pet> apply(
+  _ida.Future<_i9zqw63y.Pet> adopt(
     _ist.TestSessionBuilder sessionBuilder,
     int portraitId,
+    String name,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
             endpoint: 'portrait',
-            method: 'apply',
+            method: 'adopt',
           );
       try {
         var _localCallContext = await _endpointDispatch.getMethodCallContext(
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'portrait',
-          methodName: 'apply',
-          parameters: _ist.testObjectToJson({'portraitId': portraitId}),
-          serializationManager: _serializationManager,
-        );
-        var _localReturnValue =
-            await (_localCallContext.method.call(
-                  _localUniqueSession,
-                  _localCallContext.arguments,
-                )
-                as _ida.Future<_i9zqw63y.Pet>);
-        return _localReturnValue;
-      } finally {
-        await _localUniqueSession.close();
-      }
-    });
-  }
-
-  _ida.Future<_i9zqw63y.Pet> clear(
-    _ist.TestSessionBuilder sessionBuilder,
-  ) async {
-    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
-      var _localUniqueSession =
-          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
-            endpoint: 'portrait',
-            method: 'clear',
-          );
-      try {
-        var _localCallContext = await _endpointDispatch.getMethodCallContext(
-          createSessionCallback: (_) => _localUniqueSession,
-          endpointPath: 'portrait',
-          methodName: 'clear',
-          parameters: _ist.testObjectToJson({}),
+          methodName: 'adopt',
+          parameters: _ist.testObjectToJson({
+            'portraitId': portraitId,
+            'name': name,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue =

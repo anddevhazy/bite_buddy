@@ -1,4 +1,4 @@
-// "Use my own pet": checking the photo before it's turned into a buddy.
+// "My own pet": checking the photo before it's turned into a buddy.
 // Plain values and functions, so they're easy to test.
 
 const int maxPortraitsPerDay = 3; // redraws will cost money once they're real

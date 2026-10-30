@@ -1,26 +1,31 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:serverpod/serverpod.dart';
 
 import '../errors/app_errors.dart';
 import '../generated/protocol.dart';
+import '../utils/catalog.dart';
 import '../utils/portrait_rules.dart';
 import 'nutrition_ai_service.dart';
 import 'pet_service.dart';
 import 'portrait/portrait_generator.dart';
 
-// "Use my own pet": the user's photo is checked by the AI (a real animal, no
-// people), redrawn as a buddy, shown as a draft, and then put on their pet.
+// "My own pet", the fifth choice when picking a buddy: the user's photo is
+// checked by the AI (a real animal, no people), redrawn as a buddy, shown as
+// a draft, and then adopted with a species picked at random for its powers.
 class PortraitService {
   final NutritionAiService ai;
   final PetService pets;
   final PortraitGenerator generator;
+  final Random _rng;
 
-  const PortraitService({
+  PortraitService({
     required this.ai,
     required this.pets,
     this.generator = const StubPortraitGenerator(),
-  });
+    Random? rng,
+  }) : _rng = rng ?? Random();
 
   Future<PortraitDraft> create(
     Session session,
@@ -37,6 +42,10 @@ class PortraitService {
     final mimeType = photoMimeType(bytes);
     if (bytes.length < minPortraitPhotoBytes || mimeType == null) {
       throw invalidInputError('Please use a JPEG or PNG photo of your pet.');
+    }
+
+    if (await pets.findMine(session, ownerId) != null) {
+      throw conflictError('PET_EXISTS', 'You already have a pet.');
     }
 
     final now = DateTime.now().toUtc();
@@ -107,23 +116,28 @@ class PortraitService {
     );
   }
 
-  // Puts one of the owner's portraits on their pet
-  Future<Pet> apply(Session session, UuidValue ownerId, int portraitId) async {
+  // Adopts a pet that looks like the user's own, with a species (which only
+  // decides its name tag and powers, never the picture) picked for them
+  Future<Pet> adopt(
+    Session session,
+    UuidValue ownerId,
+    int portraitId,
+    String name,
+  ) async {
     final portrait = await PetPortrait.db.findById(session, portraitId);
     if (portrait == null || portrait.ownerId != ownerId) {
       throw notFoundError('Picture');
     }
-    final pet = await pets.requireMine(session, ownerId);
-    if (!portrait.used) {
-      await PetPortrait.db.updateRow(session, portrait.copyWith(used: true));
-    }
-    return Pet.db.updateRow(session, pet.copyWith(portraitId: portraitId));
-  }
-
-  // Back to the species picture
-  Future<Pet> clear(Session session, UuidValue ownerId) async {
-    final pet = await pets.requireMine(session, ownerId);
-    return Pet.db.updateRow(session, pet..portraitId = null);
+    final species = petSpecies[_rng.nextInt(petSpecies.length)];
+    final pet = await pets.adopt(
+      session,
+      ownerId,
+      species.key,
+      name,
+      portraitId: portraitId,
+    );
+    await PetPortrait.db.updateRow(session, portrait.copyWith(used: true));
+    return pet;
   }
 
   // Anyone signed in can see a portrait that's in use (friends see each

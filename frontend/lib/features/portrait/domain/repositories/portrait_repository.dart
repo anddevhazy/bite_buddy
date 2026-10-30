@@ -8,8 +8,7 @@ import 'package:dartz/dartz.dart';
 abstract class PortraitRepository {
   Future<Either<Failure, PortraitDraftEntity>> create(Uint8List photo);
 
-  Future<Either<Failure, PetEntity>> apply(int portraitId);
-
-  // Back to the species picture
-  Future<Either<Failure, PetEntity>> clear();
+  // Adopts a buddy that looks like the user's pet; the server picks its
+  // species
+  Future<Either<Failure, PetEntity>> adopt(int portraitId, String name);
 }

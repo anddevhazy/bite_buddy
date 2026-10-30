@@ -533,19 +533,17 @@ class EndpointPortrait extends _isc.EndpointRef {
         {'photo': photo},
       );
 
-  _ida.Future<_iqjbfwnu.Pet> apply(int portraitId) =>
-      caller.callServerEndpoint<_iqjbfwnu.Pet>(
-        'portrait',
-        'apply',
-        {'portraitId': portraitId},
-      );
-
-  _ida.Future<_iqjbfwnu.Pet> clear() =>
-      caller.callServerEndpoint<_iqjbfwnu.Pet>(
-        'portrait',
-        'clear',
-        {},
-      );
+  _ida.Future<_iqjbfwnu.Pet> adopt(
+    int portraitId,
+    String name,
+  ) => caller.callServerEndpoint<_iqjbfwnu.Pet>(
+    'portrait',
+    'adopt',
+    {
+      'portraitId': portraitId,
+      'name': name,
+    },
+  );
 
   _ida.Future<_idt.ByteData> image(int portraitId) =>
       caller.callServerEndpoint<_idt.ByteData>(
