@@ -1,0 +1,50 @@
+{
+  "bodyWidth": 252,
+  "bodyHeight": 256,
+  "animations": {
+    "idle": {
+      "file": "opp_shadow_beast_idle.webp",
+      "frames": 48,
+      "columns": 15,
+      "fps": 6,
+      "loops": true,
+      "frameWidth": 258,
+      "frameHeight": 262,
+      "offsetX": -128.7,
+      "offsetY": -130.6
+    },
+    "windup": {
+      "file": "opp_shadow_beast_windup.webp",
+      "frames": 6,
+      "columns": 6,
+      "fps": 8,
+      "loops": false,
+      "frameWidth": 240,
+      "frameHeight": 246,
+      "offsetX": -98.9,
+      "offsetY": -114.7
+    },
+    "strike": {
+      "file": "opp_shadow_beast_strike.webp",
+      "frames": 19,
+      "columns": 9,
+      "fps": 15.0,
+      "loops": false,
+      "frameWidth": 430,
+      "frameHeight": 290,
+      "offsetX": -195.7,
+      "offsetY": -152.9
+    },
+    "hurt": {
+      "file": "opp_shadow_beast_hurt.webp",
+      "frames": 20,
+      "columns": 10,
+      "fps": 16,
+      "loops": false,
+      "frameWidth": 388,
+      "frameHeight": 265,
+      "offsetX": -174.3,
+      "offsetY": -129.6
+    }
+  }
+}

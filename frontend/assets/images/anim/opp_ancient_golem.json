@@ -1,0 +1,72 @@
+{
+  "bodyWidth": 279,
+  "bodyHeight": 256,
+  "animations": {
+    "idle": {
+      "file": "opp_ancient_golem_idle.webp",
+      "frames": 48,
+      "columns": 14,
+      "fps": 6,
+      "loops": true,
+      "frameWidth": 285,
+      "frameHeight": 262,
+      "offsetX": -142.3,
+      "offsetY": -130.6
+    },
+    "windup": {
+      "file": "opp_ancient_golem_windup.webp",
+      "frames": 8,
+      "columns": 8,
+      "fps": 8,
+      "loops": false,
+      "frameWidth": 300,
+      "frameHeight": 246,
+      "offsetX": -173.2,
+      "offsetY": -114.6
+    },
+    "strike": {
+      "file": "opp_ancient_golem_strike.webp",
+      "frames": 16,
+      "columns": 6,
+      "fps": 10,
+      "loops": false,
+      "frameWidth": 600,
+      "frameHeight": 282,
+      "offsetX": -306.4,
+      "offsetY": -150.7
+    },
+    "hurt": {
+      "file": "opp_ancient_golem_hurt.webp",
+      "frames": 16,
+      "columns": 12,
+      "fps": 16,
+      "loops": false,
+      "frameWidth": 339,
+      "frameHeight": 256,
+      "offsetX": -168.6,
+      "offsetY": -125.0
+    },
+    "stunned": {
+      "file": "opp_ancient_golem_stunned.webp",
+      "frames": 28,
+      "columns": 10,
+      "fps": 8,
+      "loops": true,
+      "frameWidth": 385,
+      "frameHeight": 250,
+      "offsetX": -184.5,
+      "offsetY": -118.9
+    },
+    "ko": {
+      "file": "opp_ancient_golem_ko.webp",
+      "frames": 26,
+      "columns": 8,
+      "fps": 12.0,
+      "loops": false,
+      "frameWidth": 460,
+      "frameHeight": 292,
+      "offsetX": -283.0,
+      "offsetY": -159.6
+    }
+  }
+}

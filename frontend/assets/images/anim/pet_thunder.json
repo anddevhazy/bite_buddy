@@ -1,0 +1,72 @@
+{
+  "bodyWidth": 284,
+  "bodyHeight": 256,
+  "animations": {
+    "idle": {
+      "file": "pet_thunder_idle.webp",
+      "frames": 48,
+      "columns": 14,
+      "fps": 6,
+      "loops": true,
+      "frameWidth": 291,
+      "frameHeight": 262,
+      "offsetX": -145.1,
+      "offsetY": -130.9
+    },
+    "attack": {
+      "file": "pet_thunder_attack.webp",
+      "frames": 10,
+      "columns": 8,
+      "fps": 16,
+      "loops": false,
+      "frameWidth": 467,
+      "frameHeight": 277,
+      "offsetX": -114.6,
+      "offsetY": -141.4
+    },
+    "block": {
+      "file": "pet_thunder_block.webp",
+      "frames": 8,
+      "columns": 8,
+      "fps": 12.0,
+      "loops": false,
+      "frameWidth": 369,
+      "frameHeight": 267,
+      "offsetX": -135.6,
+      "offsetY": -144.6
+    },
+    "hurt": {
+      "file": "pet_thunder_hurt.webp",
+      "frames": 10,
+      "columns": 7,
+      "fps": 12.0,
+      "loops": false,
+      "frameWidth": 514,
+      "frameHeight": 337,
+      "offsetX": -173.6,
+      "offsetY": -193.1
+    },
+    "victory": {
+      "file": "pet_thunder_victory.webp",
+      "frames": 12,
+      "columns": 12,
+      "fps": 8,
+      "loops": true,
+      "frameWidth": 269,
+      "frameHeight": 316,
+      "offsetX": -108.2,
+      "offsetY": -185.2
+    },
+    "ko": {
+      "file": "pet_thunder_ko.webp",
+      "frames": 22,
+      "columns": 9,
+      "fps": 12.0,
+      "loops": false,
+      "frameWidth": 428,
+      "frameHeight": 322,
+      "offsetX": -224.1,
+      "offsetY": -193.1
+    }
+  }
+}

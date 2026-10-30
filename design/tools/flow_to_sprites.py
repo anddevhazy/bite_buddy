@@ -1,9 +1,10 @@
 """Turns Google Flow clips (character on bright green) into game sprite sheets.
 
 For each character: cuts the listed part of each clip, removes the green,
-crops every animation to the same box (so switching animations doesn't make
-the character jump), and packs the frames into one PNG per animation, plus a
-JSON file the game reads.
+crops each animation to its own box, and packs the frames into one WebP
+sheet per animation, plus a JSON file the game reads. The JSON says where
+each animation's box sits relative to the idle body, so switching animations
+doesn't make the character jump.
 
 Usage: python3 design/tools/flow_to_sprites.py [character ...]
        (no arguments = every character in CHARACTERS)
@@ -21,18 +22,58 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 CLIPS = os.path.join(ROOT, 'design', 'flow_clips')
 OUT = os.path.join(ROOT, 'frontend', 'assets', 'images', 'anim')
 
-# Frame height in the sheets. Tall enough to look sharp on a phone, small
-# enough that two fighters' animations fit comfortably in memory.
-FRAME_HEIGHT = 320
+# How tall the idle body is in the sheets, in pixels. A fighter is about
+# this tall on a phone screen, and smaller keeps two fighters' animations
+# comfortably in memory on budget phones.
+BODY_HEIGHT = 256
+
+# Clip size, the biggest texture every phone can load, and the empty space
+# kept around each crop
+VIDEO_W, VIDEO_H = 1280, 720
+MAX_TEXTURE = 4096
+PAD = 6
 
 # For each character, the animations to cut from its clips:
-#   name: (clip, start seconds, end seconds, frames per second, loops)
+#   name: (clip, start seconds, end seconds, frames per second, loops[, speed])
 # Times are picked by looking at the clip (see design/flow_clips/NOTES.md).
+# speed plays the frames faster than they were filmed: Flow moves slowly,
+# and a hit or a flinch has to be over quickly in a fight.
+# Opponents: idle, windup, strike, hurt, stunned, ko.
+# Pets: idle, attack, block, dodge, hurt, victory, ko.
+# A missing one falls back to an effect done in code (see arena_game.dart).
 CHARACTERS = {
     'opp_wild_pup': {
-        'idle': ('opp_wild_pup_idle.mp4', 0.0, 7.9, 8, True),
-        'windup': ('opp_wild_pup_attack.mp4', 0.7, 2.5, 10, False),
-        'strike': ('opp_wild_pup_attack.mp4', 2.5, 3.7, 12, False),
+        'idle': ('opp_wild_pup_idle.mp4', 0.0, 7.9, 6, True),
+        'windup': ('opp_wild_pup_attack.mp4', 0.7, 2.5, 8, False),
+        'strike': ('opp_wild_pup_attack.mp4', 2.5, 3.7, 10, False),
+        'hurt': ('opp_wild_pup_hurt.mp4', 0.75, 2.0, 8, False, 1.5),
+        'stunned': ('opp_wild_pup_stunned.mp4', 2.0, 4.75, 8, True),
+        'ko': ('opp_wild_pup_ko.mp4', 2.25, 3.75, 8, False),
+    },
+    'opp_ancient_golem': {
+        'idle': ('opp_ancient_golem_idle.mp4', 0.0, 7.9, 6, True),
+        'windup': ('opp_ancient_golem_attack.mp4', 0.4, 1.4, 8, False),
+        'strike': ('opp_ancient_golem_attack.mp4', 1.4, 3.0, 10, False),
+        'hurt': ('opp_ancient_golem_hurt.mp4', 0.75, 2.75, 8, False, 2),
+        'stunned': ('opp_ancient_golem_stunned.mp4', 1.25, 4.75, 8, True),
+        'ko': ('opp_ancient_golem_ko.mp4', 0.75, 4.0, 8, False, 1.5),
+    },
+    # No stunned or ko clip: Flow refused to make them
+    'opp_shadow_beast': {
+        'idle': ('opp_shadow_beast_idle.mp4', 0.0, 7.9, 6, True),
+        'windup': ('opp_shadow_beast_attack.mp4', 0.25, 1.0, 8, False),
+        'strike': ('opp_shadow_beast_attack.mp4', 1.0, 2.9, 10, False, 1.5),
+        'hurt': ('opp_shadow_beast_hurt.mp4', 0.5, 3.0, 8, False, 2),
+    },
+    # No dodge: the clip hops toward the opponent, so the code's step back
+    # (on the idle animation) reads better
+    'pet_thunder': {
+        'idle': ('pet_thunder_idle.mp4', 0.0, 7.9, 6, True),
+        'attack': ('pet_thunder_attack.mp4', 1.5, 2.75, 8, False, 2),
+        'block': ('pet_thunder_block.mp4', 0.75, 1.75, 8, False, 1.5),
+        'hurt': ('pet_thunder_hurt.mp4', 0.5, 1.75, 8, False, 1.5),
+        'victory': ('pet_thunder_victory.mp4', 1.0, 2.5, 8, True),
+        'ko': ('pet_thunder_ko.mp4', 2.0, 4.75, 8, False, 1.5),
     },
 }
 
@@ -42,17 +83,21 @@ WEBP_QUALITY = 82
 
 # Remove the green, then pull green tint off the edges ("despill")
 KEY = 'colorkey=0x00FF00:0.30:0.08,despill=type=green,format=rgba'
+# Characters that are green themselves: despill would turn the golem's moss
+# and the guardian's leaves orange, so only the background is removed
+KEY_GREEN_CHARACTER = 'colorkey=0x00FF00:0.30:0.08,format=rgba'
+GREEN_CHARACTERS = {'opp_ancient_golem', 'opp_forest_guardian'}
 
 
 def run(cmd):
     return subprocess.run(cmd, check=True, capture_output=True, text=True)
 
 
-def extract(clip, start, end, fps, folder):
+def extract(clip, start, end, fps, folder, key=KEY):
     """Cuts [start, end) of the clip into keyed RGBA PNG frames."""
     run(['ffmpeg', '-v', 'error', '-y', '-ss', str(start), '-to', str(end),
          '-i', os.path.join(CLIPS, clip),
-         '-vf', f'fps={fps},{KEY}', os.path.join(folder, 'f%04d.png')])
+         '-vf', f'fps={fps},{key}', os.path.join(folder, 'f%04d.png')])
     return sorted(f for f in os.listdir(folder) if f.endswith('.png'))
 
 
@@ -69,44 +114,53 @@ def build(character, animations):
     os.makedirs(OUT, exist_ok=True)
     with tempfile.TemporaryDirectory() as tmp:
         frames = {}
-        for name, (clip, start, end, fps, _) in animations.items():
+        for name, (clip, start, end, fps, *_) in animations.items():
             folder = os.path.join(tmp, name)
             os.makedirs(folder)
-            frames[name] = (folder, extract(clip, start, end, fps, folder))
+            key = KEY_GREEN_CHARACTER if character in GREEN_CHARACTERS else KEY
+            files = extract(clip, start, end, fps, folder, key)
+            frames[name] = (folder, files, alpha_bbox(folder))
 
-        # One box for all animations, with a little padding
-        boxes = [alpha_bbox(folder) for folder, _ in frames.values()]
-        x1 = min(b[0] for b in boxes)
-        y1 = min(b[1] for b in boxes)
-        x2 = max(b[2] for b in boxes)
-        y2 = max(b[3] for b in boxes)
-        pad = 8
-        x1, y1 = max(0, x1 - pad), max(0, y1 - pad)
-        w, h = x2 - x1 + 1 + pad, y2 - y1 + 1 + pad
-        frame_w = round(w * FRAME_HEIGHT / h)
+        # Every animation is scaled the same, so the idle body is BODY_HEIGHT
+        # pixels tall in every sheet
+        ix1, iy1, ix2, iy2 = frames['idle'][2]
+        scale = BODY_HEIGHT / (iy2 - iy1 + 1)
+        body_x, body_y = (ix1 + ix2) / 2, (iy1 + iy2) / 2
 
-        meta = {'frameWidth': frame_w, 'frameHeight': FRAME_HEIGHT,
-                'animations': {}}
-        for name, (folder, files) in frames.items():
-            _, _, _, fps, loops = animations[name]
+        meta = {'bodyWidth': round((ix2 - ix1 + 1) * scale),
+                'bodyHeight': BODY_HEIGHT, 'animations': {}}
+        for name, (folder, files, box) in frames.items():
+            _, _, _, fps, loops, *rest = animations[name]
+            # Each animation is cropped to its own box (a punch or a fall
+            # needs far more room than standing still), and remembers where
+            # that box sits relative to the middle of the idle body
+            x1, y1 = max(0, box[0] - PAD), max(0, box[1] - PAD)
+            x2, y2 = min(VIDEO_W - 1, box[2] + PAD), min(VIDEO_H - 1, box[3] + PAD)
+            w, h = x2 - x1 + 1, y2 - y1 + 1
+            fw, fh = round(w * scale), round(h * scale)
             count = len(files)
-            cols = min(count, 8)
+            cols = min(count, MAX_TEXTURE // fw)
             rows = math.ceil(count / cols)
+            assert rows * fh <= MAX_TEXTURE, f'{name}: too many frames'
             png = os.path.join(tmp, f'{name}_sheet.png')
             sheet = os.path.join(OUT, f'{character}_{name}.webp')
             run(['ffmpeg', '-v', 'error', '-y', '-framerate', '1',
                  '-i', os.path.join(folder, 'f%04d.png'),
                  '-vf', (f'crop={w}:{h}:{x1}:{y1},'
-                         f'scale={frame_w}:{FRAME_HEIGHT}:flags=lanczos,'
+                         f'scale={fw}:{fh}:flags=lanczos,'
                          f'tile={cols}x{rows}:color=0x00000000'),
                  '-frames:v', '1', '-pix_fmt', 'rgba', png])
             run(['cwebp', '-quiet', '-q', str(WEBP_QUALITY), '-alpha_q', '90',
                  '-exact', png, '-o', sheet])
             meta['animations'][name] = {
                 'file': f'{character}_{name}.webp', 'frames': count,
-                'columns': cols, 'fps': fps, 'loops': loops}
-            print(f'{character}_{name}.webp: {count} frames, {cols}x{rows}, '
-                  f'{os.path.getsize(sheet) // 1024} KB')
+                'columns': cols, 'fps': round(fps * (rest[0] if rest else 1), 2),
+                'loops': loops, 'frameWidth': fw, 'frameHeight': fh,
+                'offsetX': round((x1 - body_x) * scale, 1),
+                'offsetY': round((y1 - body_y) * scale, 1)}
+            print(f'{character}_{name}.webp: {count} frames of {fw}x{fh}, '
+                  f'{os.path.getsize(sheet) // 1024} KB, '
+                  f'{count * fw * fh * 4 // 1048576} MB in memory')
 
         with open(os.path.join(OUT, f'{character}.json'), 'w') as f:
             json.dump(meta, f, indent=2)

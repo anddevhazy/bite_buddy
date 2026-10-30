@@ -1,27 +1,72 @@
 {
-  "frameWidth": 264,
-  "frameHeight": 320,
+  "bodyWidth": 210,
+  "bodyHeight": 256,
   "animations": {
     "idle": {
       "file": "opp_wild_pup_idle.webp",
-      "frames": 63,
-      "columns": 8,
-      "fps": 8,
-      "loops": true
+      "frames": 48,
+      "columns": 18,
+      "fps": 6,
+      "loops": true,
+      "frameWidth": 216,
+      "frameHeight": 261,
+      "offsetX": -107.7,
+      "offsetY": -130.5
     },
     "windup": {
       "file": "opp_wild_pup_windup.webp",
-      "frames": 18,
-      "columns": 8,
-      "fps": 10,
-      "loops": false
+      "frames": 15,
+      "columns": 15,
+      "fps": 8,
+      "loops": false,
+      "frameWidth": 212,
+      "frameHeight": 220,
+      "offsetX": -103.6,
+      "offsetY": -84.0
     },
     "strike": {
       "file": "opp_wild_pup_strike.webp",
-      "frames": 15,
+      "frames": 12,
+      "columns": 12,
+      "fps": 10,
+      "loops": false,
+      "frameWidth": 216,
+      "frameHeight": 252,
+      "offsetX": -104.1,
+      "offsetY": -116.4
+    },
+    "hurt": {
+      "file": "opp_wild_pup_hurt.webp",
+      "frames": 10,
+      "columns": 10,
+      "fps": 12.0,
+      "loops": false,
+      "frameWidth": 321,
+      "frameHeight": 242,
+      "offsetX": -126.9,
+      "offsetY": -111.8
+    },
+    "stunned": {
+      "file": "opp_wild_pup_stunned.webp",
+      "frames": 22,
+      "columns": 15,
+      "fps": 8,
+      "loops": true,
+      "frameWidth": 266,
+      "frameHeight": 236,
+      "offsetX": -112.3,
+      "offsetY": -112.3
+    },
+    "ko": {
+      "file": "opp_wild_pup_ko.webp",
+      "frames": 12,
       "columns": 8,
-      "fps": 12,
-      "loops": false
+      "fps": 8,
+      "loops": false,
+      "frameWidth": 470,
+      "frameHeight": 290,
+      "offsetX": -248.9,
+      "offsetY": -153.3
     }
   }
 }

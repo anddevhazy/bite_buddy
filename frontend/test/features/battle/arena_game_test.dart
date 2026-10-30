@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:bite_buddy/features/battle/domain/entities/arena_entity.dart';
 import 'package:bite_buddy/features/battle/domain/entities/arena_run_entities.dart';
 import 'package:bite_buddy/features/battle/domain/entities/opponent_entity.dart';
@@ -10,21 +12,42 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'fight_engine_test.dart' show rules;
 
-// Loads the real arena scene with the real art (an animated opponent and a
-// still-picture pet) and plays a fight through it, so every animation path
-// runs at least once
+// Loads the real arena scene with the real art and plays a fight through
+// it, drawing every few frames, so every animation path runs at least once:
+// full Flow animations, a character missing some (Shadow Beast has no
+// stunned or knockout), and a still picture (Fluffy, for now)
 void main() {
-  testWidgets('the arena scene loads and animates a whole fight', (
-    tester,
-  ) async {
+  for (final (opponent, pet, petAnimated) in [
+    ('wild_pup', 'thunder', true),
+    ('ancient_golem', 'fluffy', false),
+    ('shadow_beast', 'thunder', true),
+  ]) {
+    testWidgets('the arena animates a whole fight: $opponent vs $pet', (
+      tester,
+    ) async {
+      await _fight(tester, opponent: opponent, pet: pet);
+      expect(_lastGame!.opponentAnimated, isTrue);
+      expect(_lastGame!.petAnimated, petAnimated);
+    });
+  }
+}
+
+ArenaGame? _lastGame;
+
+Future<void> _fight(
+  WidgetTester tester, {
+  required String opponent,
+  required String pet,
+}) async {
+  {
     final engine = FightEngine(
-      const ArenaRunConfigEntity(
+      ArenaRunConfigEntity(
         runId: 1,
         petName: 'Hazy',
-        petSpeciesKey: 'thunder',
-        petStats: BattleStatsEntity(hp: 115, attack: 27, defense: 21),
+        petSpeciesKey: pet,
+        petStats: const BattleStatsEntity(hp: 115, attack: 27, defense: 21),
         opponent: OpponentEntity(
-          key: 'wild_pup',
+          key: opponent,
           name: 'Wild Pup',
           emoji: '',
           level: 3,
@@ -47,13 +70,13 @@ void main() {
     );
     final game = ArenaGame(
       engine: engine,
-      petImage: AppImages.pet('thunder'),
-      opponentImage: AppImages.opponent('wild_pup'),
+      petImage: AppImages.pet(pet),
+      opponentImage: AppImages.opponent(opponent),
       backgroundImage: AppImages.arenaBackground,
-      // Wild Pup has Flow animations; Thunder doesn't yet (still picture)
-      opponentAnimations: AppImages.animations('opp_wild_pup'),
-      petAnimations: AppImages.animations('pet_thunder'),
+      opponentAnimations: AppImages.animations('opp_$opponent'),
+      petAnimations: AppImages.animations('pet_$pet'),
     );
+    _lastGame = game;
 
     await tester.runAsync(() async {
       await tester.pumpWidget(
@@ -68,8 +91,7 @@ void main() {
       }
     });
     expect(game.isLoaded, isTrue);
-    expect(game.opponentAnimated, isTrue);
-    expect(game.petAnimated, isFalse);
+    void draw() => game.render(ui.Canvas(ui.PictureRecorder()));
 
     game.running = true;
     var frames = 0;
@@ -82,12 +104,14 @@ void main() {
       if (frames % 61 == 30) engine.endBlock();
       if (engine.specialReady) engine.special();
       game.update(1 / 60);
+      if (frames % 5 == 0) draw();
     }
     expect(engine.isOver, isTrue);
     // A few more frames for the knockout animation and floating text
-    for (var i = 0; i < 90; i++) {
+    for (var i = 0; i < 180; i++) {
       game.update(1 / 60);
+      if (i % 5 == 0) draw();
     }
     await tester.pump();
-  });
+  }
 }
