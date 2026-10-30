@@ -22,3 +22,7 @@ config/firebase_service_account_key.json
 
 # SQLite databases created by the ephemeral test database
 **/sp_*.db*
+
+# The landing page APK: rebuilt for each release, too big for git
+# (still uploaded to Serverpod Cloud, see .scloudignore)
+web/landing/downloads/

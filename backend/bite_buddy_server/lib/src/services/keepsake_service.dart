@@ -7,6 +7,7 @@ import '../errors/app_errors.dart';
 import '../generated/protocol.dart';
 import '../utils/keepsake_rules.dart';
 import '../utils/portrait_rules.dart';
+import '../utils/server_files.dart';
 import 'keepsake/keepsake_minter.dart';
 import 'memory_service.dart';
 import 'pet_service.dart';
@@ -262,8 +263,8 @@ class KeepsakeService {
         );
       }
     }
-    // The species art, copied from the app (assets/pets/)
-    final art = File('assets/pets/pet_${k.speciesKey}.png');
+    // The species art, copied from the app (web/pets/)
+    final art = File(serverPath('web/pets/pet_${k.speciesKey}.png'));
     return art.existsSync()
         ? keepsakeSvg(
             k,

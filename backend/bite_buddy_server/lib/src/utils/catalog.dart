@@ -3,10 +3,10 @@ import 'battle_engine.dart';
 
 // Pets a user can adopt. Add a species here and it shows up in the app.
 const List<PetSpeciesData> petSpecies = [
-  PetSpeciesData('fluffy', 'Fluffy', 'Dragon Pup', 'common', '🐶'),
-  PetSpeciesData('sparkle', 'Sparkle', 'Crystal Fox', 'rare', '🦝'),
-  PetSpeciesData('thunder', 'Thunder', 'Storm Wolf', 'epic', '🐯'),
-  PetSpeciesData('mystic', 'Mystic', 'Shadow Cat', 'legendary', '🐰'),
+  PetSpeciesData('fluffy', 'Fluffy', 'Dragon Pup', '', '🐶'),
+  PetSpeciesData('sparkle', 'Sparkle', 'Crystal Fox', '', '🦝'),
+  PetSpeciesData('thunder', 'Thunder', 'Storm Wolf', '', '🐯'),
+  PetSpeciesData('mystic', 'Mystic', 'Shadow Cat', '', '🐰'),
 ];
 
 // Opponents in the battle arena, weakest first. Besides their stats, each has

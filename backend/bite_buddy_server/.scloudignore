@@ -1,0 +1,4 @@
+
+# The landing page APK is git-ignored but must be deployed
+!web/landing/downloads/
+!web/landing/downloads/bite-buddy.apk

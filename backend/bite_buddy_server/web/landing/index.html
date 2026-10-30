@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bite Buddy</title>
+    <meta
+      name="description"
+      content="Bite Buddy turns healthy eating into a game. Feed a virtual pet with photos of the meals you actually eat."
+    />
+    <meta property="og:title" content="Bite Buddy" />
+    <meta
+      property="og:description"
+      content="Turn healthy eating into a game. Snap your real meals, grow your buddy, battle your friends."
+    />
+    <meta property="og:image" content="/landing/img/hero.webp" />
+    <meta name="theme-color" content="#0B231D" />
+    <link rel="icon" href="/landing/img/logo.webp" />
+    <style>
+      @font-face {
+        font-family: Fredoka;
+        src: url(/landing/fonts/Fredoka.ttf);
+        font-weight: 300 700;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: Nunito;
+        src: url(/landing/fonts/Nunito.ttf);
+        font-weight: 200 1000;
+        font-display: swap;
+      }
+
+      :root {
+        --bg: #0b231d;
+        --bg-top: #123a2f;
+        --card: rgba(255, 255, 255, 0.06);
+        --card-edge: rgba(255, 255, 255, 0.14);
+        --mint: #12c48b;
+        --mint-deep: #0b8f64;
+        --pumpkin: #ffa41b;
+        --gold: #f2c14e;
+        --ink: #ffffff;
+        --muted: #b7c4bf;
+        --radius: 22px;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: Nunito, system-ui, sans-serif;
+        font-size: 17px;
+        line-height: 1.6;
+      }
+      h1,
+      h2,
+      h3 {
+        font-family: Fredoka, Nunito, sans-serif;
+        line-height: 1.1;
+        margin: 0;
+      }
+      a {
+        color: inherit;
+      }
+      .wrap {
+        width: min(1080px, 100% - 32px);
+        margin-inline: auto;
+      }
+
+      /* Hero */
+      .hero {
+        position: relative;
+        min-height: 92vh;
+        display: grid;
+        align-items: end;
+        padding: 0 0 72px;
+        background:
+          linear-gradient(
+            180deg,
+            rgba(11, 35, 29, 0.15) 0%,
+            rgba(11, 35, 29, 0.55) 45%,
+            var(--bg) 96%
+          ),
+          url(/landing/img/hero.webp) center 30% / cover no-repeat;
+      }
+      .nav {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 20px 0;
+      }
+      .nav .wrap {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: Fredoka;
+        font-weight: 600;
+        font-size: 22px;
+        text-decoration: none;
+      }
+      .brand img {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+      }
+      .nav .spacer {
+        flex: 1;
+      }
+      .nav a.small {
+        font-weight: 700;
+        text-decoration: none;
+        padding: 8px 16px;
+        border-radius: 999px;
+        background: rgba(11, 35, 29, 0.55);
+        border: 1px solid var(--card-edge);
+      }
+
+      .eyebrow {
+        color: var(--gold);
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        font-size: 14px;
+        margin-bottom: 14px;
+      }
+      .hero h1 {
+        font-size: clamp(44px, 8vw, 88px);
+        font-weight: 700;
+        max-width: 12ch;
+      }
+      .hero h1 span {
+        color: var(--mint);
+      }
+      .hero p.lede {
+        font-size: clamp(18px, 2.3vw, 22px);
+        color: #e7efec;
+        max-width: 36ch;
+        margin: 20px 0 32px;
+      }
+
+      .cta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        align-items: center;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-family: Fredoka;
+        font-weight: 600;
+        font-size: 20px;
+        padding: 16px 28px;
+        border-radius: 18px;
+        text-decoration: none;
+        background: linear-gradient(180deg, var(--mint), var(--mint-deep));
+        box-shadow:
+          0 6px 0 #075c40,
+          0 14px 30px rgba(18, 196, 139, 0.25);
+        transition:
+          transform 0.12s ease,
+          box-shadow 0.12s ease;
+      }
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+      .btn:active {
+        transform: translateY(4px);
+        box-shadow: 0 2px 0 #075c40;
+      }
+      .btn svg {
+        width: 24px;
+        height: 24px;
+      }
+      .cta .note {
+        color: var(--muted);
+        font-size: 15px;
+      }
+
+      /* Sections */
+      section {
+        padding: 88px 0;
+      }
+      .section-title {
+        font-size: clamp(30px, 4.5vw, 46px);
+        font-weight: 600;
+        margin-bottom: 14px;
+      }
+      .section-sub {
+        color: var(--muted);
+        max-width: 52ch;
+        margin: 0 0 40px;
+      }
+
+      .problem {
+        text-align: center;
+        padding-top: 24px;
+      }
+      .problem blockquote {
+        margin: 0 auto;
+        max-width: 22ch;
+        font-family: Fredoka;
+        font-weight: 600;
+        font-size: clamp(30px, 5vw, 52px);
+        line-height: 1.15;
+      }
+      .problem blockquote em {
+        font-style: normal;
+        color: var(--pumpkin);
+      }
+      .problem p {
+        color: var(--muted);
+        max-width: 54ch;
+        margin: 24px auto 0;
+        font-size: 19px;
+      }
+
+      .buddies {
+        display: flex;
+        justify-content: center;
+        gap: clamp(8px, 3vw, 28px);
+        margin-top: 48px;
+        flex-wrap: wrap;
+      }
+      .buddies img {
+        width: clamp(96px, 18vw, 150px);
+        filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.45));
+        animation: bob 3.2s ease-in-out infinite;
+      }
+      .buddies img:nth-child(2) {
+        animation-delay: 0.4s;
+      }
+      .buddies img:nth-child(3) {
+        animation-delay: 0.8s;
+      }
+      .buddies img:nth-child(4) {
+        animation-delay: 1.2s;
+      }
+      @keyframes bob {
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .buddies img {
+          animation: none;
+        }
+      }
+
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 18px;
+        counter-reset: step;
+      }
+      .step {
+        background: var(--card);
+        border: 1px solid var(--card-edge);
+        border-radius: var(--radius);
+        padding: 26px;
+      }
+      .step::before {
+        counter-increment: step;
+        content: counter(step);
+        display: grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: var(--mint);
+        color: var(--bg);
+        font-family: Fredoka;
+        font-weight: 700;
+        font-size: 20px;
+        margin-bottom: 16px;
+      }
+      .step h3 {
+        font-size: 23px;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+      .step p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 14px;
+      }
+      .feature {
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+        background: var(--card);
+        border: 1px solid var(--card-edge);
+        border-radius: var(--radius);
+        padding: 20px 22px;
+      }
+      .feature .icon {
+        font-size: 28px;
+        line-height: 1;
+        flex: none;
+        width: 44px;
+        height: 44px;
+        display: grid;
+        place-items: center;
+        border-radius: 14px;
+        background: rgba(18, 196, 139, 0.14);
+      }
+      .feature h3 {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .feature p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 16px;
+      }
+      .tag {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--pumpkin);
+        border: 1px solid rgba(255, 164, 27, 0.5);
+        border-radius: 999px;
+        padding: 1px 8px;
+        margin-left: 6px;
+        vertical-align: 2px;
+      }
+
+      .arena {
+        border-radius: 28px;
+        overflow: hidden;
+        position: relative;
+        background:
+          linear-gradient(
+            90deg,
+            rgba(11, 35, 29, 0.94) 0%,
+            rgba(11, 35, 29, 0.7) 50%,
+            rgba(11, 35, 29, 0.2) 100%
+          ),
+          url(/landing/img/arena.webp) center / cover;
+        padding: clamp(32px, 6vw, 64px);
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 24px;
+        align-items: center;
+      }
+      .arena p {
+        color: #dce6e2;
+        max-width: 40ch;
+      }
+      .arena img {
+        justify-self: center;
+        width: min(240px, 60%);
+        filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.6));
+      }
+      @media (max-width: 720px) {
+        .arena {
+          grid-template-columns: 1fr;
+        }
+        .arena img {
+          width: 160px;
+        }
+      }
+
+      .download {
+        text-align: center;
+      }
+      .download .card {
+        background: linear-gradient(180deg, var(--bg-top), var(--bg));
+        border: 1px solid var(--card-edge);
+        border-radius: 28px;
+        padding: clamp(32px, 6vw, 56px) 24px;
+      }
+      .download ol {
+        text-align: left;
+        max-width: 46ch;
+        margin: 28px auto 0;
+        color: var(--muted);
+        padding-left: 22px;
+      }
+      .download ol li {
+        margin-bottom: 6px;
+      }
+
+      footer {
+        padding: 40px 0 56px;
+        color: var(--muted);
+        font-size: 15px;
+        border-top: 1px solid var(--card-edge);
+      }
+      footer .wrap {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 24px;
+        justify-content: space-between;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="hero">
+      <nav class="nav">
+        <div class="wrap">
+          <a class="brand" href="/"
+            ><img src="/landing/img/logo.webp" alt="" />Bite Buddy</a
+          >
+          <span class="spacer"></span>
+          <a class="small" href="#download">Get the app</a>
+        </div>
+      </nav>
+      <div class="wrap">
+        <div class="eyebrow">A virtual pet that eats what you eat</div>
+        <h1>Eat well. <span>Grow your buddy.</span></h1>
+        <p class="lede">
+          Bite Buddy turns healthy eating into a game. Snap the meals you
+          actually eat, feed your buddy, and battle your friends.
+        </p>
+        <div class="cta">
+          <a class="btn" href="/landing/downloads/bite-buddy.apk" download>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.4"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 3v12" />
+              <path d="m6 11 6 6 6-6" />
+              <path d="M5 21h14" />
+            </svg>
+            Download for Android
+          </a>
+          <span class="note">Free · 31 MB · Android 8+</span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="problem">
+        <div class="wrap">
+          <blockquote>
+            Most people know they should eat better. <em>But they don't.</em>
+          </blockquote>
+          <p>
+            Bite Buddy rewards you for eating healthy. Streaks, a pet that
+            depends on you and battles with friends make eating well something
+            you want to come back to every day.
+          </p>
+          <div class="buddies" aria-label="The four buddies">
+            <img src="/landing/img/pet_fluffy.webp" alt="Fluffy" />
+            <img src="/landing/img/pet_sparkle.webp" alt="Sparkle" />
+            <img src="/landing/img/pet_thunder.webp" alt="Thunder" />
+            <img src="/landing/img/pet_mystic.webp" alt="Mystic" />
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap">
+          <h2 class="section-title">How it works</h2>
+          <p class="section-sub">
+            Your buddy only eats what you eat, so the healthier your plate, the
+            stronger it gets.
+          </p>
+          <div class="steps">
+            <div class="step">
+              <h3>Adopt a buddy</h3>
+              <p>
+                Pick one of four buddies, or turn a photo of your own pet into
+                one.
+              </p>
+            </div>
+            <div class="step">
+              <h3>Snap your meal</h3>
+              <p>
+                An AI scanner checks it's a real, freshly taken meal (no
+                screenshots or stock photos) and estimates its nutrition.
+              </p>
+            </div>
+            <div class="step">
+              <h3>Watch it grow</h3>
+              <p>
+                Good meals make your buddy healthier and stronger. Skipped days
+                make it hungry.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap">
+          <h2 class="section-title">What's inside</h2>
+          <p class="section-sub">
+            Everything that keeps you coming back, and eating a little better
+            each time.
+          </p>
+          <div class="features">
+            <div class="feature">
+              <div class="icon">📸</div>
+              <div>
+                <h3>AI meal scanning</h3>
+                <p>
+                  A weekly nutrition summary, and meal ideas based on what you
+                  were low on this week.
+                </p>
+              </div>
+            </div>
+            <div class="feature">
+              <div class="icon">⚔️</div>
+              <div>
+                <h3>Real-time arena battles</h3>
+                <p>
+                  Fight computer opponents. Your buddy's stats come from how
+                  well you've eaten.
+                </p>
+              </div>
+            </div>
+            <div class="feature">
+              <div class="icon">🏆</div>
+              <div>
+                <h3>Weekly friend leagues</h3>
+                <p>
+                  Scored 70% on feeding and 30% on battles. Win the week, win
+                  the trophy.
+                </p>
+              </div>
+            </div>
+            <div class="feature">
+              <div class="icon">🔥</div>
+              <div>
+                <h3>Shared streaks</h3>
+                <p>
+                  Keep a streak alive with a friend: a day only counts when you
+                  both eat.
+                </p>
+              </div>
+            </div>
+            <div class="feature">
+              <div class="icon">👟</div>
+              <div>
+                <h3>Steps and sleep</h3>
+                <p>
+                  Moving and sleeping well boost your buddy's energy and health.
+                </p>
+              </div>
+            </div>
+            <div class="feature">
+              <div class="icon">📱</div>
+              <div>
+                <h3>Home-screen widget</h3>
+                <p>See your buddy's mood without opening the app.</p>
+              </div>
+            </div>
+            <div class="feature">
+              <div class="icon">📖</div>
+              <div>
+                <h3>Memory book</h3>
+                <p>
+                  A feeding calendar like GitHub's contribution graph, progress
+                  charts and every milestone.
+                </p>
+              </div>
+            </div>
+            <div class="feature">
+              <div class="icon">💎</div>
+              <div>
+                <h3>Keepsake NFTs</h3>
+                <p>Soulbound NFTs on Base for your buddy's big milestones.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap">
+          <div class="arena">
+            <div>
+              <h2 class="section-title">Your plate is your power</h2>
+              <p>
+                In the arena, every hit, block and dodge is yours, but your
+                buddy's strength comes from your meals. Eat well this week and
+                the Wild Pup won't stand a chance.
+              </p>
+            </div>
+            <img
+              src="/landing/img/opp_wild_pup.webp"
+              alt="The Wild Pup, an arena opponent"
+            />
+          </div>
+        </div>
+      </section>
+
+      <section class="download" id="download">
+        <div class="wrap">
+          <div class="card">
+            <h2 class="section-title">Get Bite Buddy</h2>
+            <p class="section-sub" style="margin-inline: auto">
+              Free on Android. iPhone is on the way.
+            </p>
+            <a class="btn" href="/landing/downloads/bite-buddy.apk" download>
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M12 3v12" />
+                <path d="m6 11 6 6 6-6" />
+                <path d="M5 21h14" />
+              </svg>
+              Download the APK
+            </a>
+            <ol>
+              <li>Open this page on your Android phone and tap Download.</li>
+              <li>
+                Open the downloaded file. If asked, allow your browser to
+                install apps.
+              </li>
+              <li>
+                Open Bite Buddy, sign up with your email and adopt your buddy.
+              </li>
+            </ol>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <span>© 2026 Bite Buddy</span>
+        <span>Built with Flutter and Serverpod · Live on Serverpod Cloud</span>
+      </div>
+    </footer>
+  </body>
+</html>

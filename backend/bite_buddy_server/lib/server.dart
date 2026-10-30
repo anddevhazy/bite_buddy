@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:serverpod_auth_idp_server/core.dart';
 import 'package:serverpod_auth_idp_server/providers/email.dart';
 
 import 'src/generated/serverpod.dart';
 import 'src/services/email_service.dart';
+import 'src/utils/server_files.dart';
 import 'src/web/keepsake_routes.dart';
 
 /// The starting point of the Serverpod server.
@@ -22,6 +25,16 @@ void run(List<String> args) async {
 
   // Public keepsake NFT metadata and card pictures, read by wallets
   pod.webServer.addRoute(KeepsakeRoute(), 'keepsakes/**');
+
+  // The landing page, with the Android app to download (web/landing/)
+  final landing = serverPath('web/landing');
+  // ignore: avoid_print
+  print(
+    'Landing page folder: $landing '
+    '(exists: ${Directory(landing).existsSync()}, cwd: ${Directory.current.path})',
+  );
+  pod.webServer.addRoute(StaticRoute.file(File('$landing/index.html')), '/');
+  pod.webServer.addRoute(StaticRoute.directory(Directory(landing)), 'landing');
 
   await pod.start();
 }
