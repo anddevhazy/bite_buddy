@@ -13,8 +13,13 @@
 import 'dart:async' as _ida;
 import 'dart:typed_data' as _idt;
 import 'package:bite_buddy_client/src/protocol/arena.dart' as _ih1v9sxu;
+import 'package:bite_buddy_client/src/protocol/arena_run_config.dart'
+    as _ipde2zlx;
+import 'package:bite_buddy_client/src/protocol/arena_run_report.dart'
+    as _i6lq1d8e;
+import 'package:bite_buddy_client/src/protocol/arena_run_result.dart'
+    as _iqi7iz9b;
 import 'package:bite_buddy_client/src/protocol/battle_move.dart' as _ih5s12ml;
-import 'package:bite_buddy_client/src/protocol/battle_state.dart' as _it997u85;
 import 'package:bite_buddy_client/src/protocol/feed_result.dart' as _ik3mz3kd;
 import 'package:bite_buddy_client/src/protocol/leaderboard_entry.dart'
     as _iw02fr1r;
@@ -277,22 +282,22 @@ class EndpointBattle extends _isc.EndpointRef {
         {},
       );
 
-  _ida.Future<_it997u85.BattleState> start(String opponentKey) =>
-      caller.callServerEndpoint<_it997u85.BattleState>(
+  _ida.Future<_ipde2zlx.ArenaRunConfig> startRun(String opponentKey) =>
+      caller.callServerEndpoint<_ipde2zlx.ArenaRunConfig>(
         'battle',
-        'start',
+        'startRun',
         {'opponentKey': opponentKey},
       );
 
-  _ida.Future<_it997u85.BattleState> move(
-    int battleId,
-    _ih5s12ml.BattleMove move,
-  ) => caller.callServerEndpoint<_it997u85.BattleState>(
+  _ida.Future<_iqi7iz9b.ArenaRunResult> finishRun(
+    int runId,
+    _i6lq1d8e.ArenaRunReport report,
+  ) => caller.callServerEndpoint<_iqi7iz9b.ArenaRunResult>(
     'battle',
-    'move',
+    'finishRun',
     {
-      'battleId': battleId,
-      'move': move,
+      'runId': runId,
+      'report': report,
     },
   );
 }

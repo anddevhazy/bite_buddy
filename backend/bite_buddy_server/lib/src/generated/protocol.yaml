@@ -11,8 +11,8 @@ jwtRefresh:
   - refreshAccessToken:
 battle:
   - arena:
-  - start:
-  - move:
+  - startRun:
+  - finishRun:
 duel:
   - challenge:
   - get:

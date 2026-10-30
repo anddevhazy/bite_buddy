@@ -24,12 +24,14 @@ import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
     as _iaic;
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 import 'arena.dart' as _iwiby7qv;
-import 'battle.dart' as _inh3lnzs;
+import 'arena_rules.dart' as _ildu9ri2;
+import 'arena_run.dart' as _isxurcys;
+import 'arena_run_config.dart' as _ifo8s6zf;
+import 'arena_run_report.dart' as _i541vp0l;
+import 'arena_run_result.dart' as _ih8kl9mf;
+import 'arena_run_status.dart' as _ic5j8p21;
 import 'battle_move.dart' as _iz303hum;
-import 'battle_round.dart' as _imrf8vtu;
-import 'battle_state.dart' as _iavxxxi0;
 import 'battle_stats.dart' as _ievndlqk;
-import 'battle_status.dart' as _ib4xlijd;
 import 'errors/bite_buddy_exception.dart' as _in42pmv9;
 import 'feed_result.dart' as _i6546n9y;
 import 'leaderboard_entry.dart' as _ikawkn1p;
@@ -51,12 +53,14 @@ import 'opponent.dart' as _i2ot5zrj;
 import 'pet.dart' as _ie9pyd3w;
 import 'pet_species.dart' as _it7bnlgl;
 export 'arena.dart';
-export 'battle.dart';
+export 'arena_rules.dart';
+export 'arena_run.dart';
+export 'arena_run_config.dart';
+export 'arena_run_report.dart';
+export 'arena_run_result.dart';
+export 'arena_run_status.dart';
 export 'battle_move.dart';
-export 'battle_round.dart';
-export 'battle_state.dart';
 export 'battle_stats.dart';
-export 'battle_status.dart';
 export 'errors/bite_buddy_exception.dart';
 export 'feed_result.dart';
 export 'leaderboard_entry.dart';
@@ -116,23 +120,29 @@ class Protocol extends _isc.SerializationManager {
     if (t == _iwiby7qv.Arena) {
       return _iwiby7qv.Arena.fromJson(data) as T;
     }
-    if (t == _inh3lnzs.Battle) {
-      return _inh3lnzs.Battle.fromJson(data) as T;
+    if (t == _ildu9ri2.ArenaRules) {
+      return _ildu9ri2.ArenaRules.fromJson(data) as T;
+    }
+    if (t == _isxurcys.ArenaRun) {
+      return _isxurcys.ArenaRun.fromJson(data) as T;
+    }
+    if (t == _ifo8s6zf.ArenaRunConfig) {
+      return _ifo8s6zf.ArenaRunConfig.fromJson(data) as T;
+    }
+    if (t == _i541vp0l.ArenaRunReport) {
+      return _i541vp0l.ArenaRunReport.fromJson(data) as T;
+    }
+    if (t == _ih8kl9mf.ArenaRunResult) {
+      return _ih8kl9mf.ArenaRunResult.fromJson(data) as T;
+    }
+    if (t == _ic5j8p21.ArenaRunStatus) {
+      return _ic5j8p21.ArenaRunStatus.fromJson(data) as T;
     }
     if (t == _iz303hum.BattleMove) {
       return _iz303hum.BattleMove.fromJson(data) as T;
     }
-    if (t == _imrf8vtu.BattleRound) {
-      return _imrf8vtu.BattleRound.fromJson(data) as T;
-    }
-    if (t == _iavxxxi0.BattleState) {
-      return _iavxxxi0.BattleState.fromJson(data) as T;
-    }
     if (t == _ievndlqk.BattleStats) {
       return _ievndlqk.BattleStats.fromJson(data) as T;
-    }
-    if (t == _ib4xlijd.BattleStatus) {
-      return _ib4xlijd.BattleStatus.fromJson(data) as T;
     }
     if (t == _in42pmv9.BiteBuddyException) {
       return _in42pmv9.BiteBuddyException.fromJson(data) as T;
@@ -197,23 +207,33 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_iwiby7qv.Arena?>()) {
       return (data != null ? _iwiby7qv.Arena.fromJson(data) : null) as T;
     }
-    if (t == _isc.getType<_inh3lnzs.Battle?>()) {
-      return (data != null ? _inh3lnzs.Battle.fromJson(data) : null) as T;
+    if (t == _isc.getType<_ildu9ri2.ArenaRules?>()) {
+      return (data != null ? _ildu9ri2.ArenaRules.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_isxurcys.ArenaRun?>()) {
+      return (data != null ? _isxurcys.ArenaRun.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_ifo8s6zf.ArenaRunConfig?>()) {
+      return (data != null ? _ifo8s6zf.ArenaRunConfig.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_i541vp0l.ArenaRunReport?>()) {
+      return (data != null ? _i541vp0l.ArenaRunReport.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_ih8kl9mf.ArenaRunResult?>()) {
+      return (data != null ? _ih8kl9mf.ArenaRunResult.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_ic5j8p21.ArenaRunStatus?>()) {
+      return (data != null ? _ic5j8p21.ArenaRunStatus.fromJson(data) : null)
+          as T;
     }
     if (t == _isc.getType<_iz303hum.BattleMove?>()) {
       return (data != null ? _iz303hum.BattleMove.fromJson(data) : null) as T;
     }
-    if (t == _isc.getType<_imrf8vtu.BattleRound?>()) {
-      return (data != null ? _imrf8vtu.BattleRound.fromJson(data) : null) as T;
-    }
-    if (t == _isc.getType<_iavxxxi0.BattleState?>()) {
-      return (data != null ? _iavxxxi0.BattleState.fromJson(data) : null) as T;
-    }
     if (t == _isc.getType<_ievndlqk.BattleStats?>()) {
       return (data != null ? _ievndlqk.BattleStats.fromJson(data) : null) as T;
-    }
-    if (t == _isc.getType<_ib4xlijd.BattleStatus?>()) {
-      return (data != null ? _ib4xlijd.BattleStatus.fromJson(data) : null) as T;
     }
     if (t == _isc.getType<_in42pmv9.BiteBuddyException?>()) {
       return (data != null ? _in42pmv9.BiteBuddyException.fromJson(data) : null)
@@ -348,12 +368,14 @@ class Protocol extends _isc.SerializationManager {
   static String? getClassNameForType(Type type) {
     return switch (type) {
       _iwiby7qv.Arena => 'Arena',
-      _inh3lnzs.Battle => 'Battle',
+      _ildu9ri2.ArenaRules => 'ArenaRules',
+      _isxurcys.ArenaRun => 'ArenaRun',
+      _ifo8s6zf.ArenaRunConfig => 'ArenaRunConfig',
+      _i541vp0l.ArenaRunReport => 'ArenaRunReport',
+      _ih8kl9mf.ArenaRunResult => 'ArenaRunResult',
+      _ic5j8p21.ArenaRunStatus => 'ArenaRunStatus',
       _iz303hum.BattleMove => 'BattleMove',
-      _imrf8vtu.BattleRound => 'BattleRound',
-      _iavxxxi0.BattleState => 'BattleState',
       _ievndlqk.BattleStats => 'BattleStats',
-      _ib4xlijd.BattleStatus => 'BattleStatus',
       _in42pmv9.BiteBuddyException => 'BiteBuddyException',
       _i6546n9y.FeedResult => 'FeedResult',
       _ikawkn1p.LeaderboardEntry => 'LeaderboardEntry',
@@ -390,18 +412,22 @@ class Protocol extends _isc.SerializationManager {
     switch (data) {
       case _iwiby7qv.Arena():
         return 'Arena';
-      case _inh3lnzs.Battle():
-        return 'Battle';
+      case _ildu9ri2.ArenaRules():
+        return 'ArenaRules';
+      case _isxurcys.ArenaRun():
+        return 'ArenaRun';
+      case _ifo8s6zf.ArenaRunConfig():
+        return 'ArenaRunConfig';
+      case _i541vp0l.ArenaRunReport():
+        return 'ArenaRunReport';
+      case _ih8kl9mf.ArenaRunResult():
+        return 'ArenaRunResult';
+      case _ic5j8p21.ArenaRunStatus():
+        return 'ArenaRunStatus';
       case _iz303hum.BattleMove():
         return 'BattleMove';
-      case _imrf8vtu.BattleRound():
-        return 'BattleRound';
-      case _iavxxxi0.BattleState():
-        return 'BattleState';
       case _ievndlqk.BattleStats():
         return 'BattleStats';
-      case _ib4xlijd.BattleStatus():
-        return 'BattleStatus';
       case _in42pmv9.BiteBuddyException():
         return 'BiteBuddyException';
       case _i6546n9y.FeedResult():
@@ -467,23 +493,29 @@ class Protocol extends _isc.SerializationManager {
     if (dataClassName == 'Arena') {
       return deserialize<_iwiby7qv.Arena>(data['data']);
     }
-    if (dataClassName == 'Battle') {
-      return deserialize<_inh3lnzs.Battle>(data['data']);
+    if (dataClassName == 'ArenaRules') {
+      return deserialize<_ildu9ri2.ArenaRules>(data['data']);
+    }
+    if (dataClassName == 'ArenaRun') {
+      return deserialize<_isxurcys.ArenaRun>(data['data']);
+    }
+    if (dataClassName == 'ArenaRunConfig') {
+      return deserialize<_ifo8s6zf.ArenaRunConfig>(data['data']);
+    }
+    if (dataClassName == 'ArenaRunReport') {
+      return deserialize<_i541vp0l.ArenaRunReport>(data['data']);
+    }
+    if (dataClassName == 'ArenaRunResult') {
+      return deserialize<_ih8kl9mf.ArenaRunResult>(data['data']);
+    }
+    if (dataClassName == 'ArenaRunStatus') {
+      return deserialize<_ic5j8p21.ArenaRunStatus>(data['data']);
     }
     if (dataClassName == 'BattleMove') {
       return deserialize<_iz303hum.BattleMove>(data['data']);
     }
-    if (dataClassName == 'BattleRound') {
-      return deserialize<_imrf8vtu.BattleRound>(data['data']);
-    }
-    if (dataClassName == 'BattleState') {
-      return deserialize<_iavxxxi0.BattleState>(data['data']);
-    }
     if (dataClassName == 'BattleStats') {
       return deserialize<_ievndlqk.BattleStats>(data['data']);
-    }
-    if (dataClassName == 'BattleStatus') {
-      return deserialize<_ib4xlijd.BattleStatus>(data['data']);
     }
     if (dataClassName == 'BiteBuddyException') {
       return deserialize<_in42pmv9.BiteBuddyException>(data['data']);

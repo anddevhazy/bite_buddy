@@ -1,0 +1,32 @@
+### The numbers the phone uses to run a real-time fight. Sent by the server so
+### the rules live in one place.
+class: ArenaRules
+fields:
+  ### Both fighters' HP is multiplied by this in the arena, so fights last
+  ### long enough to play (30-60 seconds) without changing the balance.
+  hpMultiplier: int
+  ### Opponents' hits are multiplied by this, so every mistake matters.
+  opponentPower: double
+  damageScale: double
+  ### Each hit lands between (1 - variance) and (1 + variance) of normal.
+  variance: double
+  critChance: double
+  critMultiplier: double
+  ### Hitting an opponent while it's open after an attack.
+  counterMultiplier: double
+  specialMultiplier: double
+  ### Damage taken through a block.
+  blockedMultiplier: double
+  ### A block started this soon before a hit is a perfect block (parry).
+  perfectBlockMs: int
+  ### How long a parried or dodged-heavy opponent is stunned.
+  stunMs: int
+  attackCooldownMs: int
+  dodgeCooldownMs: int
+  ### How long a dodge keeps you out of the way.
+  dodgeMs: int
+  ### Special meter points needed for a Special.
+  specialMeterMax: int
+  meterPerCounter: int
+  meterPerParry: int
+  meterPerDodge: int

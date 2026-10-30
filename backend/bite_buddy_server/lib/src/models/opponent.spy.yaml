@@ -1,4 +1,5 @@
-### A battle opponent from the catalog in utils/catalog.dart.
+### A battle opponent from the catalog in utils/catalog.dart, with how it
+### fights in the real-time arena.
 class: Opponent
 fields:
   key: String
@@ -10,8 +11,18 @@ fields:
   defense: int
   difficulty: String
   coinReward: int
-  ### How often its tells are true, 0-100. Tougher opponents bluff more.
-  tellReliability: int
-  ### Chance the caller's pet wins, 0-100, from simulating the matchup with a
-  ### player who reads the tells (see utils/battle_engine.dart).
-  winChance: int
+  ### How long each attack winds up before it lands. Shorter is harder.
+  windupMs: int
+  ### How long it stays open after an attack (the counter window).
+  recoveryMs: int
+  ### Average time between attacks.
+  attackIntervalMs: int
+  ### Percent of attacks that are heavy (unblockable: dodge them).
+  heavyChance: int
+  ### Percent of windups that are fakes, to bait an early dodge.
+  feintChance: int
+  ### Percent of jabs followed straight up by a quick second jab. Dodge has a
+  ### cooldown, so only a block covers both.
+  comboChance: int
+  ### Percent of your attacks it blocks when it isn't open.
+  blockChance: int

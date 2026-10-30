@@ -4,36 +4,31 @@ import 'package:serverpod/serverpod.dart';
 
 import '../errors/app_errors.dart';
 import '../generated/protocol.dart';
+import '../utils/arena_rules.dart';
 import '../utils/battle_engine.dart';
 import '../utils/catalog.dart';
 import '../utils/pet_stats.dart' as stats;
 import 'pet_service.dart';
 
+// Real-time fights against computer opponents. The fight runs on the phone;
+// the server fixes both fighters when it starts, checks the reported result
+// is possible, and pays out.
 class BattleService {
   final PetService pets;
   final Random _rng;
 
   BattleService({required this.pets, Random? rng}) : _rng = rng ?? Random();
 
-  // The arena: the pet's battle numbers and every opponent with an honest
-  // win chance
   Future<Arena> arena(Session session, UuidValue ownerId) async {
     final pet = await pets.requireMine(session, ownerId);
     final fighter = stats.petFighter(pet);
     return Arena(
-      petStats: BattleStats(
-        hp: fighter.maxHp,
-        attack: fighter.attack,
-        defense: fighter.defense,
-      ),
-      opponents: [
-        for (final o in opponents)
-          o.toProtocol(winChance: _winChance(fighter, o)),
-      ],
+      petStats: _stats(fighter),
+      opponents: [for (final o in opponents) o.toProtocol()],
     );
   }
 
-  Future<BattleState> start(
+  Future<ArenaRunConfig> startRun(
     Session session,
     UuidValue ownerId,
     String opponentKey,
@@ -42,7 +37,7 @@ class BattleService {
     if (opponent == null) throw notFoundError('Opponent');
 
     return session.db.transaction((transaction) async {
-      final pet = await pets.requireMine(
+      var pet = await pets.requireMine(
         session,
         ownerId,
         transaction: transaction,
@@ -54,254 +49,132 @@ class BattleService {
         );
       }
 
-      // Only one battle at a time: an unfinished one counts as a loss
-      final unfinished = await Battle.db.find(
+      // One fight at a time: an unfinished one counts as a loss
+      final unfinished = await ArenaRun.db.find(
         session,
         where: (t) =>
-            t.ownerId.equals(ownerId) & t.status.equals(BattleStatus.ongoing),
+            t.ownerId.equals(ownerId) & t.status.equals(ArenaRunStatus.ongoing),
         transaction: transaction,
       );
-      var current = pet;
-      for (final b in unfinished) {
-        final forfeited = await _finish(
+      for (final run in unfinished) {
+        (_, pet, _) = await _settle(
           session,
-          b,
-          current,
+          run,
+          pet,
           won: false,
+          verified: true,
           transaction: transaction,
         );
-        current = forfeited.$2;
       }
 
-      final maxHp = stats.petMaxHp(current);
-      final (firstMove, firstTell) = _planOpponentMove(
-        opponent,
-        hp: opponent.hp,
-        specialCooldown: 0,
-      );
-      final battle = await Battle.db.insertRow(
+      final fighter = stats.petFighter(pet);
+      final run = await ArenaRun.db.insertRow(
         session,
-        Battle(
+        ArenaRun(
           ownerId: ownerId,
-          petId: current.id!,
+          petId: pet.id!,
           opponentKey: opponent.key,
-          petHp: maxHp,
-          petMaxHp: maxHp,
-          petAttack: stats.petAttack(current),
-          petDefense: stats.petDefense(current),
-          opponentHp: opponent.hp,
-          opponentMaxHp: opponent.hp,
-          round: 0,
-          status: BattleStatus.ongoing,
-          specialCooldown: 0,
-          opponentSpecialCooldown: 0,
-          opponentNextMove: firstMove,
-          opponentTell: firstTell,
-          lastRound: null,
-          coinsEarned: 0,
-          xpEarned: 0,
-          energyChange: 0,
-          createdAt: DateTime.now().toUtc(),
+          petMaxHp: fighter.maxHp,
+          petAttack: fighter.attack,
+          petDefense: fighter.defense,
+          startedAt: DateTime.now().toUtc(),
+          status: ArenaRunStatus.ongoing,
         ),
         transaction: transaction,
       );
-
-      return _state(battle, current, opponent);
+      return ArenaRunConfig(
+        runId: run.id!,
+        petName: pet.name,
+        petSpeciesKey: pet.speciesKey,
+        petStats: _stats(fighter),
+        opponent: opponent.toProtocol(),
+        rules: arenaRules(),
+        seed: _rng.nextInt(1 << 31),
+      );
     });
   }
 
-  Future<BattleState> move(
+  Future<ArenaRunResult> finishRun(
     Session session,
     UuidValue ownerId,
-    int battleId,
-    BattleMove move,
+    int runId,
+    ArenaRunReport report,
   ) async {
     return session.db.transaction((transaction) async {
-      final battle = await Battle.db.findById(
+      final run = await ArenaRun.db.findById(
         session,
-        battleId,
+        runId,
         transaction: transaction,
       );
-      if (battle == null || battle.ownerId != ownerId) {
+      if (run == null || run.ownerId != ownerId) {
         throw notFoundError('Battle');
       }
-      if (battle.status != BattleStatus.ongoing) {
+      if (run.status != ArenaRunStatus.ongoing) {
         throw conflictError('BATTLE_OVER', 'This battle is already over.');
       }
-      if (move == BattleMove.special && battle.specialCooldown > 0) {
-        throw invalidInputError('Special is still recharging.');
-      }
-
-      final opponent = findOpponent(battle.opponentKey)!;
+      final opponent = findOpponent(run.opponentKey)!;
       final pet = await pets.requireMine(
         session,
         ownerId,
         transaction: transaction,
       );
 
-      var next = _resolveRound(battle, opponent, move);
-
-      final opponentDown = next.opponentHp <= 0;
-      final petDown = next.petHp <= 0;
-      final outOfRounds = next.round >= maxRounds;
-      if (opponentDown || petDown || outOfRounds) {
-        // On a double knockout or timeout, the side with more HP left wins
-        final won = opponentDown != petDown
-            ? opponentDown
-            : petWinsTie(
-                next.petHp,
-                next.petMaxHp,
-                next.opponentHp,
-                next.opponentMaxHp,
-              );
-        final (finished, updatedPet) = await _finish(
-          session,
-          next,
-          pet,
-          won: won,
-          transaction: transaction,
+      final elapsed = DateTime.now().toUtc().difference(run.startedAt);
+      final plausible =
+          report.won &&
+          elapsed <= maxRunLength &&
+          winIsPlausible(
+            report: report,
+            serverElapsedMs: elapsed.inMilliseconds,
+            pet: Fighter(
+              maxHp: run.petMaxHp,
+              attack: run.petAttack,
+              defense: run.petDefense,
+            ),
+            opponent: opponent.fighter,
+            rules: arenaRules(),
+          );
+      if (report.won && !plausible) {
+        session.log(
+          'Arena win rejected for run $runId: ${report.toJson()}, '
+          'server elapsed ${elapsed.inMilliseconds}ms',
+          level: LogLevel.warning,
         );
-        return _state(finished, updatedPet, opponent);
       }
 
-      next = await Battle.db.updateRow(session, next, transaction: transaction);
-      return _state(next, pet, opponent);
+      final (saved, _, leveledUp) = await _settle(
+        session,
+        run.copyWith(
+          durationMs: report.durationMs,
+          damageDealt: report.damageDealt,
+          damageTaken: report.damageTaken,
+        ),
+        pet,
+        won: plausible,
+        verified: !report.won || plausible,
+        transaction: transaction,
+      );
+      return ArenaRunResult(
+        won: plausible,
+        verified: saved.verified,
+        coinsEarned: saved.coinsEarned,
+        xpEarned: saved.xpEarned,
+        energyChange: saved.energyChange,
+        leveledUp: leveledUp,
+      );
     });
   }
 
-  // Both sides act at once. The opponent's move was decided last round (its
-  // tell is what the player saw); after resolving, the next one is planned.
-  Battle _resolveRound(Battle b, OpponentData o, BattleMove playerMove) {
-    final opponentMove =
-        b.opponentNextMove ??
-        pickOpponentMove(
-          hp: b.opponentHp,
-          maxHp: b.opponentMaxHp,
-          specialCooldown: b.opponentSpecialCooldown,
-          rng: _rng,
-        );
-
-    final outcome = resolveRound(
-      petMove: playerMove,
-      opponentMove: opponentMove,
-      pet: Fighter(
-        maxHp: b.petMaxHp,
-        attack: b.petAttack,
-        defense: b.petDefense,
-      ),
-      opponent: o.fighter,
-      rng: _rng,
-    );
-
-    final round = b.round + 1;
-    final opponentHp =
-        (b.opponentHp - outcome.damageToOpponent + outcome.opponentHeal).clamp(
-          0,
-          b.opponentMaxHp,
-        );
-    final opponentCooldown = opponentMove == BattleMove.special
-        ? specialCooldownRounds
-        : max(0, b.opponentSpecialCooldown - 1);
-    final (nextMove, nextTell) = _planOpponentMove(
-      o,
-      hp: opponentHp,
-      specialCooldown: opponentCooldown,
-    );
-
-    return b.copyWith(
-      round: round,
-      petHp: (b.petHp - outcome.damageToPet + outcome.petHeal).clamp(
-        0,
-        b.petMaxHp,
-      ),
-      opponentHp: opponentHp,
-      specialCooldown: playerMove == BattleMove.special
-          ? specialCooldownRounds
-          : max(0, b.specialCooldown - 1),
-      opponentSpecialCooldown: opponentCooldown,
-      opponentNextMove: nextMove,
-      opponentTell: nextTell,
-      lastRound: BattleRound(
-        round: round,
-        playerMove: playerMove,
-        opponentMove: opponentMove,
-        damageDealt: outcome.damageToOpponent,
-        damageTaken: outcome.damageToPet,
-        playerCritical: outcome.petCritical,
-        opponentCritical: outcome.opponentCritical,
-        clash: outcome.clash,
-        message: _describe(o.name, playerMove, opponentMove, outcome),
-      ),
-    );
-  }
-
-  (BattleMove, BattleMove) _planOpponentMove(
-    OpponentData o, {
-    required int hp,
-    required int specialCooldown,
-  }) {
-    final move = pickOpponentMove(
-      hp: hp,
-      maxHp: o.hp,
-      specialCooldown: specialCooldown,
-      rng: _rng,
-    );
-    final tell = tellFor(
-      move: move,
-      reliability: o.tellReliability,
-      specialCooldown: specialCooldown,
-      rng: _rng,
-    );
-    return (move, tell);
-  }
-
-  String _describe(
-    String opponentName,
-    BattleMove player,
-    BattleMove opponent,
-    RoundOutcome o,
-  ) {
-    final crit = o.petCritical ? ' Critical hit!' : '';
-    final theirCrit = o.opponentCritical ? ' Critical hit!' : '';
-    return switch ((player, opponent)) {
-      (BattleMove.attack, BattleMove.attack) =>
-        'You trade blows: you deal ${o.damageToOpponent},$crit '
-            '$opponentName deals ${o.damageToPet}.$theirCrit',
-      (BattleMove.special, BattleMove.special) =>
-        'Specials collide! You deal ${o.damageToOpponent},$crit '
-            '$opponentName deals ${o.damageToPet}.$theirCrit',
-      (BattleMove.defend, BattleMove.defend) =>
-        'You both hold back and catch your breath.',
-      (BattleMove.attack, BattleMove.special) =>
-        'You strike before $opponentName\'s special lands: '
-            '${o.damageToOpponent} damage.$crit',
-      (BattleMove.special, BattleMove.attack) =>
-        '$opponentName interrupts your special: '
-            '${o.damageToPet} damage.$theirCrit',
-      (BattleMove.special, BattleMove.defend) =>
-        'Your special smashes through $opponentName\'s guard: '
-            '${o.damageToOpponent} damage!$crit',
-      (BattleMove.defend, BattleMove.special) =>
-        '$opponentName\'s special smashes through your guard: '
-            '${o.damageToPet} damage.$theirCrit',
-      (BattleMove.defend, BattleMove.attack) =>
-        'You block and counter for ${o.damageToOpponent}!$crit '
-            'Only ${o.damageToPet} gets through.',
-      (BattleMove.attack, BattleMove.defend) =>
-        '$opponentName blocks and counters for ${o.damageToPet}.$theirCrit '
-            'Only ${o.damageToOpponent} gets through.',
-    };
-  }
-
-  // Ends the battle, pays out rewards and saves both rows
-  Future<(Battle, Pet)> _finish(
+  // Ends the run, pays out rewards and saves both rows
+  Future<(ArenaRun, Pet, bool)> _settle(
     Session session,
-    Battle battle,
+    ArenaRun run,
     Pet pet, {
     required bool won,
+    required bool verified,
     required Transaction transaction,
   }) async {
-    final opponent = findOpponent(battle.opponentKey)!;
+    final opponent = findOpponent(run.opponentKey)!;
     final coins = won ? opponent.coinReward : 0;
     final xp = won ? 20 + opponent.level * 5 : 5;
     final energyChange = won ? stats.battleWinEnergy : -stats.battleEnergyCost;
@@ -312,56 +185,27 @@ class BattleService {
       wins: pet.wins + (won ? 1 : 0),
       losses: pet.losses + (won ? 0 : 1),
     );
-    final (leveled, _) = stats.addXp(rewarded, xp);
+    final (leveled, leveledUp) = stats.addXp(rewarded, xp);
     final savedPet = await Pet.db.updateRow(
       session,
       leveled,
       transaction: transaction,
     );
-
-    final savedBattle = await Battle.db.updateRow(
+    final savedRun = await ArenaRun.db.updateRow(
       session,
-      battle.copyWith(
-        status: won ? BattleStatus.won : BattleStatus.lost,
+      run.copyWith(
+        status: won ? ArenaRunStatus.won : ArenaRunStatus.lost,
+        finishedAt: DateTime.now().toUtc(),
+        verified: verified,
         coinsEarned: coins,
         xpEarned: xp,
         energyChange: savedPet.energy - pet.energy,
       ),
       transaction: transaction,
     );
-    return (savedBattle, savedPet);
+    return (savedRun, savedPet, leveledUp);
   }
 
-  int _winChance(Fighter pet, OpponentData o) => simulateWinChance(
-    pet,
-    o.fighter,
-    tellReliability: o.tellReliability,
-    seed: _matchupSeed(pet, o),
-  );
-
-  // Same matchup, same number, so the % doesn't jump around between visits
-  static int _matchupSeed(Fighter pet, OpponentData o) {
-    var seed = pet.maxHp * 1000003 + pet.attack * 10007 + pet.defense * 101;
-    for (final unit in o.key.codeUnits) {
-      seed = (seed * 31 + unit) & 0x7fffffff;
-    }
-    return seed;
-  }
-
-  BattleState _state(Battle battle, Pet pet, OpponentData opponent) =>
-      BattleState(
-        battle: battle,
-        opponent: opponent.toProtocol(
-          winChance: _winChance(
-            Fighter(
-              maxHp: battle.petMaxHp,
-              attack: battle.petAttack,
-              defense: battle.petDefense,
-            ),
-            opponent,
-          ),
-        ),
-        petName: pet.name,
-        petSpeciesKey: pet.speciesKey,
-      );
+  BattleStats _stats(Fighter f) =>
+      BattleStats(hp: f.maxHp, attack: f.attack, defense: f.defense);
 }

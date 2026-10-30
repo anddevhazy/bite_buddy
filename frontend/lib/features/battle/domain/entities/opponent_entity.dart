@@ -10,10 +10,15 @@ class OpponentEntity extends Equatable {
   final int defense;
   final String difficulty;
   final int coinReward;
-  // How often its tells are true, 0-100. Tougher opponents bluff more.
-  final int tellReliability;
-  // Chance of winning if you read the tells, 0-100 (simulated on the server)
-  final int winChance;
+  // How it fights in the real-time arena
+  final int windupMs;
+  final int recoveryMs;
+  final int attackIntervalMs;
+  final int heavyChance;
+  final int feintChance;
+  // Percent of jabs followed straight up by a quick second jab
+  final int comboChance;
+  final int blockChance;
 
   const OpponentEntity({
     required this.key,
@@ -25,16 +30,26 @@ class OpponentEntity extends Equatable {
     required this.defense,
     required this.difficulty,
     required this.coinReward,
-    required this.tellReliability,
-    required this.winChance,
+    required this.windupMs,
+    required this.recoveryMs,
+    required this.attackIntervalMs,
+    required this.heavyChance,
+    required this.feintChance,
+    required this.comboChance,
+    required this.blockChance,
   });
 
-  String get bluffs => tellReliability >= 80
-      ? 'Rarely bluffs'
-      : tellReliability >= 70
-      ? 'Sometimes bluffs'
-      : 'Often bluffs';
+  // "0.75s": how long you have to react to an attack
+  String get reactionTime => '${(windupMs / 1000).toStringAsFixed(2)}s';
+
+  String get fakes => feintChance == 0
+      ? 'Never fakes'
+      : feintChance < 15
+      ? 'Rarely fakes'
+      : feintChance < 25
+      ? 'Sometimes fakes'
+      : 'Often fakes';
 
   @override
-  List<Object?> get props => [key, winChance];
+  List<Object?> get props => [key];
 }

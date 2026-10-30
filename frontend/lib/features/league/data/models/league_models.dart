@@ -1,4 +1,4 @@
-import 'package:bite_buddy/features/battle/data/models/battle_model.dart';
+import 'package:bite_buddy/features/battle/data/models/battle_move_mapper.dart';
 import 'package:bite_buddy/features/league/domain/entities/league_entities.dart';
 import 'package:bite_buddy_client/bite_buddy_client.dart';
 
@@ -67,7 +67,7 @@ class LeagueModels {
       youMissed: d.youMissed,
       theirRecentMoves: [
         for (final m in d.theirRecentMoves)
-          m == null ? null : BattleModel.toAppMove(m),
+          m == null ? null : BattleMoveMapper.toApp(m),
       ],
       lastRound: r == null
           ? null
@@ -75,10 +75,10 @@ class LeagueModels {
               round: r.round,
               myMove: r.myMove == null
                   ? null
-                  : BattleModel.toAppMove(r.myMove!),
+                  : BattleMoveMapper.toApp(r.myMove!),
               theirMove: r.theirMove == null
                   ? null
-                  : BattleModel.toAppMove(r.theirMove!),
+                  : BattleMoveMapper.toApp(r.theirMove!),
               damageDealt: r.damageDealt,
               damageTaken: r.damageTaken,
               myCritical: r.myCritical,

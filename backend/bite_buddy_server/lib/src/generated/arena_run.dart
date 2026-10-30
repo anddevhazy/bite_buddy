@@ -10,111 +10,92 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:bite_buddy_server/src/generated/protocol.dart' as _i61ow1lb;
 import 'package:serverpod/serverpod.dart' as _is;
-import 'battle_move.dart' as _iz303hum;
-import 'battle_round.dart' as _imrf8vtu;
-import 'battle_status.dart' as _ib4xlijd;
+import 'arena_run_status.dart' as _ic5j8p21;
 
-/// A battle between the user's pet and a catalog opponent, resolved round by
-/// round on the server.
-abstract class Battle implements _is.TableRow<int?>, _is.ProtocolSerialization {
-  Battle._({
+/// One real-time fight against a computer opponent. The fight itself runs on
+/// the phone; the server fixes the fighters when it starts and checks the
+/// reported result is possible before paying out.
+abstract class ArenaRun
+    implements _is.TableRow<int?>, _is.ProtocolSerialization {
+  ArenaRun._({
     this.id,
     required this.ownerId,
     required this.petId,
     required this.opponentKey,
-    required this.petHp,
     required this.petMaxHp,
     required this.petAttack,
     required this.petDefense,
-    required this.opponentHp,
-    required this.opponentMaxHp,
-    required this.round,
+    required this.startedAt,
     required this.status,
-    required this.specialCooldown,
-    required this.opponentSpecialCooldown,
-    this.opponentNextMove,
-    this.opponentTell,
-    this.lastRound,
-    required this.coinsEarned,
-    required this.xpEarned,
-    required this.energyChange,
-    required this.createdAt,
-  });
+    this.finishedAt,
+    this.durationMs,
+    this.damageDealt,
+    this.damageTaken,
+    bool? verified,
+    int? coinsEarned,
+    int? xpEarned,
+    int? energyChange,
+  }) : verified = verified ?? true,
+       coinsEarned = coinsEarned ?? 0,
+       xpEarned = xpEarned ?? 0,
+       energyChange = energyChange ?? 0;
 
-  factory Battle({
+  factory ArenaRun({
     int? id,
     required _is.UuidValue ownerId,
     required int petId,
     required String opponentKey,
-    required int petHp,
     required int petMaxHp,
     required int petAttack,
     required int petDefense,
-    required int opponentHp,
-    required int opponentMaxHp,
-    required int round,
-    required _ib4xlijd.BattleStatus status,
-    required int specialCooldown,
-    required int opponentSpecialCooldown,
-    _iz303hum.BattleMove? opponentNextMove,
-    _iz303hum.BattleMove? opponentTell,
-    _imrf8vtu.BattleRound? lastRound,
-    required int coinsEarned,
-    required int xpEarned,
-    required int energyChange,
-    required DateTime createdAt,
-  }) = _BattleImpl;
+    required DateTime startedAt,
+    required _ic5j8p21.ArenaRunStatus status,
+    DateTime? finishedAt,
+    int? durationMs,
+    int? damageDealt,
+    int? damageTaken,
+    bool? verified,
+    int? coinsEarned,
+    int? xpEarned,
+    int? energyChange,
+  }) = _ArenaRunImpl;
 
-  factory Battle.fromJson(Map<String, dynamic> jsonSerialization) {
-    return Battle(
+  factory ArenaRun.fromJson(Map<String, dynamic> jsonSerialization) {
+    return ArenaRun(
       id: jsonSerialization['id'] as int?,
       ownerId: _is.UuidValueJsonExtension.fromJson(
         jsonSerialization['ownerId'],
       ),
       petId: jsonSerialization['petId'] as int,
       opponentKey: jsonSerialization['opponentKey'] as String,
-      petHp: jsonSerialization['petHp'] as int,
       petMaxHp: jsonSerialization['petMaxHp'] as int,
       petAttack: jsonSerialization['petAttack'] as int,
       petDefense: jsonSerialization['petDefense'] as int,
-      opponentHp: jsonSerialization['opponentHp'] as int,
-      opponentMaxHp: jsonSerialization['opponentMaxHp'] as int,
-      round: jsonSerialization['round'] as int,
-      status: _ib4xlijd.BattleStatus.fromJson(
+      startedAt: _is.DateTimeJsonExtension.fromJson(
+        jsonSerialization['startedAt'],
+      ),
+      status: _ic5j8p21.ArenaRunStatus.fromJson(
         (jsonSerialization['status'] as String),
       ),
-      specialCooldown: jsonSerialization['specialCooldown'] as int,
-      opponentSpecialCooldown:
-          jsonSerialization['opponentSpecialCooldown'] as int,
-      opponentNextMove: jsonSerialization['opponentNextMove'] == null
+      finishedAt: jsonSerialization['finishedAt'] == null
           ? null
-          : _iz303hum.BattleMove.fromJson(
-              (jsonSerialization['opponentNextMove'] as String),
-            ),
-      opponentTell: jsonSerialization['opponentTell'] == null
+          : _is.DateTimeJsonExtension.fromJson(jsonSerialization['finishedAt']),
+      durationMs: jsonSerialization['durationMs'] as int?,
+      damageDealt: jsonSerialization['damageDealt'] as int?,
+      damageTaken: jsonSerialization['damageTaken'] as int?,
+      verified: jsonSerialization['verified'] == null
           ? null
-          : _iz303hum.BattleMove.fromJson(
-              (jsonSerialization['opponentTell'] as String),
-            ),
-      lastRound: jsonSerialization['lastRound'] == null
-          ? null
-          : _i61ow1lb.Protocol().deserialize<_imrf8vtu.BattleRound>(
-              jsonSerialization['lastRound'],
-            ),
-      coinsEarned: jsonSerialization['coinsEarned'] as int,
-      xpEarned: jsonSerialization['xpEarned'] as int,
-      energyChange: jsonSerialization['energyChange'] as int,
-      createdAt: _is.DateTimeJsonExtension.fromJson(
-        jsonSerialization['createdAt'],
-      ),
+          : _is.BoolJsonExtension.fromJson(jsonSerialization['verified']),
+      coinsEarned: jsonSerialization['coinsEarned'] as int?,
+      xpEarned: jsonSerialization['xpEarned'] as int?,
+      energyChange: jsonSerialization['energyChange'] as int?,
     );
   }
 
-  static final t = BattleTable();
+  static final t = ArenaRunTable();
 
-  static const db = BattleRepository._();
+  static const db = ArenaRunRepository._();
 
   @override
   int? id;
@@ -125,35 +106,27 @@ abstract class Battle implements _is.TableRow<int?>, _is.ProtocolSerialization {
 
   String opponentKey;
 
-  int petHp;
-
   int petMaxHp;
 
   int petAttack;
 
   int petDefense;
 
-  int opponentHp;
+  DateTime startedAt;
 
-  int opponentMaxHp;
+  _ic5j8p21.ArenaRunStatus status;
 
-  int round;
+  DateTime? finishedAt;
 
-  _ib4xlijd.BattleStatus status;
+  int? durationMs;
 
-  /// Rounds until Special can be used again; 0 means ready.
-  int specialCooldown;
+  int? damageDealt;
 
-  int opponentSpecialCooldown;
+  int? damageTaken;
 
-  /// The move the opponent will make next round. Decided a round ahead so a
-  /// tell can hint at it; never sent to the app.
-  _iz303hum.BattleMove? opponentNextMove;
-
-  /// What the opponent appears to be doing next (usually, not always, true).
-  _iz303hum.BattleMove? opponentTell;
-
-  _imrf8vtu.BattleRound? lastRound;
+  /// False when a reported win failed the plausibility check (counted as a
+  /// loss).
+  bool verified;
 
   int coinsEarned;
 
@@ -161,111 +134,97 @@ abstract class Battle implements _is.TableRow<int?>, _is.ProtocolSerialization {
 
   int energyChange;
 
-  DateTime createdAt;
-
   @override
   _is.Table<int?> get table => t;
 
-  /// Returns a shallow copy of this [Battle]
+  /// Returns a shallow copy of this [ArenaRun]
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
-  Battle copyWith({
+  ArenaRun copyWith({
     int? id,
     _is.UuidValue? ownerId,
     int? petId,
     String? opponentKey,
-    int? petHp,
     int? petMaxHp,
     int? petAttack,
     int? petDefense,
-    int? opponentHp,
-    int? opponentMaxHp,
-    int? round,
-    _ib4xlijd.BattleStatus? status,
-    int? specialCooldown,
-    int? opponentSpecialCooldown,
-    _iz303hum.BattleMove? opponentNextMove,
-    _iz303hum.BattleMove? opponentTell,
-    _imrf8vtu.BattleRound? lastRound,
+    DateTime? startedAt,
+    _ic5j8p21.ArenaRunStatus? status,
+    DateTime? finishedAt,
+    int? durationMs,
+    int? damageDealt,
+    int? damageTaken,
+    bool? verified,
     int? coinsEarned,
     int? xpEarned,
     int? energyChange,
-    DateTime? createdAt,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
-      '__className__': 'Battle',
+      '__className__': 'ArenaRun',
       if (id != null) 'id': id,
       'ownerId': ownerId.toJson(),
       'petId': petId,
       'opponentKey': opponentKey,
-      'petHp': petHp,
       'petMaxHp': petMaxHp,
       'petAttack': petAttack,
       'petDefense': petDefense,
-      'opponentHp': opponentHp,
-      'opponentMaxHp': opponentMaxHp,
-      'round': round,
+      'startedAt': startedAt.toJson(),
       'status': status.toJson(),
-      'specialCooldown': specialCooldown,
-      'opponentSpecialCooldown': opponentSpecialCooldown,
-      if (opponentNextMove != null)
-        'opponentNextMove': opponentNextMove?.toJson(),
-      if (opponentTell != null) 'opponentTell': opponentTell?.toJson(),
-      if (lastRound != null) 'lastRound': lastRound?.toJson(),
+      if (finishedAt != null) 'finishedAt': finishedAt?.toJson(),
+      if (durationMs != null) 'durationMs': durationMs,
+      if (damageDealt != null) 'damageDealt': damageDealt,
+      if (damageTaken != null) 'damageTaken': damageTaken,
+      'verified': verified,
       'coinsEarned': coinsEarned,
       'xpEarned': xpEarned,
       'energyChange': energyChange,
-      'createdAt': createdAt.toJson(),
     };
   }
 
   @override
   Map<String, dynamic> toJsonForProtocol() {
     return {
-      '__className__': 'Battle',
+      '__className__': 'ArenaRun',
       if (id != null) 'id': id,
       'ownerId': ownerId.toJson(),
       'petId': petId,
       'opponentKey': opponentKey,
-      'petHp': petHp,
       'petMaxHp': petMaxHp,
       'petAttack': petAttack,
       'petDefense': petDefense,
-      'opponentHp': opponentHp,
-      'opponentMaxHp': opponentMaxHp,
-      'round': round,
+      'startedAt': startedAt.toJson(),
       'status': status.toJson(),
-      'specialCooldown': specialCooldown,
-      'opponentSpecialCooldown': opponentSpecialCooldown,
-      if (opponentTell != null) 'opponentTell': opponentTell?.toJson(),
-      if (lastRound != null) 'lastRound': lastRound?.toJsonForProtocol(),
+      if (finishedAt != null) 'finishedAt': finishedAt?.toJson(),
+      if (durationMs != null) 'durationMs': durationMs,
+      if (damageDealt != null) 'damageDealt': damageDealt,
+      if (damageTaken != null) 'damageTaken': damageTaken,
+      'verified': verified,
       'coinsEarned': coinsEarned,
       'xpEarned': xpEarned,
       'energyChange': energyChange,
-      'createdAt': createdAt.toJson(),
     };
   }
 
-  static BattleInclude include() {
-    return BattleInclude._();
+  static ArenaRunInclude include() {
+    return ArenaRunInclude._();
   }
 
-  static BattleIncludeList includeList({
-    _is.WhereExpressionBuilder<BattleTable>? where,
+  static ArenaRunIncludeList includeList({
+    _is.WhereExpressionBuilder<ArenaRunTable>? where,
     int? limit,
     int? offset,
-    _is.OrderByBuilder<BattleTable>? orderBy,
-    _is.OrderByListBuilder<BattleTable>? orderByList,
-    BattleInclude? include,
+    _is.OrderByBuilder<ArenaRunTable>? orderBy,
+    _is.OrderByListBuilder<ArenaRunTable>? orderByList,
+    ArenaRunInclude? include,
   }) {
-    return BattleIncludeList._(
+    return ArenaRunIncludeList._(
       where: where,
       limit: limit,
       offset: offset,
-      orderBy: orderBy?.call(Battle.t),
-      orderByList: orderByList?.call(Battle.t),
+      orderBy: orderBy?.call(ArenaRun.t),
+      orderByList: orderByList?.call(ArenaRun.t),
       include: include,
     );
   }
@@ -278,115 +237,92 @@ abstract class Battle implements _is.TableRow<int?>, _is.ProtocolSerialization {
 
 class _Undefined {}
 
-class _BattleImpl extends Battle {
-  _BattleImpl({
+class _ArenaRunImpl extends ArenaRun {
+  _ArenaRunImpl({
     int? id,
     required _is.UuidValue ownerId,
     required int petId,
     required String opponentKey,
-    required int petHp,
     required int petMaxHp,
     required int petAttack,
     required int petDefense,
-    required int opponentHp,
-    required int opponentMaxHp,
-    required int round,
-    required _ib4xlijd.BattleStatus status,
-    required int specialCooldown,
-    required int opponentSpecialCooldown,
-    _iz303hum.BattleMove? opponentNextMove,
-    _iz303hum.BattleMove? opponentTell,
-    _imrf8vtu.BattleRound? lastRound,
-    required int coinsEarned,
-    required int xpEarned,
-    required int energyChange,
-    required DateTime createdAt,
+    required DateTime startedAt,
+    required _ic5j8p21.ArenaRunStatus status,
+    DateTime? finishedAt,
+    int? durationMs,
+    int? damageDealt,
+    int? damageTaken,
+    bool? verified,
+    int? coinsEarned,
+    int? xpEarned,
+    int? energyChange,
   }) : super._(
          id: id,
          ownerId: ownerId,
          petId: petId,
          opponentKey: opponentKey,
-         petHp: petHp,
          petMaxHp: petMaxHp,
          petAttack: petAttack,
          petDefense: petDefense,
-         opponentHp: opponentHp,
-         opponentMaxHp: opponentMaxHp,
-         round: round,
+         startedAt: startedAt,
          status: status,
-         specialCooldown: specialCooldown,
-         opponentSpecialCooldown: opponentSpecialCooldown,
-         opponentNextMove: opponentNextMove,
-         opponentTell: opponentTell,
-         lastRound: lastRound,
+         finishedAt: finishedAt,
+         durationMs: durationMs,
+         damageDealt: damageDealt,
+         damageTaken: damageTaken,
+         verified: verified,
          coinsEarned: coinsEarned,
          xpEarned: xpEarned,
          energyChange: energyChange,
-         createdAt: createdAt,
        );
 
-  /// Returns a shallow copy of this [Battle]
+  /// Returns a shallow copy of this [ArenaRun]
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
   @override
-  Battle copyWith({
+  ArenaRun copyWith({
     Object? id = _Undefined,
     _is.UuidValue? ownerId,
     int? petId,
     String? opponentKey,
-    int? petHp,
     int? petMaxHp,
     int? petAttack,
     int? petDefense,
-    int? opponentHp,
-    int? opponentMaxHp,
-    int? round,
-    _ib4xlijd.BattleStatus? status,
-    int? specialCooldown,
-    int? opponentSpecialCooldown,
-    Object? opponentNextMove = _Undefined,
-    Object? opponentTell = _Undefined,
-    Object? lastRound = _Undefined,
+    DateTime? startedAt,
+    _ic5j8p21.ArenaRunStatus? status,
+    Object? finishedAt = _Undefined,
+    Object? durationMs = _Undefined,
+    Object? damageDealt = _Undefined,
+    Object? damageTaken = _Undefined,
+    bool? verified,
     int? coinsEarned,
     int? xpEarned,
     int? energyChange,
-    DateTime? createdAt,
   }) {
-    return Battle(
+    return ArenaRun(
       id: id is int? ? id : this.id,
       ownerId: ownerId ?? this.ownerId,
       petId: petId ?? this.petId,
       opponentKey: opponentKey ?? this.opponentKey,
-      petHp: petHp ?? this.petHp,
       petMaxHp: petMaxHp ?? this.petMaxHp,
       petAttack: petAttack ?? this.petAttack,
       petDefense: petDefense ?? this.petDefense,
-      opponentHp: opponentHp ?? this.opponentHp,
-      opponentMaxHp: opponentMaxHp ?? this.opponentMaxHp,
-      round: round ?? this.round,
+      startedAt: startedAt ?? this.startedAt,
       status: status ?? this.status,
-      specialCooldown: specialCooldown ?? this.specialCooldown,
-      opponentSpecialCooldown:
-          opponentSpecialCooldown ?? this.opponentSpecialCooldown,
-      opponentNextMove: opponentNextMove is _iz303hum.BattleMove?
-          ? opponentNextMove
-          : this.opponentNextMove,
-      opponentTell: opponentTell is _iz303hum.BattleMove?
-          ? opponentTell
-          : this.opponentTell,
-      lastRound: lastRound is _imrf8vtu.BattleRound?
-          ? lastRound
-          : this.lastRound?.copyWith(),
+      finishedAt: finishedAt is DateTime? ? finishedAt : this.finishedAt,
+      durationMs: durationMs is int? ? durationMs : this.durationMs,
+      damageDealt: damageDealt is int? ? damageDealt : this.damageDealt,
+      damageTaken: damageTaken is int? ? damageTaken : this.damageTaken,
+      verified: verified ?? this.verified,
       coinsEarned: coinsEarned ?? this.coinsEarned,
       xpEarned: xpEarned ?? this.xpEarned,
       energyChange: energyChange ?? this.energyChange,
-      createdAt: createdAt ?? this.createdAt,
     );
   }
 }
 
-class BattleUpdateTable extends _is.UpdateTable<BattleTable> {
-  BattleUpdateTable(super.table);
+class ArenaRunUpdateTable extends _is.UpdateTable<ArenaRunTable> {
+  ArenaRunUpdateTable(super.table);
 
   _is.ColumnValue<_is.UuidValue, _is.UuidValue> ownerId(_is.UuidValue value) =>
       _is.ColumnValue(
@@ -401,11 +337,6 @@ class BattleUpdateTable extends _is.UpdateTable<BattleTable> {
 
   _is.ColumnValue<String, String> opponentKey(String value) => _is.ColumnValue(
     table.opponentKey,
-    value,
-  );
-
-  _is.ColumnValue<int, int> petHp(int value) => _is.ColumnValue(
-    table.petHp,
     value,
   );
 
@@ -424,57 +355,42 @@ class BattleUpdateTable extends _is.UpdateTable<BattleTable> {
     value,
   );
 
-  _is.ColumnValue<int, int> opponentHp(int value) => _is.ColumnValue(
-    table.opponentHp,
-    value,
-  );
+  _is.ColumnValue<DateTime, DateTime> startedAt(DateTime value) =>
+      _is.ColumnValue(
+        table.startedAt,
+        value,
+      );
 
-  _is.ColumnValue<int, int> opponentMaxHp(int value) => _is.ColumnValue(
-    table.opponentMaxHp,
-    value,
-  );
-
-  _is.ColumnValue<int, int> round(int value) => _is.ColumnValue(
-    table.round,
-    value,
-  );
-
-  _is.ColumnValue<_ib4xlijd.BattleStatus, _ib4xlijd.BattleStatus> status(
-    _ib4xlijd.BattleStatus value,
+  _is.ColumnValue<_ic5j8p21.ArenaRunStatus, _ic5j8p21.ArenaRunStatus> status(
+    _ic5j8p21.ArenaRunStatus value,
   ) => _is.ColumnValue(
     table.status,
     value,
   );
 
-  _is.ColumnValue<int, int> specialCooldown(int value) => _is.ColumnValue(
-    table.specialCooldown,
-    value,
-  );
-
-  _is.ColumnValue<int, int> opponentSpecialCooldown(int value) =>
+  _is.ColumnValue<DateTime, DateTime> finishedAt(DateTime? value) =>
       _is.ColumnValue(
-        table.opponentSpecialCooldown,
+        table.finishedAt,
         value,
       );
 
-  _is.ColumnValue<_iz303hum.BattleMove, _iz303hum.BattleMove> opponentNextMove(
-    _iz303hum.BattleMove? value,
-  ) => _is.ColumnValue(
-    table.opponentNextMove,
+  _is.ColumnValue<int, int> durationMs(int? value) => _is.ColumnValue(
+    table.durationMs,
     value,
   );
 
-  _is.ColumnValue<_iz303hum.BattleMove, _iz303hum.BattleMove> opponentTell(
-    _iz303hum.BattleMove? value,
-  ) => _is.ColumnValue(
-    table.opponentTell,
+  _is.ColumnValue<int, int> damageDealt(int? value) => _is.ColumnValue(
+    table.damageDealt,
     value,
   );
 
-  _is.ColumnValue<_imrf8vtu.BattleRound, _imrf8vtu.BattleRound> lastRound(
-    _imrf8vtu.BattleRound? value,
-  ) => _is.ColumnValue(
-    table.lastRound,
+  _is.ColumnValue<int, int> damageTaken(int? value) => _is.ColumnValue(
+    table.damageTaken,
+    value,
+  );
+
+  _is.ColumnValue<bool, bool> verified(bool value) => _is.ColumnValue(
+    table.verified,
     value,
   );
 
@@ -492,17 +408,11 @@ class BattleUpdateTable extends _is.UpdateTable<BattleTable> {
     table.energyChange,
     value,
   );
-
-  _is.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
-      _is.ColumnValue(
-        table.createdAt,
-        value,
-      );
 }
 
-class BattleTable extends _is.Table<int?> {
-  BattleTable({super.tableRelation}) : super(tableName: 'battle') {
-    updateTable = BattleUpdateTable(this);
+class ArenaRunTable extends _is.Table<int?> {
+  ArenaRunTable({super.tableRelation}) : super(tableName: 'arena_run') {
+    updateTable = ArenaRunUpdateTable(this);
     ownerId = _is.ColumnUuid(
       'ownerId',
       this,
@@ -513,10 +423,6 @@ class BattleTable extends _is.Table<int?> {
     );
     opponentKey = _is.ColumnString(
       'opponentKey',
-      this,
-    );
-    petHp = _is.ColumnInt(
-      'petHp',
       this,
     );
     petMaxHp = _is.ColumnInt(
@@ -531,16 +437,8 @@ class BattleTable extends _is.Table<int?> {
       'petDefense',
       this,
     );
-    opponentHp = _is.ColumnInt(
-      'opponentHp',
-      this,
-    );
-    opponentMaxHp = _is.ColumnInt(
-      'opponentMaxHp',
-      this,
-    );
-    round = _is.ColumnInt(
-      'round',
+    startedAt = _is.ColumnDateTime(
+      'startedAt',
       this,
     );
     status = _is.ColumnEnum(
@@ -548,47 +446,45 @@ class BattleTable extends _is.Table<int?> {
       this,
       _is.EnumSerialization.byName,
     );
-    specialCooldown = _is.ColumnInt(
-      'specialCooldown',
+    finishedAt = _is.ColumnDateTime(
+      'finishedAt',
       this,
     );
-    opponentSpecialCooldown = _is.ColumnInt(
-      'opponentSpecialCooldown',
+    durationMs = _is.ColumnInt(
+      'durationMs',
       this,
     );
-    opponentNextMove = _is.ColumnEnum(
-      'opponentNextMove',
+    damageDealt = _is.ColumnInt(
+      'damageDealt',
       this,
-      _is.EnumSerialization.byName,
     );
-    opponentTell = _is.ColumnEnum(
-      'opponentTell',
+    damageTaken = _is.ColumnInt(
+      'damageTaken',
       this,
-      _is.EnumSerialization.byName,
     );
-    lastRound = _is.ColumnSerializable<_imrf8vtu.BattleRound>(
-      'lastRound',
+    verified = _is.ColumnBool(
+      'verified',
       this,
+      hasDefault: true,
     );
     coinsEarned = _is.ColumnInt(
       'coinsEarned',
       this,
+      hasDefault: true,
     );
     xpEarned = _is.ColumnInt(
       'xpEarned',
       this,
+      hasDefault: true,
     );
     energyChange = _is.ColumnInt(
       'energyChange',
       this,
-    );
-    createdAt = _is.ColumnDateTime(
-      'createdAt',
-      this,
+      hasDefault: true,
     );
   }
 
-  late final BattleUpdateTable updateTable;
+  late final ArenaRunUpdateTable updateTable;
 
   late final _is.ColumnUuid ownerId;
 
@@ -596,35 +492,27 @@ class BattleTable extends _is.Table<int?> {
 
   late final _is.ColumnString opponentKey;
 
-  late final _is.ColumnInt petHp;
-
   late final _is.ColumnInt petMaxHp;
 
   late final _is.ColumnInt petAttack;
 
   late final _is.ColumnInt petDefense;
 
-  late final _is.ColumnInt opponentHp;
+  late final _is.ColumnDateTime startedAt;
 
-  late final _is.ColumnInt opponentMaxHp;
+  late final _is.ColumnEnum<_ic5j8p21.ArenaRunStatus> status;
 
-  late final _is.ColumnInt round;
+  late final _is.ColumnDateTime finishedAt;
 
-  late final _is.ColumnEnum<_ib4xlijd.BattleStatus> status;
+  late final _is.ColumnInt durationMs;
 
-  /// Rounds until Special can be used again; 0 means ready.
-  late final _is.ColumnInt specialCooldown;
+  late final _is.ColumnInt damageDealt;
 
-  late final _is.ColumnInt opponentSpecialCooldown;
+  late final _is.ColumnInt damageTaken;
 
-  /// The move the opponent will make next round. Decided a round ahead so a
-  /// tell can hint at it; never sent to the app.
-  late final _is.ColumnEnum<_iz303hum.BattleMove> opponentNextMove;
-
-  /// What the opponent appears to be doing next (usually, not always, true).
-  late final _is.ColumnEnum<_iz303hum.BattleMove> opponentTell;
-
-  late final _is.ColumnSerializable<_imrf8vtu.BattleRound> lastRound;
+  /// False when a reported win failed the plausibility check (counted as a
+  /// loss).
+  late final _is.ColumnBool verified;
 
   late final _is.ColumnInt coinsEarned;
 
@@ -632,67 +520,61 @@ class BattleTable extends _is.Table<int?> {
 
   late final _is.ColumnInt energyChange;
 
-  late final _is.ColumnDateTime createdAt;
-
   @override
   List<_is.Column> get columns => [
     id,
     ownerId,
     petId,
     opponentKey,
-    petHp,
     petMaxHp,
     petAttack,
     petDefense,
-    opponentHp,
-    opponentMaxHp,
-    round,
+    startedAt,
     status,
-    specialCooldown,
-    opponentSpecialCooldown,
-    opponentNextMove,
-    opponentTell,
-    lastRound,
+    finishedAt,
+    durationMs,
+    damageDealt,
+    damageTaken,
+    verified,
     coinsEarned,
     xpEarned,
     energyChange,
-    createdAt,
   ];
 }
 
-class BattleInclude extends _is.IncludeObject {
-  BattleInclude._();
+class ArenaRunInclude extends _is.IncludeObject {
+  ArenaRunInclude._();
 
   @override
   Map<String, _is.Include?> get includes => {};
 
   @override
-  _is.Table<int?> get table => Battle.t;
+  _is.Table<int?> get table => ArenaRun.t;
 }
 
-class BattleIncludeList extends _is.IncludeList {
-  BattleIncludeList._({
-    _is.WhereExpressionBuilder<BattleTable>? where,
+class ArenaRunIncludeList extends _is.IncludeList {
+  ArenaRunIncludeList._({
+    _is.WhereExpressionBuilder<ArenaRunTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
     super.orderByList,
     super.include,
   }) {
-    super.where = where?.call(Battle.t);
+    super.where = where?.call(ArenaRun.t);
   }
 
   @override
   Map<String, _is.Include?> get includes => include?.includes ?? {};
 
   @override
-  _is.Table<int?> get table => Battle.t;
+  _is.Table<int?> get table => ArenaRun.t;
 }
 
-class BattleRepository {
-  const BattleRepository._();
+class ArenaRunRepository {
+  const ArenaRunRepository._();
 
-  /// Returns a list of [Battle]s matching the given query parameters.
+  /// Returns a list of [ArenaRun]s matching the given query parameters.
   ///
   /// Use [where] to specify which items to include in the return value.
   /// If none is specified, all items will be returned.
@@ -714,21 +596,21 @@ class BattleRepository {
   ///   limit: 100,
   /// );
   /// ```
-  Future<List<Battle>> find(
+  Future<List<ArenaRun>> find(
     _is.DatabaseSession session, {
-    _is.WhereExpressionBuilder<BattleTable>? where,
+    _is.WhereExpressionBuilder<ArenaRunTable>? where,
     int? limit,
     int? offset,
-    _is.OrderByBuilder<BattleTable>? orderBy,
-    _is.OrderByListBuilder<BattleTable>? orderByList,
+    _is.OrderByBuilder<ArenaRunTable>? orderBy,
+    _is.OrderByListBuilder<ArenaRunTable>? orderByList,
     _is.Transaction? transaction,
     _is.LockMode? lockMode,
     _is.LockBehavior? lockBehavior,
   }) async {
-    return session.db.find<Battle>(
-      where: where?.call(Battle.t),
-      orderBy: orderBy?.call(Battle.t),
-      orderByList: orderByList?.call(Battle.t),
+    return session.db.find<ArenaRun>(
+      where: where?.call(ArenaRun.t),
+      orderBy: orderBy?.call(ArenaRun.t),
+      orderByList: orderByList?.call(ArenaRun.t),
       limit: limit,
       offset: offset,
       transaction: transaction,
@@ -737,7 +619,7 @@ class BattleRepository {
     );
   }
 
-  /// Returns the first matching [Battle] matching the given query parameters.
+  /// Returns the first matching [ArenaRun] matching the given query parameters.
   ///
   /// Use [where] to specify which items to include in the return value.
   /// If none is specified, all items will be returned.
@@ -754,20 +636,20 @@ class BattleRepository {
   ///   orderBy: (t) => t.age,
   /// );
   /// ```
-  Future<Battle?> findFirstRow(
+  Future<ArenaRun?> findFirstRow(
     _is.DatabaseSession session, {
-    _is.WhereExpressionBuilder<BattleTable>? where,
+    _is.WhereExpressionBuilder<ArenaRunTable>? where,
     int? offset,
-    _is.OrderByBuilder<BattleTable>? orderBy,
-    _is.OrderByListBuilder<BattleTable>? orderByList,
+    _is.OrderByBuilder<ArenaRunTable>? orderBy,
+    _is.OrderByListBuilder<ArenaRunTable>? orderByList,
     _is.Transaction? transaction,
     _is.LockMode? lockMode,
     _is.LockBehavior? lockBehavior,
   }) async {
-    return session.db.findFirstRow<Battle>(
-      where: where?.call(Battle.t),
-      orderBy: orderBy?.call(Battle.t),
-      orderByList: orderByList?.call(Battle.t),
+    return session.db.findFirstRow<ArenaRun>(
+      where: where?.call(ArenaRun.t),
+      orderBy: orderBy?.call(ArenaRun.t),
+      orderByList: orderByList?.call(ArenaRun.t),
       offset: offset,
       transaction: transaction,
       lockMode: lockMode,
@@ -775,15 +657,15 @@ class BattleRepository {
     );
   }
 
-  /// Finds a single [Battle] by its [id] or null if no such row exists.
-  Future<Battle?> findById(
+  /// Finds a single [ArenaRun] by its [id] or null if no such row exists.
+  Future<ArenaRun?> findById(
     _is.DatabaseSession session,
     int id, {
     _is.Transaction? transaction,
     _is.LockMode? lockMode,
     _is.LockBehavior? lockBehavior,
   }) async {
-    return session.db.findById<Battle>(
+    return session.db.findById<ArenaRun>(
       id,
       transaction: transaction,
       lockMode: lockMode,
@@ -791,9 +673,9 @@ class BattleRepository {
     );
   }
 
-  /// Inserts all [Battle]s in the list and returns the inserted rows.
+  /// Inserts all [ArenaRun]s in the list and returns the inserted rows.
   ///
-  /// The returned [Battle]s will have their `id` fields set.
+  /// The returned [ArenaRun]s will have their `id` fields set.
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
@@ -805,14 +687,14 @@ class BattleRepository {
   /// If [noReturn] is set to `true`, the inserted rows are not read back from
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
-  Future<List<Battle>> insert(
+  Future<List<ArenaRun>> insert(
     _is.DatabaseSession session,
-    List<Battle> rows, {
+    List<ArenaRun> rows, {
     _is.Transaction? transaction,
     bool ignoreConflicts = false,
     bool noReturn = false,
   }) async {
-    return session.db.insert<Battle>(
+    return session.db.insert<ArenaRun>(
       rows,
       transaction: transaction,
       ignoreConflicts: ignoreConflicts,
@@ -820,21 +702,21 @@ class BattleRepository {
     );
   }
 
-  /// Inserts a single [Battle] and returns the inserted row.
+  /// Inserts a single [ArenaRun] and returns the inserted row.
   ///
-  /// The returned [Battle] will have its `id` field set.
-  Future<Battle> insertRow(
+  /// The returned [ArenaRun] will have its `id` field set.
+  Future<ArenaRun> insertRow(
     _is.DatabaseSession session,
-    Battle row, {
+    ArenaRun row, {
     _is.Transaction? transaction,
   }) async {
-    return session.db.insertRow<Battle>(
+    return session.db.insertRow<ArenaRun>(
       row,
       transaction: transaction,
     );
   }
 
-  /// Upserts all [Battle]s in the list and returns the resulting rows.
+  /// Upserts all [ArenaRun]s in the list and returns the resulting rows.
   ///
   /// If a row conflicts on the given [conflictColumns], the existing row is
   /// updated with the new values. Otherwise, a new row is inserted.
@@ -846,7 +728,7 @@ class BattleRepository {
   /// given expression. Conflicting rows that don't match are skipped and not
   /// returned, so the resulting list may be shorter than [rows].
   ///
-  /// The returned [Battle]s will have their `id` fields set.
+  /// The returned [ArenaRun]s will have their `id` fields set.
   ///
   /// This is an atomic operation, meaning that if one of the rows fails,
   /// none of the rows will be affected.
@@ -854,26 +736,26 @@ class BattleRepository {
   /// If [noReturn] is set to `true`, the resulting rows are not read back from
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
-  Future<List<Battle>> upsert(
+  Future<List<ArenaRun>> upsert(
     _is.DatabaseSession session,
-    List<Battle> rows, {
-    required _is.ColumnSelections<BattleTable> conflictColumns,
-    _is.ColumnSelections<BattleTable>? updateColumns,
-    _is.WhereExpressionBuilder<BattleTable>? updateWhere,
+    List<ArenaRun> rows, {
+    required _is.ColumnSelections<ArenaRunTable> conflictColumns,
+    _is.ColumnSelections<ArenaRunTable>? updateColumns,
+    _is.WhereExpressionBuilder<ArenaRunTable>? updateWhere,
     _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
-    return session.db.upsert<Battle>(
+    return session.db.upsert<ArenaRun>(
       rows,
-      conflictColumns: conflictColumns(Battle.t),
-      updateColumns: updateColumns?.call(Battle.t),
-      updateWhere: updateWhere?.call(Battle.t),
+      conflictColumns: conflictColumns(ArenaRun.t),
+      updateColumns: updateColumns?.call(ArenaRun.t),
+      updateWhere: updateWhere?.call(ArenaRun.t),
       transaction: transaction,
       noReturn: noReturn,
     );
   }
 
-  /// Upserts a single [Battle] and returns the resulting row.
+  /// Upserts a single [ArenaRun] and returns the resulting row.
   ///
   /// If the row conflicts on the given [conflictColumns], the existing row is
   /// updated. Otherwise, a new row is inserted.
@@ -885,25 +767,25 @@ class BattleRepository {
   /// row matches the expression. Returns `null` if no row was affected — for
   /// example when [updateWhere] does not match the conflicting row.
   ///
-  /// The returned [Battle] will have its `id` field set.
-  Future<Battle?> upsertRow(
+  /// The returned [ArenaRun] will have its `id` field set.
+  Future<ArenaRun?> upsertRow(
     _is.DatabaseSession session,
-    Battle row, {
-    required _is.ColumnSelections<BattleTable> conflictColumns,
-    _is.ColumnSelections<BattleTable>? updateColumns,
-    _is.WhereExpressionBuilder<BattleTable>? updateWhere,
+    ArenaRun row, {
+    required _is.ColumnSelections<ArenaRunTable> conflictColumns,
+    _is.ColumnSelections<ArenaRunTable>? updateColumns,
+    _is.WhereExpressionBuilder<ArenaRunTable>? updateWhere,
     _is.Transaction? transaction,
   }) async {
-    return session.db.upsertRow<Battle>(
+    return session.db.upsertRow<ArenaRun>(
       row,
-      conflictColumns: conflictColumns(Battle.t),
-      updateColumns: updateColumns?.call(Battle.t),
-      updateWhere: updateWhere?.call(Battle.t),
+      conflictColumns: conflictColumns(ArenaRun.t),
+      updateColumns: updateColumns?.call(ArenaRun.t),
+      updateWhere: updateWhere?.call(ArenaRun.t),
       transaction: transaction,
     );
   }
 
-  /// Updates all [Battle]s in the list and returns the updated rows. If
+  /// Updates all [ArenaRun]s in the list and returns the updated rows. If
   /// [columns] is provided, only those columns will be updated. Defaults to
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
@@ -912,82 +794,82 @@ class BattleRepository {
   /// If [noReturn] is set to `true`, the updated rows are not read back from
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
-  Future<List<Battle>> update(
+  Future<List<ArenaRun>> update(
     _is.DatabaseSession session,
-    List<Battle> rows, {
-    _is.ColumnSelections<BattleTable>? columns,
+    List<ArenaRun> rows, {
+    _is.ColumnSelections<ArenaRunTable>? columns,
     _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
-    return session.db.update<Battle>(
+    return session.db.update<ArenaRun>(
       rows,
-      columns: columns?.call(Battle.t),
+      columns: columns?.call(ArenaRun.t),
       transaction: transaction,
       noReturn: noReturn,
     );
   }
 
-  /// Updates a single [Battle]. The row needs to have its id set.
+  /// Updates a single [ArenaRun]. The row needs to have its id set.
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
-  Future<Battle> updateRow(
+  Future<ArenaRun> updateRow(
     _is.DatabaseSession session,
-    Battle row, {
-    _is.ColumnSelections<BattleTable>? columns,
+    ArenaRun row, {
+    _is.ColumnSelections<ArenaRunTable>? columns,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateRow<Battle>(
+    return session.db.updateRow<ArenaRun>(
       row,
-      columns: columns?.call(Battle.t),
+      columns: columns?.call(ArenaRun.t),
       transaction: transaction,
     );
   }
 
-  /// Updates a single [Battle] by its [id] with the specified [columnValues].
+  /// Updates a single [ArenaRun] by its [id] with the specified [columnValues].
   /// Returns the updated row or null if no row with the given id exists.
-  Future<Battle?> updateById(
+  Future<ArenaRun?> updateById(
     _is.DatabaseSession session,
     int id, {
-    required _is.ColumnValueListBuilder<BattleUpdateTable> columnValues,
+    required _is.ColumnValueListBuilder<ArenaRunUpdateTable> columnValues,
     _is.Transaction? transaction,
   }) async {
-    return session.db.updateById<Battle>(
+    return session.db.updateById<ArenaRun>(
       id,
-      columnValues: columnValues(Battle.t.updateTable),
+      columnValues: columnValues(ArenaRun.t.updateTable),
       transaction: transaction,
     );
   }
 
-  /// Updates all [Battle]s matching the [where] expression with the specified [columnValues].
+  /// Updates all [ArenaRun]s matching the [where] expression with the specified [columnValues].
   /// Returns the list of updated rows.
   ///
   /// If [noReturn] is set to `true`, the updated rows are not read back from
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
-  Future<List<Battle>> updateWhere(
+  Future<List<ArenaRun>> updateWhere(
     _is.DatabaseSession session, {
-    required _is.ColumnValueListBuilder<BattleUpdateTable> columnValues,
-    required _is.WhereExpressionBuilder<BattleTable> where,
+    required _is.ColumnValueListBuilder<ArenaRunUpdateTable> columnValues,
+    required _is.WhereExpressionBuilder<ArenaRunTable> where,
     int? limit,
     int? offset,
-    _is.OrderByBuilder<BattleTable>? orderBy,
-    _is.OrderByListBuilder<BattleTable>? orderByList,
+    _is.OrderByBuilder<ArenaRunTable>? orderBy,
+    _is.OrderByListBuilder<ArenaRunTable>? orderByList,
     _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
-    return session.db.updateWhere<Battle>(
-      columnValues: columnValues(Battle.t.updateTable),
-      where: where(Battle.t),
+    return session.db.updateWhere<ArenaRun>(
+      columnValues: columnValues(ArenaRun.t.updateTable),
+      where: where(ArenaRun.t),
       limit: limit,
       offset: offset,
-      orderBy: orderBy?.call(Battle.t),
-      orderByList: orderByList?.call(Battle.t),
+      orderBy: orderBy?.call(ArenaRun.t),
+      orderByList: orderByList?.call(ArenaRun.t),
       transaction: transaction,
       noReturn: noReturn,
     );
   }
 
-  /// Deletes all [Battle]s in the list and returns the deleted rows.
+  /// Deletes all [ArenaRun]s in the list and returns the deleted rows.
   ///
   /// To specify the order of the returned rows use [orderBy] or [orderByList]
   /// when sorting by multiple columns.
@@ -998,30 +880,30 @@ class BattleRepository {
   /// If [noReturn] is set to `true`, the deleted rows are not read back from
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
-  Future<List<Battle>> delete(
+  Future<List<ArenaRun>> delete(
     _is.DatabaseSession session,
-    List<Battle> rows, {
-    _is.OrderByBuilder<BattleTable>? orderBy,
-    _is.OrderByListBuilder<BattleTable>? orderByList,
+    List<ArenaRun> rows, {
+    _is.OrderByBuilder<ArenaRunTable>? orderBy,
+    _is.OrderByListBuilder<ArenaRunTable>? orderByList,
     _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
-    return session.db.delete<Battle>(
+    return session.db.delete<ArenaRun>(
       rows,
-      orderBy: orderBy?.call(Battle.t),
-      orderByList: orderByList?.call(Battle.t),
+      orderBy: orderBy?.call(ArenaRun.t),
+      orderByList: orderByList?.call(ArenaRun.t),
       transaction: transaction,
       noReturn: noReturn,
     );
   }
 
-  /// Deletes a single [Battle].
-  Future<Battle> deleteRow(
+  /// Deletes a single [ArenaRun].
+  Future<ArenaRun> deleteRow(
     _is.DatabaseSession session,
-    Battle row, {
+    ArenaRun row, {
     _is.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<Battle>(
+    return session.db.deleteRow<ArenaRun>(
       row,
       transaction: transaction,
     );
@@ -1035,18 +917,18 @@ class BattleRepository {
   /// If [noReturn] is set to `true`, the deleted rows are not read back from
   /// the database and an empty list is returned. This avoids the overhead of
   /// transferring and deserializing the rows when the result is not needed.
-  Future<List<Battle>> deleteWhere(
+  Future<List<ArenaRun>> deleteWhere(
     _is.DatabaseSession session, {
-    required _is.WhereExpressionBuilder<BattleTable> where,
-    _is.OrderByBuilder<BattleTable>? orderBy,
-    _is.OrderByListBuilder<BattleTable>? orderByList,
+    required _is.WhereExpressionBuilder<ArenaRunTable> where,
+    _is.OrderByBuilder<ArenaRunTable>? orderBy,
+    _is.OrderByListBuilder<ArenaRunTable>? orderByList,
     _is.Transaction? transaction,
     bool noReturn = false,
   }) async {
-    return session.db.deleteWhere<Battle>(
-      where: where(Battle.t),
-      orderBy: orderBy?.call(Battle.t),
-      orderByList: orderByList?.call(Battle.t),
+    return session.db.deleteWhere<ArenaRun>(
+      where: where(ArenaRun.t),
+      orderBy: orderBy?.call(ArenaRun.t),
+      orderByList: orderByList?.call(ArenaRun.t),
       transaction: transaction,
       noReturn: noReturn,
     );
@@ -1056,27 +938,27 @@ class BattleRepository {
   /// will return the count of all rows in the table.
   Future<int> count(
     _is.DatabaseSession session, {
-    _is.WhereExpressionBuilder<BattleTable>? where,
+    _is.WhereExpressionBuilder<ArenaRunTable>? where,
     int? limit,
     _is.Transaction? transaction,
   }) async {
-    return session.db.count<Battle>(
-      where: where?.call(Battle.t),
+    return session.db.count<ArenaRun>(
+      where: where?.call(ArenaRun.t),
       limit: limit,
       transaction: transaction,
     );
   }
 
-  /// Acquires row-level locks on [Battle] rows matching the [where] expression.
+  /// Acquires row-level locks on [ArenaRun] rows matching the [where] expression.
   Future<void> lockRows(
     _is.DatabaseSession session, {
-    required _is.WhereExpressionBuilder<BattleTable> where,
+    required _is.WhereExpressionBuilder<ArenaRunTable> where,
     required _is.LockMode lockMode,
     required _is.Transaction transaction,
     _is.LockBehavior lockBehavior = _is.LockBehavior.wait,
   }) async {
-    return session.db.lockRows<Battle>(
-      where: where(Battle.t),
+    return session.db.lockRows<ArenaRun>(
+      where: where(ArenaRun.t),
       lockMode: lockMode,
       lockBehavior: lockBehavior,
       transaction: transaction,

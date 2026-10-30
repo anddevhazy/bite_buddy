@@ -1,6 +1,7 @@
 import 'package:bite_buddy/features/auth/presentation/pages/sign_in_page.dart';
 import 'package:bite_buddy/features/battle/presentation/pages/battle_tab_page.dart';
-import 'package:bite_buddy/features/battle/presentation/pages/battle_page.dart';
+import 'package:bite_buddy/features/battle/domain/entities/arena_run_entities.dart';
+import 'package:bite_buddy/features/battle/presentation/pages/fight_page.dart';
 import 'package:bite_buddy/features/collection/presentation/pages/collection_page.dart';
 import 'package:bite_buddy/features/global/components/main_shell.dart';
 import 'package:bite_buddy/features/global/pages/splash_screen.dart';
@@ -45,8 +46,9 @@ class Routes {
   static const String scanResultPath = '/scanResult';
   static const String scanResultName = 'scanResult';
 
-  static const String battlePath = '/fight';
-  static const String battleName = 'fight';
+  // A real-time arena fight; pass its ArenaRunConfigEntity as `extra`
+  static const String fightPath = '/fight';
+  static const String fightName = 'fight';
 
   static const String guidePath = '/guide';
   static const String guideName = 'guide';
@@ -162,10 +164,11 @@ class Routes {
         builder: (context, state) => const GuidePage(),
       ),
       GoRoute(
-        path: battlePath,
-        name: battleName,
+        path: fightPath,
+        name: fightName,
         parentNavigatorKey: rootNavigatorKey,
-        builder: (context, state) => const BattlePage(),
+        builder: (context, state) =>
+            FightPage(config: state.extra! as ArenaRunConfigEntity),
       ),
     ],
   );

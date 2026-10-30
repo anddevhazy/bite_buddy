@@ -142,37 +142,38 @@ class GuideContent {
     GuideTopic(
       id: GuideTopicId.battles,
       emoji: '⚔️',
-      title: 'Battles',
-      summary: 'Fight opponents to earn coins, XP and energy.',
+      title: 'Arena fights',
+      summary: 'Real-time fights against computer opponents.',
       points: [
         'Your buddy fights with HP, ATK (attack) and DEF (defence), shown at '
             'the top of the Battle Arena. They grow with its level, health and '
             'nutrition, so eating well makes it a better fighter.',
-        'Each opponent card shows its stats and your chance of winning if you '
-            'read its tells (see Battle moves). Green is a likely win, orange '
-            'is close, red is a long shot.',
-        'Every hit varies a little, and critical hits land for extra damage, '
-            'so close fights can go either way.',
-        'A battle ends when one side runs out of HP. If it lasts 30 rounds, '
-            'whoever has more HP left wins.',
-        'You fight one battle at a time. Starting a new one while another is '
-            'unfinished counts the old one as a loss.',
+        'Watch the opponent wind up. A red glow is a jab: hold Block. Block '
+            'just before it lands for a perfect block, which takes no damage '
+            'and stuns them.',
+        "A purple glow is a heavy attack. It can't be blocked: Dodge it, and "
+            "they're stunned.",
+        'Some opponents follow a jab with a quick second one. Dodge needs a '
+            'moment to recharge, so Block is the safe answer to jabs.',
+        "Tougher opponents fake windups to bait you. Don't move too early!",
+        'When the opponent shows OPEN!, Attack: counters hit harder. Dodges, '
+            'perfect blocks and counters fill your Special meter; when it\'s '
+            'full, Special lands a huge hit.',
+        'Each opponent card shows how long you have to react, how often it '
+            'fakes and how often it throws heavy attacks.',
+        'Winning pays coins, XP and energy; losing or giving up costs energy.',
       ],
     ),
     GuideTopic(
       id: GuideTopicId.battleMoves,
       emoji: '🎯',
-      title: 'Battle moves and tells',
-      summary: 'Each move beats one other. Read the tell and counter it.',
+      title: 'Friend battle moves',
+      summary: 'In friend battles, each move beats one other.',
       points: [
         'Attack beats Special: you strike first and the special fizzles.',
         'Special beats Defend: it smashes through the guard for big damage. '
             'After using it, Special needs 2 rounds to recharge.',
         'Defend beats Attack: you block most of the hit and counter.',
-        'Before each round, your opponent shows a tell, like "gathering '
-            'power…" for a Special. Pick the move that beats it.',
-        "Tells are usually true, but some opponents bluff. Easy ones rarely "
-            'do; the toughest bluff often. Each card says how often.',
         'When you both pick the same move, you trade hits; if you both '
             'defend, you each recover a little HP.',
       ],

@@ -21,12 +21,6 @@ class OpponentCard extends StatelessWidget {
     required this.onBattle,
   });
 
-  Color get _chanceColor => opponent.winChance >= 70
-      ? AppColors.primary
-      : opponent.winChance >= 35
-      ? AppColors.accent
-      : AppColors.error;
-
   @override
   Widget build(BuildContext context) {
     final o = opponent;
@@ -62,7 +56,13 @@ class OpponentCard extends StatelessWidget {
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  '🎭 ${o.bluffs}',
+                  '⏱ ${o.reactionTime} to react · 🎭 ${o.fakes}',
+                  style: AppTextStyles.caption.copyWith(
+                    color: AppColors.textMuted,
+                  ),
+                ),
+                Text(
+                  '💥 ${o.heavyChance}% heavy attacks',
                   style: AppTextStyles.caption.copyWith(
                     color: AppColors.textMuted,
                   ),
@@ -75,15 +75,6 @@ class OpponentCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(
-                  o.winChance < 1 ? '<1% win' : '${o.winChance}% win',
-                  style: AppTextStyles.h3.copyWith(color: _chanceColor),
-                ),
-                Text(
-                  'if you read tells',
-                  textAlign: TextAlign.end,
-                  style: AppTextStyles.caption.copyWith(fontSize: 11),
-                ),
                 Text('💰 ${o.coinReward}', style: AppTextStyles.h3),
                 const SizedBox(height: AppSpacing.sm),
                 GameButton(

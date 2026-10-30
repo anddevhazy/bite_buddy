@@ -15,8 +15,13 @@ import 'dart:async' as _ida;
 import 'dart:io' as _idi;
 import 'dart:typed_data' as _idt;
 import 'package:bite_buddy_server/src/generated/arena.dart' as _ismcu0gw;
+import 'package:bite_buddy_server/src/generated/arena_run_config.dart'
+    as _iqi8ai3t;
+import 'package:bite_buddy_server/src/generated/arena_run_report.dart'
+    as _iipal77g;
+import 'package:bite_buddy_server/src/generated/arena_run_result.dart'
+    as _ixewx7ov;
 import 'package:bite_buddy_server/src/generated/battle_move.dart' as _itk175y8;
-import 'package:bite_buddy_server/src/generated/battle_state.dart' as _i8mv9gfm;
 import 'package:bite_buddy_server/src/generated/feed_result.dart' as _ien0ctj9;
 import 'package:bite_buddy_server/src/generated/leaderboard_entry.dart'
     as _i5n4mhlw;
@@ -587,7 +592,7 @@ class _BattleEndpoint {
     });
   }
 
-  _ida.Future<_i8mv9gfm.BattleState> start(
+  _ida.Future<_iqi8ai3t.ArenaRunConfig> startRun(
     _ist.TestSessionBuilder sessionBuilder,
     String opponentKey,
   ) async {
@@ -595,13 +600,13 @@ class _BattleEndpoint {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
             endpoint: 'battle',
-            method: 'start',
+            method: 'startRun',
           );
       try {
         var _localCallContext = await _endpointDispatch.getMethodCallContext(
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'battle',
-          methodName: 'start',
+          methodName: 'startRun',
           parameters: _ist.testObjectToJson({'opponentKey': opponentKey}),
           serializationManager: _serializationManager,
         );
@@ -610,7 +615,7 @@ class _BattleEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_i8mv9gfm.BattleState>);
+                as _ida.Future<_iqi8ai3t.ArenaRunConfig>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -618,25 +623,25 @@ class _BattleEndpoint {
     });
   }
 
-  _ida.Future<_i8mv9gfm.BattleState> move(
+  _ida.Future<_ixewx7ov.ArenaRunResult> finishRun(
     _ist.TestSessionBuilder sessionBuilder,
-    int battleId,
-    _itk175y8.BattleMove move,
+    int runId,
+    _iipal77g.ArenaRunReport report,
   ) async {
     return _ist.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
           (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
             endpoint: 'battle',
-            method: 'move',
+            method: 'finishRun',
           );
       try {
         var _localCallContext = await _endpointDispatch.getMethodCallContext(
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'battle',
-          methodName: 'move',
+          methodName: 'finishRun',
           parameters: _ist.testObjectToJson({
-            'battleId': battleId,
-            'move': move,
+            'runId': runId,
+            'report': report,
           }),
           serializationManager: _serializationManager,
         );
@@ -645,7 +650,7 @@ class _BattleEndpoint {
                   _localUniqueSession,
                   _localCallContext.arguments,
                 )
-                as _ida.Future<_i8mv9gfm.BattleState>);
+                as _ida.Future<_ixewx7ov.ArenaRunResult>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

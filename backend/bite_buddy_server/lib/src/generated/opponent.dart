@@ -12,7 +12,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _is;
 
-/// A battle opponent from the catalog in utils/catalog.dart.
+/// A battle opponent from the catalog in utils/catalog.dart, with how it
+/// fights in the real-time arena.
 abstract class Opponent
     implements _is.SerializableModel, _is.ProtocolSerialization {
   Opponent._({
@@ -25,8 +26,13 @@ abstract class Opponent
     required this.defense,
     required this.difficulty,
     required this.coinReward,
-    required this.tellReliability,
-    required this.winChance,
+    required this.windupMs,
+    required this.recoveryMs,
+    required this.attackIntervalMs,
+    required this.heavyChance,
+    required this.feintChance,
+    required this.comboChance,
+    required this.blockChance,
   });
 
   factory Opponent({
@@ -39,8 +45,13 @@ abstract class Opponent
     required int defense,
     required String difficulty,
     required int coinReward,
-    required int tellReliability,
-    required int winChance,
+    required int windupMs,
+    required int recoveryMs,
+    required int attackIntervalMs,
+    required int heavyChance,
+    required int feintChance,
+    required int comboChance,
+    required int blockChance,
   }) = _OpponentImpl;
 
   factory Opponent.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -54,8 +65,13 @@ abstract class Opponent
       defense: jsonSerialization['defense'] as int,
       difficulty: jsonSerialization['difficulty'] as String,
       coinReward: jsonSerialization['coinReward'] as int,
-      tellReliability: jsonSerialization['tellReliability'] as int,
-      winChance: jsonSerialization['winChance'] as int,
+      windupMs: jsonSerialization['windupMs'] as int,
+      recoveryMs: jsonSerialization['recoveryMs'] as int,
+      attackIntervalMs: jsonSerialization['attackIntervalMs'] as int,
+      heavyChance: jsonSerialization['heavyChance'] as int,
+      feintChance: jsonSerialization['feintChance'] as int,
+      comboChance: jsonSerialization['comboChance'] as int,
+      blockChance: jsonSerialization['blockChance'] as int,
     );
   }
 
@@ -77,12 +93,27 @@ abstract class Opponent
 
   int coinReward;
 
-  /// How often its tells are true, 0-100. Tougher opponents bluff more.
-  int tellReliability;
+  /// How long each attack winds up before it lands. Shorter is harder.
+  int windupMs;
 
-  /// Chance the caller's pet wins, 0-100, from simulating the matchup with a
-  /// player who reads the tells (see utils/battle_engine.dart).
-  int winChance;
+  /// How long it stays open after an attack (the counter window).
+  int recoveryMs;
+
+  /// Average time between attacks.
+  int attackIntervalMs;
+
+  /// Percent of attacks that are heavy (unblockable: dodge them).
+  int heavyChance;
+
+  /// Percent of windups that are fakes, to bait an early dodge.
+  int feintChance;
+
+  /// Percent of jabs followed straight up by a quick second jab. Dodge has a
+  /// cooldown, so only a block covers both.
+  int comboChance;
+
+  /// Percent of your attacks it blocks when it isn't open.
+  int blockChance;
 
   /// Returns a shallow copy of this [Opponent]
   /// with some or all fields replaced by the given arguments.
@@ -97,8 +128,13 @@ abstract class Opponent
     int? defense,
     String? difficulty,
     int? coinReward,
-    int? tellReliability,
-    int? winChance,
+    int? windupMs,
+    int? recoveryMs,
+    int? attackIntervalMs,
+    int? heavyChance,
+    int? feintChance,
+    int? comboChance,
+    int? blockChance,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -113,8 +149,13 @@ abstract class Opponent
       'defense': defense,
       'difficulty': difficulty,
       'coinReward': coinReward,
-      'tellReliability': tellReliability,
-      'winChance': winChance,
+      'windupMs': windupMs,
+      'recoveryMs': recoveryMs,
+      'attackIntervalMs': attackIntervalMs,
+      'heavyChance': heavyChance,
+      'feintChance': feintChance,
+      'comboChance': comboChance,
+      'blockChance': blockChance,
     };
   }
 
@@ -131,8 +172,13 @@ abstract class Opponent
       'defense': defense,
       'difficulty': difficulty,
       'coinReward': coinReward,
-      'tellReliability': tellReliability,
-      'winChance': winChance,
+      'windupMs': windupMs,
+      'recoveryMs': recoveryMs,
+      'attackIntervalMs': attackIntervalMs,
+      'heavyChance': heavyChance,
+      'feintChance': feintChance,
+      'comboChance': comboChance,
+      'blockChance': blockChance,
     };
   }
 
@@ -153,8 +199,13 @@ class _OpponentImpl extends Opponent {
     required int defense,
     required String difficulty,
     required int coinReward,
-    required int tellReliability,
-    required int winChance,
+    required int windupMs,
+    required int recoveryMs,
+    required int attackIntervalMs,
+    required int heavyChance,
+    required int feintChance,
+    required int comboChance,
+    required int blockChance,
   }) : super._(
          key: key,
          name: name,
@@ -165,8 +216,13 @@ class _OpponentImpl extends Opponent {
          defense: defense,
          difficulty: difficulty,
          coinReward: coinReward,
-         tellReliability: tellReliability,
-         winChance: winChance,
+         windupMs: windupMs,
+         recoveryMs: recoveryMs,
+         attackIntervalMs: attackIntervalMs,
+         heavyChance: heavyChance,
+         feintChance: feintChance,
+         comboChance: comboChance,
+         blockChance: blockChance,
        );
 
   /// Returns a shallow copy of this [Opponent]
@@ -183,8 +239,13 @@ class _OpponentImpl extends Opponent {
     int? defense,
     String? difficulty,
     int? coinReward,
-    int? tellReliability,
-    int? winChance,
+    int? windupMs,
+    int? recoveryMs,
+    int? attackIntervalMs,
+    int? heavyChance,
+    int? feintChance,
+    int? comboChance,
+    int? blockChance,
   }) {
     return Opponent(
       key: key ?? this.key,
@@ -196,8 +257,13 @@ class _OpponentImpl extends Opponent {
       defense: defense ?? this.defense,
       difficulty: difficulty ?? this.difficulty,
       coinReward: coinReward ?? this.coinReward,
-      tellReliability: tellReliability ?? this.tellReliability,
-      winChance: winChance ?? this.winChance,
+      windupMs: windupMs ?? this.windupMs,
+      recoveryMs: recoveryMs ?? this.recoveryMs,
+      attackIntervalMs: attackIntervalMs ?? this.attackIntervalMs,
+      heavyChance: heavyChance ?? this.heavyChance,
+      feintChance: feintChance ?? this.feintChance,
+      comboChance: comboChance ?? this.comboChance,
+      blockChance: blockChance ?? this.blockChance,
     );
   }
 }

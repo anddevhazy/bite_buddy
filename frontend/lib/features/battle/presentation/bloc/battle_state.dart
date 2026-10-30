@@ -20,7 +20,7 @@ class OpponentsLoaded extends BattleState {
   List<Object?> get props => [arena];
 }
 
-// Waiting for the server to set up a battle against [opponentKey]
+// Waiting for the server to set up a fight against [opponentKey]
 class BattleStarting extends OpponentsLoaded {
   final String opponentKey;
 
@@ -30,15 +30,14 @@ class BattleStarting extends OpponentsLoaded {
   List<Object?> get props => [arena, opponentKey];
 }
 
-class InBattle extends BattleState {
-  final BattleEntity battle;
-  // True while a move is being resolved on the server
-  final bool resolving;
+// The fight is set up: the arena page opens the fight screen with [config]
+class FightReady extends OpponentsLoaded {
+  final ArenaRunConfigEntity config;
 
-  InBattle({required this.battle, this.resolving = false});
+  FightReady({required super.arena, required this.config});
 
   @override
-  List<Object?> get props => [battle, resolving];
+  List<Object?> get props => [arena, config];
 }
 
 class BattleFailed extends BattleState {

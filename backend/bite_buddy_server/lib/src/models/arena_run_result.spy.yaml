@@ -1,0 +1,10 @@
+### The server's verdict on a finished fight, and what it paid out.
+class: ArenaRunResult
+fields:
+  won: bool
+  ### False when a reported win couldn't be verified (counted as a loss).
+  verified: bool
+  coinsEarned: int
+  xpEarned: int
+  energyChange: int
+  leveledUp: bool

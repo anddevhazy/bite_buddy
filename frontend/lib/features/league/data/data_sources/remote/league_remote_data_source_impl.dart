@@ -1,4 +1,4 @@
-import 'package:bite_buddy/features/battle/data/models/battle_model.dart';
+import 'package:bite_buddy/features/battle/data/models/battle_move_mapper.dart';
 import 'package:bite_buddy/features/global/enums/battle_move.dart' as app;
 import 'package:bite_buddy/features/league/data/data_sources/remote/league_remote_data_source.dart';
 import 'package:bite_buddy/features/league/data/models/league_models.dart';
@@ -44,6 +44,6 @@ class LeagueRemoteDataSourceImpl implements LeagueRemoteDataSource {
   @override
   Future<DuelEntity> playDuelMove(int duelId, app.BattleMove move) async =>
       LeagueModels.duel(
-        await client.duel.move(duelId, BattleModel.toProtocolMove(move)),
+        await client.duel.move(duelId, BattleMoveMapper.toProtocol(move)),
       );
 }

@@ -35,11 +35,9 @@ class _BattleArenaPageState extends State<BattleArenaPage> {
     final pet = context.watch<PetCubit>().pet;
     return SafeArea(
       child: BlocConsumer<BattleCubit, BattleState>(
-        // Errors during a fight are shown by the battle page instead
-        listenWhen: (previous, _) => previous is! InBattle,
         listener: (context, state) {
-          if (state is InBattle && !state.battle.isOver) {
-            context.pushNamed(Routes.battleName);
+          if (state is FightReady) {
+            context.pushNamed(Routes.fightName, extra: state.config);
           }
           if (state is BattleFailed) {
             AppToast.show(
@@ -50,7 +48,7 @@ class _BattleArenaPageState extends State<BattleArenaPage> {
           }
         },
         // A failure is shown as a toast; keep the list on screen
-        buildWhen: (_, state) => state is! BattleFailed && state is! InBattle,
+        buildWhen: (_, state) => state is! BattleFailed && state is! FightReady,
         builder: (context, state) {
           return ListView(
             padding: const EdgeInsets.all(AppSpacing.lg),
@@ -60,11 +58,7 @@ class _BattleArenaPageState extends State<BattleArenaPage> {
                 title: '⚔️ Battle Arena',
                 subtitle: 'Challenge opponents to earn coins and XP',
                 trailing: InfoButton(
-                  topics: [
-                    GuideTopicId.battles,
-                    GuideTopicId.battleMoves,
-                    GuideTopicId.coins,
-                  ],
+                  topics: [GuideTopicId.battles, GuideTopicId.coins],
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),

@@ -12,23 +12,31 @@ class OpponentModel extends OpponentEntity {
     required super.defense,
     required super.difficulty,
     required super.coinReward,
-    required super.tellReliability,
-    required super.winChance,
+    required super.windupMs,
+    required super.recoveryMs,
+    required super.attackIntervalMs,
+    required super.heavyChance,
+    required super.feintChance,
+    required super.comboChance,
+    required super.blockChance,
   });
 
-  factory OpponentModel.fromProtocol(Opponent opponent) {
-    return OpponentModel(
-      key: opponent.key,
-      name: opponent.name,
-      emoji: opponent.emoji,
-      level: opponent.level,
-      hp: opponent.hp,
-      attack: opponent.attack,
-      defense: opponent.defense,
-      difficulty: opponent.difficulty,
-      coinReward: opponent.coinReward,
-      tellReliability: opponent.tellReliability,
-      winChance: opponent.winChance,
-    );
-  }
+  factory OpponentModel.fromProtocol(Opponent o) => OpponentModel(
+    key: o.key,
+    name: o.name,
+    emoji: o.emoji,
+    level: o.level,
+    hp: o.hp,
+    attack: o.attack,
+    defense: o.defense,
+    difficulty: o.difficulty,
+    coinReward: o.coinReward,
+    windupMs: o.windupMs,
+    recoveryMs: o.recoveryMs,
+    attackIntervalMs: o.attackIntervalMs,
+    heavyChance: o.heavyChance,
+    feintChance: o.feintChance,
+    comboChance: o.comboChance,
+    blockChance: o.blockChance,
+  );
 }

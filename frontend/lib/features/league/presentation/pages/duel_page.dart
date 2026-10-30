@@ -95,7 +95,9 @@ class _TopBar extends StatelessWidget {
               style: AppTextStyles.h2,
             ),
           ),
-          const InfoButton(topics: [GuideTopicId.friendBattles]),
+          const InfoButton(
+            topics: [GuideTopicId.friendBattles, GuideTopicId.battleMoves],
+          ),
         ],
       ),
     );

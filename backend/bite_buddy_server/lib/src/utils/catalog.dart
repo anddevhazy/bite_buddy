@@ -9,57 +9,109 @@ const List<PetSpeciesData> petSpecies = [
   PetSpeciesData('mystic', 'Mystic', 'Shadow Cat', 'legendary', '🐰'),
 ];
 
-// Opponents in the battle arena, weakest first. The last number is how often
-// their tells are true (percent): tougher opponents bluff more.
+// Opponents in the battle arena, weakest first. Besides their stats, each has
+// a fighting style for the real-time arena: tougher opponents wind up faster,
+// throw more heavy (unblockable) attacks and fake more windups.
 const List<OpponentData> opponents = [
-  OpponentData('wild_pup', 'Wild Pup', '🐕', 1, 80, 18, 10, 'Easy', 75, 85),
+  OpponentData(
+    'wild_pup',
+    'Wild Pup',
+    '🐕',
+    level: 1,
+    hp: 80,
+    attack: 18,
+    defense: 10,
+    difficulty: 'Easy',
+    coinReward: 75,
+    style: FightStyle(
+      windupMs: 750,
+      recoveryMs: 900,
+      attackIntervalMs: 1700,
+      heavyChance: 10,
+      feintChance: 0,
+      comboChance: 10,
+      blockChance: 10,
+    ),
+  ),
   OpponentData(
     'forest_guardian',
     'Forest Guardian',
     '🦮',
-    2,
-    120,
-    24,
-    16,
-    'Medium',
-    100,
-    75,
+    level: 2,
+    hp: 120,
+    attack: 24,
+    defense: 16,
+    difficulty: 'Medium',
+    coinReward: 100,
+    style: FightStyle(
+      windupMs: 650,
+      recoveryMs: 800,
+      attackIntervalMs: 1500,
+      heavyChance: 20,
+      feintChance: 5,
+      comboChance: 20,
+      blockChance: 20,
+    ),
   ),
   OpponentData(
     'shadow_beast',
     'Shadow Beast',
     '🐈‍⬛',
-    3,
-    150,
-    30,
-    22,
-    'Medium',
-    125,
-    70,
+    level: 3,
+    hp: 150,
+    attack: 30,
+    defense: 22,
+    difficulty: 'Medium',
+    coinReward: 125,
+    style: FightStyle(
+      windupMs: 560,
+      recoveryMs: 700,
+      attackIntervalMs: 1300,
+      heavyChance: 25,
+      feintChance: 15,
+      comboChance: 30,
+      blockChance: 30,
+    ),
   ),
   OpponentData(
     'storm_drake',
     'Storm Drake',
     '🐉',
-    5,
-    200,
-    38,
-    30,
-    'Hard',
-    200,
-    65,
+    level: 5,
+    hp: 200,
+    attack: 38,
+    defense: 30,
+    difficulty: 'Hard',
+    coinReward: 200,
+    style: FightStyle(
+      windupMs: 480,
+      recoveryMs: 600,
+      attackIntervalMs: 1150,
+      heavyChance: 35,
+      feintChance: 20,
+      comboChance: 40,
+      blockChance: 35,
+    ),
   ),
   OpponentData(
     'ancient_golem',
     'Ancient Golem',
     '🗿',
-    8,
-    280,
-    46,
-    42,
-    'Legendary',
-    350,
-    60,
+    level: 8,
+    hp: 280,
+    attack: 46,
+    defense: 42,
+    difficulty: 'Legendary',
+    coinReward: 350,
+    style: FightStyle(
+      windupMs: 420,
+      recoveryMs: 550,
+      attackIntervalMs: 1050,
+      heavyChance: 40,
+      feintChance: 30,
+      comboChance: 50,
+      blockChance: 45,
+    ),
   ),
 ];
 
@@ -101,6 +153,26 @@ class PetSpeciesData {
   );
 }
 
+class FightStyle {
+  final int windupMs;
+  final int recoveryMs;
+  final int attackIntervalMs;
+  final int heavyChance;
+  final int feintChance;
+  final int comboChance;
+  final int blockChance;
+
+  const FightStyle({
+    required this.windupMs,
+    required this.recoveryMs,
+    required this.attackIntervalMs,
+    required this.heavyChance,
+    required this.feintChance,
+    required this.comboChance,
+    required this.blockChance,
+  });
+}
+
 class OpponentData {
   final String key;
   final String name;
@@ -111,24 +183,24 @@ class OpponentData {
   final int defense;
   final String difficulty;
   final int coinReward;
-  final int tellReliability;
+  final FightStyle style;
 
   const OpponentData(
     this.key,
     this.name,
-    this.emoji,
-    this.level,
-    this.hp,
-    this.attack,
-    this.defense,
-    this.difficulty,
-    this.coinReward,
-    this.tellReliability,
-  );
+    this.emoji, {
+    required this.level,
+    required this.hp,
+    required this.attack,
+    required this.defense,
+    required this.difficulty,
+    required this.coinReward,
+    required this.style,
+  });
 
   Fighter get fighter => Fighter(maxHp: hp, attack: attack, defense: defense);
 
-  Opponent toProtocol({required int winChance}) => Opponent(
+  Opponent toProtocol() => Opponent(
     key: key,
     name: name,
     emoji: emoji,
@@ -138,7 +210,12 @@ class OpponentData {
     defense: defense,
     difficulty: difficulty,
     coinReward: coinReward,
-    tellReliability: tellReliability,
-    winChance: winChance,
+    windupMs: style.windupMs,
+    recoveryMs: style.recoveryMs,
+    attackIntervalMs: style.attackIntervalMs,
+    heavyChance: style.heavyChance,
+    feintChance: style.feintChance,
+    comboChance: style.comboChance,
+    blockChance: style.blockChance,
   );
 }

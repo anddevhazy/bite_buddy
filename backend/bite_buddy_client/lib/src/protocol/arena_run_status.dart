@@ -12,22 +12,22 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
 
-enum BattleStatus implements _isc.SerializableModel {
+enum ArenaRunStatus implements _isc.SerializableModel {
   ongoing,
   won,
   lost;
 
-  static BattleStatus fromJson(String name) {
+  static ArenaRunStatus fromJson(String name) {
     switch (name) {
       case 'ongoing':
-        return BattleStatus.ongoing;
+        return ArenaRunStatus.ongoing;
       case 'won':
-        return BattleStatus.won;
+        return ArenaRunStatus.won;
       case 'lost':
-        return BattleStatus.lost;
+        return ArenaRunStatus.lost;
       default:
         throw ArgumentError(
-          'Value "$name" cannot be converted to "BattleStatus"',
+          'Value "$name" cannot be converted to "ArenaRunStatus"',
         );
     }
   }

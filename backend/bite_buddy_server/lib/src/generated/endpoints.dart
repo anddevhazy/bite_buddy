@@ -11,6 +11,8 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:typed_data' as _idt;
+import 'package:bite_buddy_server/src/generated/arena_run_report.dart'
+    as _iipal77g;
 import 'package:bite_buddy_server/src/generated/battle_move.dart' as _itk175y8;
 import 'package:serverpod/serverpod.dart' as _is;
 import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
@@ -299,8 +301,8 @@ class Endpoints extends _is.EndpointDispatch {
               ) async => (endpoints['battle'] as _ilghbeth.BattleEndpoint)
                   .arena(session),
         ),
-        'start': _is.MethodConnector(
-          name: 'start',
+        'startRun': _is.MethodConnector(
+          name: 'startRun',
           params: {
             'opponentKey': _is.ParameterDescription(
               name: 'opponentKey',
@@ -313,22 +315,22 @@ class Endpoints extends _is.EndpointDispatch {
                 _is.Session session,
                 Map<String, dynamic> params,
               ) async =>
-                  (endpoints['battle'] as _ilghbeth.BattleEndpoint).start(
+                  (endpoints['battle'] as _ilghbeth.BattleEndpoint).startRun(
                     session,
                     params['opponentKey'],
                   ),
         ),
-        'move': _is.MethodConnector(
-          name: 'move',
+        'finishRun': _is.MethodConnector(
+          name: 'finishRun',
           params: {
-            'battleId': _is.ParameterDescription(
-              name: 'battleId',
+            'runId': _is.ParameterDescription(
+              name: 'runId',
               type: _is.getType<int>(),
               nullable: false,
             ),
-            'move': _is.ParameterDescription(
-              name: 'move',
-              type: _is.getType<_itk175y8.BattleMove>(),
+            'report': _is.ParameterDescription(
+              name: 'report',
+              type: _is.getType<_iipal77g.ArenaRunReport>(),
               nullable: false,
             ),
           },
@@ -336,11 +338,12 @@ class Endpoints extends _is.EndpointDispatch {
               (
                 _is.Session session,
                 Map<String, dynamic> params,
-              ) async => (endpoints['battle'] as _ilghbeth.BattleEndpoint).move(
-                session,
-                params['battleId'],
-                params['move'],
-              ),
+              ) async =>
+                  (endpoints['battle'] as _ilghbeth.BattleEndpoint).finishRun(
+                    session,
+                    params['runId'],
+                    params['report'],
+                  ),
         ),
       },
     );

@@ -1,0 +1,11 @@
+### Everything the phone needs to start a real-time fight.
+class: ArenaRunConfig
+fields:
+  runId: int
+  petName: String
+  petSpeciesKey: String
+  petStats: BattleStats
+  opponent: Opponent
+  rules: ArenaRules
+  ### Seeds the phone's random numbers for this fight.
+  seed: int

@@ -9,8 +9,7 @@ import '../generated/protocol.dart';
 //   Attack beats Special  (interrupts the wind-up; the special fizzles)
 //   Special beats Defend  (breaks the guard for heavy damage)
 //   Defend beats Attack   (blocks most of the hit and counters)
-// The opponent picks its move a round ahead and shows a tell, which is true
-// [OpponentData.tellReliability] of the time. Reading tells wins fights.
+// Used for friend duels; the real-time arena shares the hit numbers below.
 //
 // The numbers were tuned by simulating thousands of battles; change them
 // together and re-check the spread of win chances.
@@ -18,10 +17,10 @@ import '../generated/protocol.dart';
 const int maxRounds = 30;
 const int specialCooldownRounds = 2;
 
-const double _damageScale = 1.6;
-const double _variance = 0.25; // each hit lands between 75% and 125%
-const double _critChance = 0.15;
-const double _critMultiplier = 1.75;
+const double damageScale = 1.6;
+const double variance = 0.25; // each hit lands between 75% and 125%
+const double critChance = 0.15;
+const double critMultiplier = 1.75;
 const double _specialMultiplier = 1.6; // special against special
 const double _interruptMultiplier = 1.25; // attack against special
 const double _guardBreakMultiplier = 1.8; // special against defend
@@ -69,10 +68,10 @@ class RoundOutcome {
 }
 
 Hit rollHit(int attack, int defense, Random rng) {
-  final roll = 1 - _variance + rng.nextDouble() * 2 * _variance;
-  var damage = (attack * roll - defense * 0.5) * _damageScale;
-  final critical = rng.nextDouble() < _critChance;
-  if (critical) damage *= _critMultiplier;
+  final roll = 1 - variance + rng.nextDouble() * 2 * variance;
+  var damage = (attack * roll - defense * 0.5) * damageScale;
+  final critical = rng.nextDouble() < critChance;
+  if (critical) damage *= critMultiplier;
   return Hit(max(1, damage.round()), critical);
 }
 
@@ -142,115 +141,6 @@ RoundOutcome resolveRound({
   );
 }
 
-// The opponent fights like a player would: more Defend when hurt, Special
-// whenever it's ready
-BattleMove pickOpponentMove({
-  required int hp,
-  required int maxHp,
-  required int specialCooldown,
-  required Random rng,
-}) {
-  final hurt = hp < maxHp * 0.35;
-  final weights = {
-    BattleMove.attack: 0.40,
-    BattleMove.defend: hurt ? 0.45 : 0.30,
-    BattleMove.special: specialCooldown > 0 ? 0.0 : (hurt ? 0.35 : 0.30),
-  };
-  var roll = rng.nextDouble() * weights.values.reduce((a, b) => a + b);
-  for (final entry in weights.entries) {
-    roll -= entry.value;
-    if (roll < 0) return entry.key;
-  }
-  return BattleMove.attack;
-}
-
-// What the opponent appears to be about to do: the truth [reliability]
-// percent of the time, otherwise a bluff (another move it could make)
-BattleMove tellFor({
-  required BattleMove move,
-  required int reliability,
-  required int specialCooldown,
-  required Random rng,
-}) {
-  if (rng.nextInt(100) < reliability) return move;
-  final bluffs = [
-    for (final m in BattleMove.values)
-      if (m != move && !(m == BattleMove.special && specialCooldown > 0)) m,
-  ];
-  return bluffs.isEmpty ? move : bluffs[rng.nextInt(bluffs.length)];
-}
-
 // Who wins when a battle ends with both down, or after [maxRounds]
 bool petWinsTie(int petHp, int petMaxHp, int oppHp, int oppMaxHp) =>
     petHp / petMaxHp >= oppHp / oppMaxHp;
-
-// The move that beats [tell]; what a player who reads tells would pick
-BattleMove counterTo(BattleMove tell, {required int specialCooldown}) =>
-    switch (tell) {
-      BattleMove.attack => BattleMove.defend,
-      BattleMove.special => BattleMove.attack,
-      BattleMove.defend =>
-        specialCooldown == 0 ? BattleMove.special : BattleMove.defend,
-    };
-
-// Chance (0-100) that [pet] beats the opponent, found by playing [fights]
-// battles with a player who always counters the tell. Seeded from the
-// matchup, so the same matchup always shows the same number.
-int simulateWinChance(
-  Fighter pet,
-  Fighter opponent, {
-  required int tellReliability,
-  required int seed,
-  int fights = 400,
-}) {
-  final rng = Random(seed);
-  var wins = 0;
-  for (var i = 0; i < fights; i++) {
-    var petHp = pet.maxHp, oppHp = opponent.maxHp;
-    var petCd = 0, oppCd = 0;
-    bool? won;
-    for (var round = 0; round < maxRounds && won == null; round++) {
-      final oppMove = pickOpponentMove(
-        hp: oppHp,
-        maxHp: opponent.maxHp,
-        specialCooldown: oppCd,
-        rng: rng,
-      );
-      final tell = tellFor(
-        move: oppMove,
-        reliability: tellReliability,
-        specialCooldown: oppCd,
-        rng: rng,
-      );
-      final petMove = counterTo(tell, specialCooldown: petCd);
-      final o = resolveRound(
-        petMove: petMove,
-        opponentMove: oppMove,
-        pet: pet,
-        opponent: opponent,
-        rng: rng,
-      );
-      petHp = (petHp - o.damageToPet + o.petHeal).clamp(0, pet.maxHp);
-      oppHp = (oppHp - o.damageToOpponent + o.opponentHeal).clamp(
-        0,
-        opponent.maxHp,
-      );
-      petCd = petMove == BattleMove.special
-          ? specialCooldownRounds
-          : max(0, petCd - 1);
-      oppCd = oppMove == BattleMove.special
-          ? specialCooldownRounds
-          : max(0, oppCd - 1);
-      if (petHp == 0 || oppHp == 0) {
-        won = oppHp == 0 && petHp > 0
-            ? true
-            : petHp == 0 && oppHp > 0
-            ? false
-            : petWinsTie(petHp, pet.maxHp, oppHp, opponent.maxHp);
-      }
-    }
-    won ??= petWinsTie(petHp, pet.maxHp, oppHp, opponent.maxHp);
-    if (won) wins++;
-  }
-  return (wins * 100 / fights).round();
-}

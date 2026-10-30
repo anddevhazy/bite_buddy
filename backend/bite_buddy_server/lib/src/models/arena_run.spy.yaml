@@ -1,0 +1,27 @@
+### One real-time fight against a computer opponent. The fight itself runs on
+### the phone; the server fixes the fighters when it starts and checks the
+### reported result is possible before paying out.
+class: ArenaRun
+table: arena_run
+fields:
+  ownerId: UuidValue
+  petId: int
+  opponentKey: String
+  petMaxHp: int
+  petAttack: int
+  petDefense: int
+  startedAt: DateTime
+  status: ArenaRunStatus
+  finishedAt: DateTime?
+  durationMs: int?
+  damageDealt: int?
+  damageTaken: int?
+  ### False when a reported win failed the plausibility check (counted as a
+  ### loss).
+  verified: bool, default=true
+  coinsEarned: int, default=0
+  xpEarned: int, default=0
+  energyChange: int, default=0
+indexes:
+  arena_run_owner_idx:
+    fields: ownerId, status

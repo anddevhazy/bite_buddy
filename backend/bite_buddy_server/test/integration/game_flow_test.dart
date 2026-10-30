@@ -106,55 +106,122 @@ void main() {
       expect(history.single.fed, isTrue);
     });
 
-    test('a battle runs to a finish and pays out', () async {
+    ArenaRunReport report({
+      required bool won,
+      required int durationMs,
+      required int damageDealt,
+      int damageTaken = 10,
+    }) => ArenaRunReport(
+      won: won,
+      durationMs: durationMs,
+      damageDealt: damageDealt,
+      damageTaken: damageTaken,
+      hitsLanded: 5,
+    );
+
+    test('a real-time fight is set up, reported and paid out', () async {
       final key = (await endpoints.pet.listSpecies(signedIn)).first.key;
       final before = await endpoints.pet.adopt(signedIn, key, 'Fluffy');
 
       final arena = await endpoints.battle.arena(signedIn);
-      final opponents = arena.opponents;
-      expect(opponents, isNotEmpty);
       expect(arena.petStats.hp, greaterThan(0));
-      for (final o in opponents) {
-        expect(o.winChance, inInclusiveRange(0, 100));
-      }
-      // Weakest opponent first, so win chances only go down the list
-      final chances = [for (final o in opponents) o.winChance];
-      expect(chances, orderedEquals([...chances]..sort((a, b) => b - a)));
+      final pup = arena.opponents.first;
+      expect(pup.windupMs, greaterThan(arena.opponents.last.windupMs));
 
-      var state = await endpoints.battle.start(signedIn, opponents.first.key);
-      expect(state.battle.status, BattleStatus.ongoing);
-      // The app sees a tell, never the opponent's real next move
-      expect(state.battle.opponentTell, isNotNull);
-      expect(
-        state.battle.toJsonForProtocol(),
-        isNot(contains('opponentNextMove')),
+      final run = await endpoints.battle.startRun(signedIn, pup.key);
+      expect(run.opponent.key, pup.key);
+      expect(run.rules.attackCooldownMs, greaterThan(0));
+
+      // Pretend the fight took a while: wind the start back 30 seconds
+      final row = (await ArenaRun.db.findById(signedIn.build(), run.runId))!;
+      await ArenaRun.db.updateRow(
+        signedIn.build(),
+        row.copyWith(
+          startedAt: row.startedAt.subtract(const Duration(seconds: 30)),
+        ),
       );
 
-      while (state.battle.status == BattleStatus.ongoing) {
-        final move = state.battle.specialCooldown == 0
-            ? BattleMove.special
-            : BattleMove.attack;
-        state = await endpoints.battle.move(signedIn, state.battle.id!, move);
-      }
+      final result = await endpoints.battle.finishRun(
+        signedIn,
+        run.runId,
+        report(
+          won: true,
+          durationMs: 25000,
+          damageDealt: pup.hp * run.rules.hpMultiplier,
+        ),
+      );
+      expect(result.won, isTrue);
+      expect(result.verified, isTrue);
+      expect(result.coinsEarned, pup.coinReward);
 
-      final battle = state.battle;
-      expect(battle.round, lessThanOrEqualTo(30));
       final after = (await endpoints.pet.getMyPet(signedIn))!;
-      expect(after.wins + after.losses, 1);
-      expect(after.coins, before.coins + battle.coinsEarned);
-      expect(after.energy, before.energy + battle.energyChange);
+      expect(after.wins, 1);
+      expect(after.coins, before.coins + pup.coinReward);
+      expect(after.energy, before.energy + result.energyChange);
 
+      // A run can only be reported once
       await expectLater(
-        endpoints.battle.move(signedIn, battle.id!, BattleMove.attack),
+        endpoints.battle.finishRun(
+          signedIn,
+          run.runId,
+          report(
+            won: true,
+            durationMs: 25000,
+            damageDealt: pup.hp * run.rules.hpMultiplier,
+          ),
+        ),
         throwsA(isA<BiteBuddyException>()),
       );
     });
 
-    test("one user can't play another user's battle", () async {
+    test('an impossible win is rejected and counts as a loss', () async {
       final key = (await endpoints.pet.listSpecies(signedIn)).first.key;
       await endpoints.pet.adopt(signedIn, key, 'Fluffy');
-      final opponent = (await endpoints.battle.arena(signedIn)).opponents.first;
-      final state = await endpoints.battle.start(signedIn, opponent.key);
+      final golem = (await endpoints.battle.arena(signedIn)).opponents.last;
+      final run = await endpoints.battle.startRun(signedIn, golem.key);
+
+      // Claims a 2-minute win, but the fight only started a moment ago
+      final result = await endpoints.battle.finishRun(
+        signedIn,
+        run.runId,
+        report(
+          won: true,
+          durationMs: 120000,
+          damageDealt: golem.hp * run.rules.hpMultiplier,
+        ),
+      );
+      expect(result.won, isFalse);
+      expect(result.verified, isFalse);
+      expect(result.coinsEarned, 0);
+      expect((await endpoints.pet.getMyPet(signedIn))!.losses, 1);
+    });
+
+    test(
+      'starting a new fight abandons the unfinished one as a loss',
+      () async {
+        final key = (await endpoints.pet.listSpecies(signedIn)).first.key;
+        await endpoints.pet.adopt(signedIn, key, 'Fluffy');
+        final pup = (await endpoints.battle.arena(signedIn)).opponents.first;
+        final first = await endpoints.battle.startRun(signedIn, pup.key);
+        await endpoints.battle.startRun(signedIn, pup.key);
+
+        expect((await endpoints.pet.getMyPet(signedIn))!.losses, 1);
+        await expectLater(
+          endpoints.battle.finishRun(
+            signedIn,
+            first.runId,
+            report(won: false, durationMs: 1000, damageDealt: 0),
+          ),
+          throwsA(isA<BiteBuddyException>()),
+        );
+      },
+    );
+
+    test("one user can't report another user's fight", () async {
+      final key = (await endpoints.pet.listSpecies(signedIn)).first.key;
+      await endpoints.pet.adopt(signedIn, key, 'Fluffy');
+      final pup = (await endpoints.battle.arena(signedIn)).opponents.first;
+      final run = await endpoints.battle.startRun(signedIn, pup.key);
 
       final intruder = sessionBuilder.copyWith(
         authentication: AuthenticationOverride.authenticationInfo(
@@ -163,7 +230,15 @@ void main() {
         ),
       );
       await expectLater(
-        endpoints.battle.move(intruder, state.battle.id!, BattleMove.attack),
+        endpoints.battle.finishRun(
+          intruder,
+          run.runId,
+          report(
+            won: true,
+            durationMs: 9000,
+            damageDealt: pup.hp * run.rules.hpMultiplier,
+          ),
+        ),
         throwsA(isA<BiteBuddyException>()),
       );
     });

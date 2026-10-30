@@ -1,0 +1,8 @@
+### What the phone reports when a real-time fight ends.
+class: ArenaRunReport
+fields:
+  won: bool
+  durationMs: int
+  damageDealt: int
+  damageTaken: int
+  hitsLanded: int

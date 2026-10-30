@@ -4,18 +4,22 @@ import '../generated/protocol.dart';
 import '../services/services.dart';
 import '../utils/session_user.dart';
 
-// client.battle
+// client.battle: real-time fights against computer opponents
 class BattleEndpoint extends Endpoint {
   @override
   bool get requireLogin => true;
 
-  // The pet's battle stats and every opponent, with win chances
+  // The pet's battle stats and every opponent with its fighting style
   Future<Arena> arena(Session session) =>
       battleService.arena(session, session.userId);
 
-  Future<BattleState> start(Session session, String opponentKey) =>
-      battleService.start(session, session.userId, opponentKey);
+  // Sets up a fight; the phone plays it and reports back with finishRun
+  Future<ArenaRunConfig> startRun(Session session, String opponentKey) =>
+      battleService.startRun(session, session.userId, opponentKey);
 
-  Future<BattleState> move(Session session, int battleId, BattleMove move) =>
-      battleService.move(session, session.userId, battleId, move);
+  Future<ArenaRunResult> finishRun(
+    Session session,
+    int runId,
+    ArenaRunReport report,
+  ) => battleService.finishRun(session, session.userId, runId, report);
 }
