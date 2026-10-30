@@ -16,7 +16,10 @@ import 'package:flutter/foundation.dart';
 //     follow a jab with a quick second one: dodge has a cooldown, so only a
 //     block covers both
 // After striking, the opponent is open for a moment: attacks then are
-// counters, which hit harder and charge the Special meter.
+// counters, which hit harder and charge the Special meter. Attacking when
+// it isn't open is a gamble: each such hit raises its guard further, and
+// when it blocks it strikes straight back with a quick jab, so mashing
+// Attack loses.
 
 enum OpponentPhase { idle, windup, recovering, stunned }
 
@@ -83,6 +86,13 @@ class FightEngine extends ChangeNotifier {
   static const int _feintPauseMs = 500;
   // Longer than a dodge lasts, so one dodge can't cover both jabs
   static const int comboWindupMs = 380;
+  // Each hit on an opponent that isn't open raises its block chance by this
+  // much, until a counter lands
+  static const int guardPerHit = 35;
+  static const int maxGuard = 95;
+  // Hits on an opponent that isn't open do this share of the damage: the
+  // real damage comes from counters
+  static const double unopenedDamage = 0.5;
 
   late final int petMaxHp;
   late final int opponentMaxHp;
@@ -105,6 +115,8 @@ class FightEngine extends ChangeNotifier {
   int _dodgingUntil = 0;
   int _dodgeReadyAt = 0;
   int _attackReadyAt = 0;
+  // Hits in a row on an opponent that wasn't open
+  int _unopenedHits = 0;
 
   // For the report sent to the server
   int damageDealt = 0;
@@ -179,20 +191,31 @@ class FightEngine extends ChangeNotifier {
     final hit = _rollHit(config.petStats.attack, config.opponent.defense);
     final PlayerHitKind kind;
     var damage = hit.damage;
+    var punish = false;
     if (opponentOpen) {
       kind = PlayerHitKind.counter;
       damage = (damage * rules.counterMultiplier).round();
       _addMeter(rules.meterPerCounter);
-    } else if (phase == OpponentPhase.idle &&
-        _rng.nextInt(100) < config.opponent.blockChance) {
-      kind = PlayerHitKind.blocked;
-      damage = max(1, (damage * rules.blockedMultiplier).round());
+      _unopenedHits = 0;
     } else {
-      kind = PlayerHitKind.normal;
+      final guard = min(
+        maxGuard,
+        config.opponent.blockChance + _unopenedHits * guardPerHit,
+      );
+      _unopenedHits++;
+      if (_rng.nextInt(100) < guard) {
+        kind = PlayerHitKind.blocked;
+        damage = max(1, (damage * rules.blockedMultiplier).round());
+        // Blocking leaves it ready to hit back, unless it's mid-attack
+        punish = phase == OpponentPhase.idle;
+      } else {
+        kind = PlayerHitKind.normal;
+        damage = max(1, (damage * unopenedDamage).round());
+      }
     }
     _damageOpponent(damage);
     _events.add(PlayerHit(kind, damage, hit.critical));
-    _checkEnd();
+    if (!_checkEnd() && punish) _beginCombo();
     notifyListeners();
   }
 

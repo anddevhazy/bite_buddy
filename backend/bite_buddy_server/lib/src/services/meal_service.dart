@@ -8,6 +8,7 @@ import '../generated/protocol.dart';
 import '../utils/meal_ideas.dart';
 import '../utils/nutrition_insights.dart';
 import '../utils/photo_fingerprint.dart';
+import '../utils/same_dish.dart';
 import '../utils/pet_stats.dart' as stats;
 import '../utils/shared_streak.dart';
 import 'nutrition_ai_service.dart';
@@ -38,6 +39,9 @@ class MealService {
   // Photos whose fingerprints differ in this many of 64 bits or fewer are
   // treated as the same plate (see utils/photo_fingerprint.dart)
   static const int maxSamePlateDistance = 10;
+  // Nobody eats real meals minutes apart; stops feeding one plate over and
+  // over however the photos are taken
+  static const Duration minTimeBetweenMeals = Duration(minutes: 45);
 
   Future<Meal> analyze(
     Session session,
@@ -92,6 +96,8 @@ class MealService {
       );
     }
 
+    await _rejectIfSameDishRecently(session, ownerId, analysis);
+
     return Meal.db.insertRow(
       session,
       Meal(
@@ -133,6 +139,37 @@ class MealService {
     for (final meal in recent) {
       if (fingerprintDistance(fingerprint, meal.photoFingerprint!) <=
           maxSamePlateDistance) {
+        throw conflictError(
+          'DUPLICATE_PHOTO',
+          meal.fed
+              ? 'Looks like you already fed ${meal.name} from this plate. '
+                    'Scan your next meal!'
+              : 'You already scanned this plate. Feed it from your meal log '
+                    '(Collection, Meals tab).',
+        );
+      }
+    }
+  }
+
+  // The same dish, as the AI named it, scanned in the last [feedWindow]: a
+  // retake of a plate the photo fingerprint didn't recognise
+  Future<void> _rejectIfSameDishRecently(
+    Session session,
+    UuidValue ownerId,
+    NutritionAnalysis analysis,
+  ) async {
+    final since = DateTime.now().toUtc().subtract(feedWindow);
+    final recent = await Meal.db.find(
+      session,
+      where: (t) => t.ownerId.equals(ownerId) & (t.createdAt > since),
+    );
+    for (final meal in recent) {
+      if (isSameDish(
+        nameA: analysis.name,
+        caloriesA: analysis.calories,
+        nameB: meal.name,
+        caloriesB: meal.calories,
+      )) {
         throw conflictError(
           'DUPLICATE_PHOTO',
           meal.fed
@@ -196,6 +233,18 @@ class MealService {
         ownerId,
         transaction: transaction,
       );
+      final lastFed = pet.lastFedAt;
+      if (lastFed != null) {
+        final wait = minTimeBetweenMeals - now.difference(lastFed);
+        if (wait > Duration.zero) {
+          final minutes = wait.inMinutes + 1;
+          throw conflictError(
+            'TOO_SOON',
+            '${pet.name} is still digesting! Feed your next meal in '
+                '$minutes minute${minutes == 1 ? '' : 's'}.',
+          );
+        }
+      }
       final result = stats.feed(
         pet,
         meal,

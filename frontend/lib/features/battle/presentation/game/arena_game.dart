@@ -106,16 +106,19 @@ class ArenaGame extends FlameGame {
     if (isLoaded) _layout(size);
   }
 
-  // Opponent in the middle facing you; your buddy smaller, bottom left
+  // Side by side on the same ground, between the HP bars at the top and the
+  // buttons at the bottom: your buddy on the left, the opponent (a little
+  // bigger) on the right
   void _layout(Vector2 size) {
-    final opponentSize = min(size.x * 0.62, size.y * 0.5);
+    final fighterSize = min(size.x * 0.46, size.y * 0.32);
+    final opponentSize = fighterSize * 1.1;
+    final ground = size.y * 0.65;
     _opponent
       ..fitInto(opponentSize)
-      ..home = Vector2(size.x / 2, size.y * 0.36);
-    final petSize = min(size.x * 0.4, size.y * 0.32);
+      ..home = Vector2(size.x * 0.72, ground - opponentSize / 2);
     _pet
-      ..fitInto(petSize)
-      ..home = Vector2(size.x * 0.27, size.y * 0.8);
+      ..fitInto(fighterSize)
+      ..home = Vector2(size.x * 0.27, ground - fighterSize / 2);
     _glow.radius = opponentSize * 0.5;
   }
 
@@ -194,7 +197,8 @@ class ArenaGame extends FlameGame {
         _warning.visible = false;
     }
 
-    _pet.dodgeShift = engine.dodging ? -_pet.size.x * 0.5 : 0;
+    // Dodges step back, away from the opponent
+    _pet.dodgeShift = engine.dodging ? -_pet.size.x * 0.35 : 0;
     _pet.faded = engine.dodging;
     _petShield
       ..visible = engine.blocking

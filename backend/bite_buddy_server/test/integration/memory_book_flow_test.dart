@@ -53,9 +53,34 @@ void main() {
       expect(book.levels.single.level, 1);
     });
 
+    // Meals need a gap between them; pretend the last one was a while ago
+    Future<void> lastAteHoursAgo(int hours) async {
+      final pet = (await endpoints.pet.getMyPet(user))!;
+      if (pet.lastFedAt == null) return;
+      await Pet.db.updateRow(
+        user.build(),
+        pet.copyWith(
+          lastFedAt: DateTime.now().toUtc().subtract(Duration(hours: hours)),
+        ),
+      );
+    }
+
+    test('a second meal straight after the first is refused', () async {
+      await endpoints.meal.feed(user, (await scanned()).id!, 0);
+      await expectLater(
+        endpoints.meal.feed(user, (await scanned()).id!, 0),
+        throwsA(
+          isA<BiteBuddyException>().having((e) => e.code, 'code', 'TOO_SOON'),
+        ),
+      );
+      await lastAteHoursAgo(1);
+      await endpoints.meal.feed(user, (await scanned()).id!, 0);
+    });
+
     test('feeding fills the book and level-ups are recorded', () async {
       var level = 1;
       for (var i = 0; i < 6 && level < 2; i++) {
+        await lastAteHoursAgo(2);
         level = (await endpoints.meal.feed(
           user,
           (await scanned()).id!,

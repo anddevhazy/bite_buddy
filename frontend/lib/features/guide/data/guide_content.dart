@@ -161,6 +161,9 @@ class GuideContent {
         'When the opponent shows OPEN!, Attack: counters hit harder. Dodges, '
             'perfect blocks and counters fill your Special meter; when it\'s '
             'full, Special lands a huge hit.',
+        "Mashing Attack doesn't work: hits when the opponent isn't OPEN! do "
+            'half damage, each one makes it likelier to block the next, and '
+            'when it blocks it hits straight back. Wait for your opening.',
         'Each opponent card shows how long you have to react, how often it '
             'fakes and how often it throws heavy attacks.',
         'Winning pays coins, XP and energy; losing or giving up costs energy.',

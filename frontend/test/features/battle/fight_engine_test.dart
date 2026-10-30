@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 // The same numbers the server sends (backend utils/arena_rules.dart)
 const rules = ArenaRulesEntity(
   hpMultiplier: 5,
-  opponentPower: 2.0,
+  opponentPower: 7.0,
   damageScale: 1.6,
   variance: 0.25,
   critChance: 0.15,

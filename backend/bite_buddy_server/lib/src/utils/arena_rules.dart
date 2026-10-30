@@ -10,7 +10,9 @@ import 'battle_engine.dart' as engine;
 // without an app update.
 ArenaRules arenaRules() => ArenaRules(
   hpMultiplier: 5,
-  opponentPower: 2.0,
+  // High enough that mashing Attack loses even to the Wild Pup (see the
+  // app's test/features/battle/balance_test.dart)
+  opponentPower: 7.0,
   damageScale: engine.damageScale,
   variance: engine.variance,
   critChance: engine.critChance,
