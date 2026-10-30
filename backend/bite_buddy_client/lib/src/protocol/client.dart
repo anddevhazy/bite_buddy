@@ -35,6 +35,8 @@ import 'package:bite_buddy_client/src/protocol/league/trophy.dart' as _iaaiiecv;
 import 'package:bite_buddy_client/src/protocol/meal.dart' as _is4r12e0;
 import 'package:bite_buddy_client/src/protocol/meal_suggestion.dart'
     as _i98wybr7;
+import 'package:bite_buddy_client/src/protocol/memory/memory_book.dart'
+    as _isw9fj5y;
 import 'package:bite_buddy_client/src/protocol/nutrition_insights.dart'
     as _iwtty9ju;
 import 'package:bite_buddy_client/src/protocol/pet.dart' as _iqjbfwnu;
@@ -486,6 +488,21 @@ class EndpointMeal extends _isc.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointMemory extends _isc.EndpointRef {
+  EndpointMemory(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'memory';
+
+  _ida.Future<_isw9fj5y.MemoryBook> book() =>
+      caller.callServerEndpoint<_isw9fj5y.MemoryBook>(
+        'memory',
+        'book',
+        {},
+      );
+}
+
+/// {@category Endpoint}
 class EndpointPet extends _isc.EndpointRef {
   EndpointPet(_isc.EndpointCaller caller) : super(caller);
 
@@ -641,6 +658,7 @@ class Client extends _isc.ServerpodClientShared {
     leaderboard = EndpointLeaderboard(this);
     league = EndpointLeague(this);
     meal = EndpointMeal(this);
+    memory = EndpointMemory(this);
     pet = EndpointPet(this);
     portrait = EndpointPortrait(this);
     streak = EndpointStreak(this);
@@ -663,6 +681,8 @@ class Client extends _isc.ServerpodClientShared {
 
   late final EndpointMeal meal;
 
+  late final EndpointMemory memory;
+
   late final EndpointPet pet;
 
   late final EndpointPortrait portrait;
@@ -681,6 +701,7 @@ class Client extends _isc.ServerpodClientShared {
     'leaderboard': leaderboard,
     'league': league,
     'meal': meal,
+    'memory': memory,
     'pet': pet,
     'portrait': portrait,
     'streak': streak,

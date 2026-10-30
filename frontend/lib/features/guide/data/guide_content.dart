@@ -339,6 +339,25 @@ class GuideContent {
         'You can make up to 3 pictures a day while choosing.',
       ],
     ),
+    GuideTopic(
+      id: GuideTopicId.memoryBook,
+      emoji: '📖',
+      title: 'Memory book',
+      summary: 'Everything you and your buddy have done together.',
+      points: [
+        'Open it from My Pet or Profile.',
+        'Day 1 vs today shows how far your buddy has come since you adopted '
+            'it.',
+        'The feeding calendar has a square for every day: the brighter it '
+            'is, the more meals you fed that day. Tap a square for details.',
+        'The charts show your meal score, levels and battle wins week by '
+            'week. Tap a chart to see a week.',
+        'After two weeks, "Then and now" compares your first week of meals '
+            'with the last 7 days.',
+        'Memories collect your firsts and milestones: first meal, streaks, '
+            'levels, new rivals beaten and trophies.',
+      ],
+    ),
   ];
 
   static GuideTopic byId(GuideTopicId id) =>

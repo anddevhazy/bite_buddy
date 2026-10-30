@@ -1,0 +1,9 @@
+### One milestone in the memory book, e.g. a first meal or a 7-day streak.
+class: MemoryEntry
+fields:
+  ### Stable id for the kind of milestone, e.g. meals_50, streak_7, level_5.
+  key: String
+  emoji: String
+  title: String
+  detail: String?
+  happenedAt: DateTime

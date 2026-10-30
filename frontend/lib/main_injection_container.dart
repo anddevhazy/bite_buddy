@@ -5,6 +5,7 @@ import 'package:bite_buddy/features/collection/collection_injection_container.da
 import 'package:bite_buddy/features/global/core/config/flavor_config.dart';
 import 'package:bite_buddy/features/insights/insights_injection_container.dart';
 import 'package:bite_buddy/features/league/league_injection_container.dart';
+import 'package:bite_buddy/features/memory/memory_injection_container.dart';
 import 'package:bite_buddy/features/pet/pet_injection_container.dart';
 import 'package:bite_buddy/features/portrait/portrait_injection_container.dart';
 import 'package:bite_buddy/features/scanner/scanner_injection_container.dart';
@@ -57,4 +58,5 @@ Future<void> init() async {
   await streakInjectionContainer();
   await activityInjectionContainer();
   await portraitInjectionContainer();
+  await memoryInjectionContainer();
 }

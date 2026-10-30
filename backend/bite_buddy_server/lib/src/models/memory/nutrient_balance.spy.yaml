@@ -1,0 +1,9 @@
+### Average share of the daily target per day with meals, in percent.
+class: NutrientBalance
+fields:
+  protein: int
+  carbs: int
+  fats: int
+  vitamins: int
+  minerals: int
+  fiber: int

@@ -79,6 +79,11 @@ class ProfilePage extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(height: AppSpacing.md),
+            GameButton(
+              label: '📖 Memory book',
+              onPressed: () => context.pushNamed(Routes.memoryBookName),
+            ),
             const SizedBox(height: AppSpacing.xl),
           ],
           const TrophyShelf(),

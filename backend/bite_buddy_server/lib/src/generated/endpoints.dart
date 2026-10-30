@@ -27,6 +27,7 @@ import '../endpoints/duel_endpoint.dart' as _iq9xj8m5;
 import '../endpoints/leaderboard_endpoint.dart' as _iy80ldha;
 import '../endpoints/league_endpoint.dart' as _ixxtv0ct;
 import '../endpoints/meal_endpoint.dart' as _indvr2gf;
+import '../endpoints/memory_endpoint.dart' as _i0ojblse;
 import '../endpoints/pet_endpoint.dart' as _ic7gura5;
 import '../endpoints/portrait_endpoint.dart' as _ipr4708j;
 import '../endpoints/streak_endpoint.dart' as _ii2s5alo;
@@ -81,6 +82,12 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'meal',
+          null,
+        ),
+      'memory': _i0ojblse.MemoryEndpoint()
+        ..initialize(
+          server,
+          'memory',
           null,
         ),
       'pet': _ic7gura5.PetEndpoint()
@@ -680,6 +687,23 @@ class Endpoints extends _is.EndpointDispatch {
               ) async => (endpoints['meal'] as _indvr2gf.MealEndpoint).ideas(
                 session,
                 params['locale'],
+              ),
+        ),
+      },
+    );
+    connectors['memory'] = _is.EndpointConnector(
+      name: 'memory',
+      endpoint: endpoints['memory']!,
+      methodConnectors: {
+        'book': _is.MethodConnector(
+          name: 'book',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['memory'] as _i0ojblse.MemoryEndpoint).book(
+                session,
               ),
         ),
       },

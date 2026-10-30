@@ -1,0 +1,4 @@
+class: LevelPoint
+fields:
+  level: int
+  reachedAt: DateTime

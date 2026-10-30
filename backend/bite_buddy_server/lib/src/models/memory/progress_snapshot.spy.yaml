@@ -1,0 +1,8 @@
+### The headline numbers, for "Day 1 vs today".
+class: ProgressSnapshot
+fields:
+  level: int
+  mealsEaten: int
+  bestStreak: int
+  wins: int
+  trophies: int

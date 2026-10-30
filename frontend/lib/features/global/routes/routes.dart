@@ -8,6 +8,7 @@ import 'package:bite_buddy/features/global/pages/splash_screen.dart';
 import 'package:bite_buddy/features/guide/presentation/pages/guide_page.dart';
 import 'package:bite_buddy/features/league/presentation/pages/duel_page.dart';
 import 'package:bite_buddy/features/league/presentation/pages/league_detail_page.dart';
+import 'package:bite_buddy/features/memory/presentation/pages/memory_book_page.dart';
 import 'package:bite_buddy/features/pet/presentation/pages/choose_buddy_page.dart';
 import 'package:bite_buddy/features/pet/presentation/pages/pet_home_page.dart';
 import 'package:bite_buddy/features/portrait/presentation/pages/my_pet_photo_page.dart';
@@ -59,6 +60,9 @@ class Routes {
 
   static const String duelPath = '/duel/:id';
   static const String duelName = 'duel';
+
+  static const String memoryBookPath = '/memoryBook';
+  static const String memoryBookName = 'memoryBook';
 
   // "My own pet" on the buddy picker: a photo of their real pet becomes
   // their buddy
@@ -168,6 +172,12 @@ class Routes {
         name: myPetPhotoName,
         parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) => const MyPetPhotoPage(),
+      ),
+      GoRoute(
+        path: memoryBookPath,
+        name: memoryBookName,
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => const MemoryBookPage(),
       ),
       GoRoute(
         path: guidePath,

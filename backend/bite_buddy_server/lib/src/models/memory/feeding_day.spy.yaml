@@ -1,0 +1,8 @@
+### One local day on the feeding calendar.
+class: FeedingDay
+fields:
+  ### The owner's local day (UTC midnight).
+  day: DateTime
+  meals: int
+  ### Average health score of the day's meals, 0 with no meals.
+  averageScore: int

@@ -8,6 +8,7 @@ import '../utils/arena_rules.dart';
 import '../utils/battle_engine.dart';
 import '../utils/catalog.dart';
 import '../utils/pet_stats.dart' as stats;
+import 'memory_service.dart';
 import 'pet_service.dart';
 
 // Real-time fights against computer opponents. The fight runs on the phone;
@@ -17,7 +18,10 @@ class BattleService {
   final PetService pets;
   final Random _rng;
 
-  BattleService({required this.pets, Random? rng}) : _rng = rng ?? Random();
+  final MemoryService memories;
+
+  BattleService({required this.pets, required this.memories, Random? rng})
+    : _rng = rng ?? Random();
 
   Future<Arena> arena(Session session, UuidValue ownerId) async {
     final pet = await pets.requireMine(session, ownerId);
@@ -190,6 +194,13 @@ class BattleService {
     final savedPet = await Pet.db.updateRow(
       session,
       leveled,
+      transaction: transaction,
+    );
+    await memories.recordLevelUps(
+      session,
+      pet.ownerId,
+      from: pet.level,
+      to: savedPet.level,
       transaction: transaction,
     );
     final savedRun = await ArenaRun.db.updateRow(

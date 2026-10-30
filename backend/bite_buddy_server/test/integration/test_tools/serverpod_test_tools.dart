@@ -38,6 +38,8 @@ import 'package:bite_buddy_server/src/generated/league/trophy.dart'
 import 'package:bite_buddy_server/src/generated/meal.dart' as _idk4xbnt;
 import 'package:bite_buddy_server/src/generated/meal_suggestion.dart'
     as _ipo9v88q;
+import 'package:bite_buddy_server/src/generated/memory/memory_book.dart'
+    as _iy2043hm;
 import 'package:bite_buddy_server/src/generated/nutrition_insights.dart'
     as _irm6gbir;
 import 'package:bite_buddy_server/src/generated/pet.dart' as _i9zqw63y;
@@ -201,6 +203,8 @@ class TestEndpoints {
 
   late final _MealEndpoint meal;
 
+  late final _MemoryEndpoint memory;
+
   late final _PetEndpoint pet;
 
   late final _PortraitEndpoint portrait;
@@ -244,6 +248,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     meal = _MealEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    memory = _MemoryEndpoint(
       endpoints,
       serializationManager,
     );
@@ -1243,6 +1251,47 @@ class _MealEndpoint {
                   _localCallContext.arguments,
                 )
                 as _ida.Future<List<_ipo9v88q.MealSuggestion>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _MemoryEndpoint {
+  _MemoryEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<_iy2043hm.MemoryBook> book(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'memory',
+            method: 'book',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'memory',
+          methodName: 'book',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iy2043hm.MemoryBook>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

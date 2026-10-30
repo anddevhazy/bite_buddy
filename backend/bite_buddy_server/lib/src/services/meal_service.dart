@@ -12,17 +12,20 @@ import '../utils/pet_stats.dart' as stats;
 import '../utils/shared_streak.dart';
 import 'nutrition_ai_service.dart';
 import 'pet_service.dart';
+import 'memory_service.dart';
 import 'streak_service.dart';
 
 class MealService {
   final NutritionAiService ai;
   final PetService pets;
   final StreakService streaks;
+  final MemoryService memories;
 
   const MealService({
     required this.ai,
     required this.pets,
     required this.streaks,
+    required this.memories,
   });
 
   static const int maxImageBytes = 4 * 1024 * 1024;
@@ -198,6 +201,14 @@ class MealService {
         meal,
         now,
         utcOffsetMinutes: utcOffsetMinutes,
+      );
+
+      await memories.recordLevelUps(
+        session,
+        ownerId,
+        from: pet.level,
+        to: result.pet.level,
+        transaction: transaction,
       );
 
       final grew = await streaks.recordFeed(

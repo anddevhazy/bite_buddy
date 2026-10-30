@@ -61,6 +61,14 @@ import 'league/trophy.dart' as _ij1ocmo2;
 import 'meal.dart' as _ixnoudrx;
 import 'meal_ideas.dart' as _igmlprfo;
 import 'meal_suggestion.dart' as _iymppxeh;
+import 'memory/feeding_day.dart' as _il42u927;
+import 'memory/level_point.dart' as _i7wrkos8;
+import 'memory/level_up.dart' as _ibvudr74;
+import 'memory/memory_book.dart' as _iyrod9yr;
+import 'memory/memory_entry.dart' as _icl9vrv9;
+import 'memory/nutrient_balance.dart' as _i4k5f50b;
+import 'memory/progress_snapshot.dart' as _iscsvejp;
+import 'memory/week_progress.dart' as _iplayre7;
 import 'nutrition_insights.dart' as _ik434gbd;
 import 'opponent.dart' as _i2ot5zrj;
 import 'pet.dart' as _ie9pyd3w;
@@ -101,6 +109,14 @@ export 'league/trophy.dart';
 export 'meal.dart';
 export 'meal_ideas.dart';
 export 'meal_suggestion.dart';
+export 'memory/feeding_day.dart';
+export 'memory/level_point.dart';
+export 'memory/level_up.dart';
+export 'memory/memory_book.dart';
+export 'memory/memory_entry.dart';
+export 'memory/nutrient_balance.dart';
+export 'memory/progress_snapshot.dart';
+export 'memory/week_progress.dart';
 export 'nutrition_insights.dart';
 export 'opponent.dart';
 export 'pet.dart';
@@ -710,6 +726,56 @@ class Protocol extends _is.DatabaseSerializationManager {
             _isp.IndexElementDefinition(
               type: _isp.IndexElementDefinitionType.column,
               definition: 'userId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'level_up',
+      dartName: 'LevelUp',
+      schema: 'public',
+      module: 'bite_buddy',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'ownerId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'level',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'reachedAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'level_up_owner_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'ownerId',
             ),
           ],
           type: 'btree',
@@ -1520,6 +1586,30 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _iymppxeh.MealSuggestion) {
       return _iymppxeh.MealSuggestion.fromJson(data) as T;
     }
+    if (t == _il42u927.FeedingDay) {
+      return _il42u927.FeedingDay.fromJson(data) as T;
+    }
+    if (t == _i7wrkos8.LevelPoint) {
+      return _i7wrkos8.LevelPoint.fromJson(data) as T;
+    }
+    if (t == _ibvudr74.LevelUp) {
+      return _ibvudr74.LevelUp.fromJson(data) as T;
+    }
+    if (t == _iyrod9yr.MemoryBook) {
+      return _iyrod9yr.MemoryBook.fromJson(data) as T;
+    }
+    if (t == _icl9vrv9.MemoryEntry) {
+      return _icl9vrv9.MemoryEntry.fromJson(data) as T;
+    }
+    if (t == _i4k5f50b.NutrientBalance) {
+      return _i4k5f50b.NutrientBalance.fromJson(data) as T;
+    }
+    if (t == _iscsvejp.ProgressSnapshot) {
+      return _iscsvejp.ProgressSnapshot.fromJson(data) as T;
+    }
+    if (t == _iplayre7.WeekProgress) {
+      return _iplayre7.WeekProgress.fromJson(data) as T;
+    }
     if (t == _ik434gbd.NutritionInsights) {
       return _ik434gbd.NutritionInsights.fromJson(data) as T;
     }
@@ -1652,6 +1742,32 @@ class Protocol extends _is.DatabaseSerializationManager {
       return (data != null ? _iymppxeh.MealSuggestion.fromJson(data) : null)
           as T;
     }
+    if (t == _is.getType<_il42u927.FeedingDay?>()) {
+      return (data != null ? _il42u927.FeedingDay.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i7wrkos8.LevelPoint?>()) {
+      return (data != null ? _i7wrkos8.LevelPoint.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_ibvudr74.LevelUp?>()) {
+      return (data != null ? _ibvudr74.LevelUp.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iyrod9yr.MemoryBook?>()) {
+      return (data != null ? _iyrod9yr.MemoryBook.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_icl9vrv9.MemoryEntry?>()) {
+      return (data != null ? _icl9vrv9.MemoryEntry.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i4k5f50b.NutrientBalance?>()) {
+      return (data != null ? _i4k5f50b.NutrientBalance.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_iscsvejp.ProgressSnapshot?>()) {
+      return (data != null ? _iscsvejp.ProgressSnapshot.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_iplayre7.WeekProgress?>()) {
+      return (data != null ? _iplayre7.WeekProgress.fromJson(data) : null) as T;
+    }
     if (t == _is.getType<_ik434gbd.NutritionInsights?>()) {
       return (data != null ? _ik434gbd.NutritionInsights.fromJson(data) : null)
           as T;
@@ -1718,6 +1834,30 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == List<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toList() as T;
+    }
+    if (t == List<_icl9vrv9.MemoryEntry>) {
+      return (data as List)
+              .map((e) => deserialize<_icl9vrv9.MemoryEntry>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_il42u927.FeedingDay>) {
+      return (data as List)
+              .map((e) => deserialize<_il42u927.FeedingDay>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_iplayre7.WeekProgress>) {
+      return (data as List)
+              .map((e) => deserialize<_iplayre7.WeekProgress>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_i7wrkos8.LevelPoint>) {
+      return (data as List)
+              .map((e) => deserialize<_i7wrkos8.LevelPoint>(e))
+              .toList()
+          as T;
     }
     if (t == List<_i5n4mhlw.LeaderboardEntry>) {
       return (data as List)
@@ -1809,6 +1949,14 @@ class Protocol extends _is.DatabaseSerializationManager {
       _ixnoudrx.Meal => 'Meal',
       _igmlprfo.MealIdeas => 'MealIdeas',
       _iymppxeh.MealSuggestion => 'MealSuggestion',
+      _il42u927.FeedingDay => 'FeedingDay',
+      _i7wrkos8.LevelPoint => 'LevelPoint',
+      _ibvudr74.LevelUp => 'LevelUp',
+      _iyrod9yr.MemoryBook => 'MemoryBook',
+      _icl9vrv9.MemoryEntry => 'MemoryEntry',
+      _i4k5f50b.NutrientBalance => 'NutrientBalance',
+      _iscsvejp.ProgressSnapshot => 'ProgressSnapshot',
+      _iplayre7.WeekProgress => 'WeekProgress',
       _ik434gbd.NutritionInsights => 'NutritionInsights',
       _i2ot5zrj.Opponent => 'Opponent',
       _ie9pyd3w.Pet => 'Pet',
@@ -1893,6 +2041,22 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'MealIdeas';
       case _iymppxeh.MealSuggestion():
         return 'MealSuggestion';
+      case _il42u927.FeedingDay():
+        return 'FeedingDay';
+      case _i7wrkos8.LevelPoint():
+        return 'LevelPoint';
+      case _ibvudr74.LevelUp():
+        return 'LevelUp';
+      case _iyrod9yr.MemoryBook():
+        return 'MemoryBook';
+      case _icl9vrv9.MemoryEntry():
+        return 'MemoryEntry';
+      case _i4k5f50b.NutrientBalance():
+        return 'NutrientBalance';
+      case _iscsvejp.ProgressSnapshot():
+        return 'ProgressSnapshot';
+      case _iplayre7.WeekProgress():
+        return 'WeekProgress';
       case _ik434gbd.NutritionInsights():
         return 'NutritionInsights';
       case _i2ot5zrj.Opponent():
@@ -2029,6 +2193,30 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'MealSuggestion') {
       return deserialize<_iymppxeh.MealSuggestion>(data['data']);
     }
+    if (dataClassName == 'FeedingDay') {
+      return deserialize<_il42u927.FeedingDay>(data['data']);
+    }
+    if (dataClassName == 'LevelPoint') {
+      return deserialize<_i7wrkos8.LevelPoint>(data['data']);
+    }
+    if (dataClassName == 'LevelUp') {
+      return deserialize<_ibvudr74.LevelUp>(data['data']);
+    }
+    if (dataClassName == 'MemoryBook') {
+      return deserialize<_iyrod9yr.MemoryBook>(data['data']);
+    }
+    if (dataClassName == 'MemoryEntry') {
+      return deserialize<_icl9vrv9.MemoryEntry>(data['data']);
+    }
+    if (dataClassName == 'NutrientBalance') {
+      return deserialize<_i4k5f50b.NutrientBalance>(data['data']);
+    }
+    if (dataClassName == 'ProgressSnapshot') {
+      return deserialize<_iscsvejp.ProgressSnapshot>(data['data']);
+    }
+    if (dataClassName == 'WeekProgress') {
+      return deserialize<_iplayre7.WeekProgress>(data['data']);
+    }
     if (dataClassName == 'NutritionInsights') {
       return deserialize<_ik434gbd.NutritionInsights>(data['data']);
     }
@@ -2118,6 +2306,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return _ixnoudrx.Meal.t;
       case _igmlprfo.MealIdeas:
         return _igmlprfo.MealIdeas.t;
+      case _ibvudr74.LevelUp:
+        return _ibvudr74.LevelUp.t;
       case _ie9pyd3w.Pet:
         return _ie9pyd3w.Pet.t;
       case _i1jr9gvy.PetPortrait:

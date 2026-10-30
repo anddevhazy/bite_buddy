@@ -116,6 +116,13 @@ class _PetHome extends StatelessWidget {
           ),
         ),
         Center(child: Text(pet.name, style: AppTextStyles.h2)),
+        Center(
+          child: TextButton.icon(
+            onPressed: () => context.pushNamed(Routes.memoryBookName),
+            icon: const Text('📖'),
+            label: const Text('Memory book'),
+          ),
+        ),
         const SizedBox(height: AppSpacing.sm),
         Center(
           child: Container(

@@ -1,0 +1,23 @@
+### Everything on the memory book screen: how far the buddy has come.
+class: MemoryBook
+fields:
+  petName: String
+  speciesKey: String
+  portraitId: int?
+  adoptedAt: DateTime
+  ### 1 on the day of adoption.
+  daysTogether: int
+  dayOne: ProgressSnapshot
+  today: ProgressSnapshot
+  ### Oldest first.
+  memories: List<MemoryEntry>
+  ### The last 26 weeks, oldest first, only days since adoption.
+  feedingDays: List<FeedingDay>
+  ### Weeks since adoption (up to the last 26), oldest first.
+  weeks: List<WeekProgress>
+  ### Starts with level 1 at adoption.
+  levels: List<LevelPoint>
+  ### The first and the last 7 days of meals; null until the buddy is 14
+  ### days old, so the two never overlap.
+  firstWeekNutrients: NutrientBalance?
+  lastWeekNutrients: NutrientBalance?

@@ -34,6 +34,8 @@ meal:
   - history:
   - insights:
   - ideas:
+memory:
+  - book:
 pet:
   - listSpecies:
   - getMyPet:

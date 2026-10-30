@@ -1,0 +1,9 @@
+### One season week (Monday UTC) of progress.
+class: WeekProgress
+fields:
+  weekStart: DateTime
+  meals: int
+  ### Average health score of the week's meals, null with no meals.
+  averageScore: int?
+  ### Arena and friend battle wins.
+  wins: int

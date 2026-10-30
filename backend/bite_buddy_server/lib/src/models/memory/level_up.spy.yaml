@@ -1,0 +1,10 @@
+### When a pet reached a level, for the memory book's level journey.
+class: LevelUp
+table: level_up
+fields:
+  ownerId: UuidValue
+  level: int
+  reachedAt: DateTime
+indexes:
+  level_up_owner_idx:
+    fields: ownerId
