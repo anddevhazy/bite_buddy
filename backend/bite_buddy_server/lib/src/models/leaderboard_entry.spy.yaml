@@ -5,6 +5,7 @@ fields:
   petId: int
   petName: String
   speciesKey: String
+  portraitId: int?
   level: int
   nutrition: int
   isYou: bool

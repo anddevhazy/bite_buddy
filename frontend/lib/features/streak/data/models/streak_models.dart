@@ -12,6 +12,7 @@ class StreakModels {
     },
     friendPetName: s.friendPetName,
     friendSpeciesKey: s.friendSpeciesKey,
+    friendPortraitId: s.friendPortraitId,
     streak: s.streak,
     bestStreak: s.bestStreak,
     youFedToday: s.youFedToday,
@@ -22,5 +23,6 @@ class StreakModels {
     userId: f.userId.toString(),
     petName: f.petName,
     speciesKey: f.speciesKey,
+    portraitId: f.portraitId,
   );
 }

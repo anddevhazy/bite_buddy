@@ -102,6 +102,7 @@ List<LeagueStanding> rankSeason(List<SeasonActivity> members) {
         memberId: r.member.memberId,
         petName: r.member.pet.name,
         speciesKey: r.member.pet.speciesKey,
+        portraitId: r.member.pet.portraitId,
         level: r.member.pet.level,
         averageMealScore: r.feeding.average,
         daysFed: r.feeding.days,

@@ -21,6 +21,7 @@ abstract class LeagueStanding
     required this.memberId,
     required this.petName,
     required this.speciesKey,
+    this.portraitId,
     required this.level,
     required this.averageMealScore,
     required this.daysFed,
@@ -36,6 +37,7 @@ abstract class LeagueStanding
     required int memberId,
     required String petName,
     required String speciesKey,
+    int? portraitId,
     required int level,
     required int averageMealScore,
     required int daysFed,
@@ -52,6 +54,7 @@ abstract class LeagueStanding
       memberId: jsonSerialization['memberId'] as int,
       petName: jsonSerialization['petName'] as String,
       speciesKey: jsonSerialization['speciesKey'] as String,
+      portraitId: jsonSerialization['portraitId'] as int?,
       level: jsonSerialization['level'] as int,
       averageMealScore: jsonSerialization['averageMealScore'] as int,
       daysFed: jsonSerialization['daysFed'] as int,
@@ -71,6 +74,8 @@ abstract class LeagueStanding
   String petName;
 
   String speciesKey;
+
+  int? portraitId;
 
   int level;
 
@@ -98,6 +103,7 @@ abstract class LeagueStanding
     int? memberId,
     String? petName,
     String? speciesKey,
+    int? portraitId,
     int? level,
     int? averageMealScore,
     int? daysFed,
@@ -115,6 +121,7 @@ abstract class LeagueStanding
       'memberId': memberId,
       'petName': petName,
       'speciesKey': speciesKey,
+      if (portraitId != null) 'portraitId': portraitId,
       'level': level,
       'averageMealScore': averageMealScore,
       'daysFed': daysFed,
@@ -134,6 +141,7 @@ abstract class LeagueStanding
       'memberId': memberId,
       'petName': petName,
       'speciesKey': speciesKey,
+      if (portraitId != null) 'portraitId': portraitId,
       'level': level,
       'averageMealScore': averageMealScore,
       'daysFed': daysFed,
@@ -151,12 +159,15 @@ abstract class LeagueStanding
   }
 }
 
+class _Undefined {}
+
 class _LeagueStandingImpl extends LeagueStanding {
   _LeagueStandingImpl({
     required int rank,
     required int memberId,
     required String petName,
     required String speciesKey,
+    int? portraitId,
     required int level,
     required int averageMealScore,
     required int daysFed,
@@ -170,6 +181,7 @@ class _LeagueStandingImpl extends LeagueStanding {
          memberId: memberId,
          petName: petName,
          speciesKey: speciesKey,
+         portraitId: portraitId,
          level: level,
          averageMealScore: averageMealScore,
          daysFed: daysFed,
@@ -189,6 +201,7 @@ class _LeagueStandingImpl extends LeagueStanding {
     int? memberId,
     String? petName,
     String? speciesKey,
+    Object? portraitId = _Undefined,
     int? level,
     int? averageMealScore,
     int? daysFed,
@@ -203,6 +216,7 @@ class _LeagueStandingImpl extends LeagueStanding {
       memberId: memberId ?? this.memberId,
       petName: petName ?? this.petName,
       speciesKey: speciesKey ?? this.speciesKey,
+      portraitId: portraitId is int? ? portraitId : this.portraitId,
       level: level ?? this.level,
       averageMealScore: averageMealScore ?? this.averageMealScore,
       daysFed: daysFed ?? this.daysFed,

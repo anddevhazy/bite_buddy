@@ -39,6 +39,8 @@ import 'package:bite_buddy_client/src/protocol/nutrition_insights.dart'
     as _iwtty9ju;
 import 'package:bite_buddy_client/src/protocol/pet.dart' as _iqjbfwnu;
 import 'package:bite_buddy_client/src/protocol/pet_species.dart' as _i12uia3s;
+import 'package:bite_buddy_client/src/protocol/portrait/portrait_draft.dart'
+    as _i14chipx;
 import 'package:bite_buddy_client/src/protocol/streak/streak_buddy_view.dart'
     as _is2ga6uj;
 import 'package:bite_buddy_client/src/protocol/streak/streak_friend.dart'
@@ -518,6 +520,42 @@ class EndpointPet extends _isc.EndpointRef {
 }
 
 /// {@category Endpoint}
+class EndpointPortrait extends _isc.EndpointRef {
+  EndpointPortrait(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'portrait';
+
+  _ida.Future<_i14chipx.PortraitDraft> create(_idt.ByteData photo) =>
+      caller.callServerEndpoint<_i14chipx.PortraitDraft>(
+        'portrait',
+        'create',
+        {'photo': photo},
+      );
+
+  _ida.Future<_iqjbfwnu.Pet> apply(int portraitId) =>
+      caller.callServerEndpoint<_iqjbfwnu.Pet>(
+        'portrait',
+        'apply',
+        {'portraitId': portraitId},
+      );
+
+  _ida.Future<_iqjbfwnu.Pet> clear() =>
+      caller.callServerEndpoint<_iqjbfwnu.Pet>(
+        'portrait',
+        'clear',
+        {},
+      );
+
+  _ida.Future<_idt.ByteData> image(int portraitId) =>
+      caller.callServerEndpoint<_idt.ByteData>(
+        'portrait',
+        'image',
+        {'portraitId': portraitId},
+      );
+}
+
+/// {@category Endpoint}
 class EndpointStreak extends _isc.EndpointRef {
   EndpointStreak(_isc.EndpointCaller caller) : super(caller);
 
@@ -606,6 +644,7 @@ class Client extends _isc.ServerpodClientShared {
     league = EndpointLeague(this);
     meal = EndpointMeal(this);
     pet = EndpointPet(this);
+    portrait = EndpointPortrait(this);
     streak = EndpointStreak(this);
     modules = Modules(this);
   }
@@ -628,6 +667,8 @@ class Client extends _isc.ServerpodClientShared {
 
   late final EndpointPet pet;
 
+  late final EndpointPortrait portrait;
+
   late final EndpointStreak streak;
 
   late final Modules modules;
@@ -643,6 +684,7 @@ class Client extends _isc.ServerpodClientShared {
     'league': league,
     'meal': meal,
     'pet': pet,
+    'portrait': portrait,
     'streak': streak,
   };
 

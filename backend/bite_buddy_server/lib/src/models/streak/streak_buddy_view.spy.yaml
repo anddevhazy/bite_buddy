@@ -5,6 +5,7 @@ fields:
   status: StreakBuddyStatus
   friendPetName: String
   friendSpeciesKey: String
+  friendPortraitId: int?
   streak: int
   bestStreak: int
   youFedToday: bool

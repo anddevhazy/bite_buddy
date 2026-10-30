@@ -1,17 +1,18 @@
 import 'dart:math';
-import 'package:bite_buddy/features/global/components/game_art.dart';
-import 'package:bite_buddy/features/global/constants/app_images.dart';
+import 'package:bite_buddy/features/global/components/buddy_picture.dart';
 import 'package:flutter/material.dart';
 
 // The pet, gently bobbing. Tapping it pops a few hearts.
 class PetAvatar extends StatefulWidget {
   final String speciesKey;
+  final int? portraitId;
   final double size;
   final bool interactive;
 
   const PetAvatar({
     super.key,
     required this.speciesKey,
+    this.portraitId,
     this.size = 160,
     this.interactive = false,
   });
@@ -73,8 +74,9 @@ class _PetAvatarState extends State<PetAvatar> with TickerProviderStateMixin {
                 offset: Offset(0, -8 * Curves.easeInOut.transform(_bob.value)),
                 child: child,
               ),
-              child: GameArt(
-                AppImages.pet(widget.speciesKey),
+              child: BuddyPicture(
+                speciesKey: widget.speciesKey,
+                portraitId: widget.portraitId,
                 size: widget.size,
               ),
             ),

@@ -28,6 +28,7 @@ import '../endpoints/leaderboard_endpoint.dart' as _iy80ldha;
 import '../endpoints/league_endpoint.dart' as _ixxtv0ct;
 import '../endpoints/meal_endpoint.dart' as _indvr2gf;
 import '../endpoints/pet_endpoint.dart' as _ic7gura5;
+import '../endpoints/portrait_endpoint.dart' as _ipr4708j;
 import '../endpoints/streak_endpoint.dart' as _ii2s5alo;
 
 class Endpoints extends _is.EndpointDispatch {
@@ -86,6 +87,12 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'pet',
+          null,
+        ),
+      'portrait': _ipr4708j.PortraitEndpoint()
+        ..initialize(
+          server,
+          'portrait',
           null,
         ),
       'streak': _ii2s5alo.StreakEndpoint()
@@ -724,6 +731,79 @@ class Endpoints extends _is.EndpointDispatch {
                 params['speciesKey'],
                 params['name'],
               ),
+        ),
+      },
+    );
+    connectors['portrait'] = _is.EndpointConnector(
+      name: 'portrait',
+      endpoint: endpoints['portrait']!,
+      methodConnectors: {
+        'create': _is.MethodConnector(
+          name: 'create',
+          params: {
+            'photo': _is.ParameterDescription(
+              name: 'photo',
+              type: _is.getType<_idt.ByteData>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['portrait'] as _ipr4708j.PortraitEndpoint).create(
+                    session,
+                    params['photo'],
+                  ),
+        ),
+        'apply': _is.MethodConnector(
+          name: 'apply',
+          params: {
+            'portraitId': _is.ParameterDescription(
+              name: 'portraitId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['portrait'] as _ipr4708j.PortraitEndpoint).apply(
+                    session,
+                    params['portraitId'],
+                  ),
+        ),
+        'clear': _is.MethodConnector(
+          name: 'clear',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['portrait'] as _ipr4708j.PortraitEndpoint)
+                  .clear(session),
+        ),
+        'image': _is.MethodConnector(
+          name: 'image',
+          params: {
+            'portraitId': _is.ParameterDescription(
+              name: 'portraitId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['portrait'] as _ipr4708j.PortraitEndpoint).image(
+                    session,
+                    params['portraitId'],
+                  ),
         ),
       },
     );

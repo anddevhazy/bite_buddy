@@ -61,14 +61,16 @@ class NutritionAnalysis {
 abstract class NutritionAiProvider {
   Future<NutritionAnalysis> analyze(Session session, Uint8List jpeg);
 
-  // A text-only request whose answer matches [schema], a standard JSON schema
-  // (lower-case types, additionalProperties: false on every object). Throws
-  // AI_UNAVAILABLE if there's no usable answer.
+  // A request whose answer matches [schema], a standard JSON schema
+  // (lower-case types, additionalProperties: false on every object), with an
+  // optional JPEG or PNG photo. Throws AI_UNAVAILABLE if there's no usable answer.
   Future<Map<String, dynamic>> generateJson(
     Session session, {
     required String system,
     required String prompt,
     required Map<String, dynamic> schema,
+    Uint8List? photo,
+    String photoMimeType = 'image/jpeg',
   });
 }
 

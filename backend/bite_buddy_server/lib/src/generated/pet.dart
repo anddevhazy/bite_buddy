@@ -19,6 +19,7 @@ abstract class Pet implements _is.TableRow<int?>, _is.ProtocolSerialization {
     required this.ownerId,
     required this.speciesKey,
     required this.name,
+    this.portraitId,
     required this.level,
     required this.xp,
     required this.health,
@@ -44,6 +45,7 @@ abstract class Pet implements _is.TableRow<int?>, _is.ProtocolSerialization {
     required _is.UuidValue ownerId,
     required String speciesKey,
     required String name,
+    int? portraitId,
     required int level,
     required int xp,
     required int health,
@@ -70,6 +72,7 @@ abstract class Pet implements _is.TableRow<int?>, _is.ProtocolSerialization {
       ),
       speciesKey: jsonSerialization['speciesKey'] as String,
       name: jsonSerialization['name'] as String,
+      portraitId: jsonSerialization['portraitId'] as int?,
       level: jsonSerialization['level'] as int,
       xp: jsonSerialization['xp'] as int,
       health: jsonSerialization['health'] as int,
@@ -113,6 +116,10 @@ abstract class Pet implements _is.TableRow<int?>, _is.ProtocolSerialization {
   String speciesKey;
 
   String name;
+
+  /// The user's own pet, redrawn (see PetPortrait). Shown instead of the
+  /// species picture when set; the species still decides nothing else.
+  int? portraitId;
 
   int level;
 
@@ -165,6 +172,7 @@ abstract class Pet implements _is.TableRow<int?>, _is.ProtocolSerialization {
     _is.UuidValue? ownerId,
     String? speciesKey,
     String? name,
+    int? portraitId,
     int? level,
     int? xp,
     int? health,
@@ -190,6 +198,7 @@ abstract class Pet implements _is.TableRow<int?>, _is.ProtocolSerialization {
       'ownerId': ownerId.toJson(),
       'speciesKey': speciesKey,
       'name': name,
+      if (portraitId != null) 'portraitId': portraitId,
       'level': level,
       'xp': xp,
       'health': health,
@@ -217,6 +226,7 @@ abstract class Pet implements _is.TableRow<int?>, _is.ProtocolSerialization {
       'ownerId': ownerId.toJson(),
       'speciesKey': speciesKey,
       'name': name,
+      if (portraitId != null) 'portraitId': portraitId,
       'level': level,
       'xp': xp,
       'health': health,
@@ -272,6 +282,7 @@ class _PetImpl extends Pet {
     required _is.UuidValue ownerId,
     required String speciesKey,
     required String name,
+    int? portraitId,
     required int level,
     required int xp,
     required int health,
@@ -293,6 +304,7 @@ class _PetImpl extends Pet {
          ownerId: ownerId,
          speciesKey: speciesKey,
          name: name,
+         portraitId: portraitId,
          level: level,
          xp: xp,
          health: health,
@@ -320,6 +332,7 @@ class _PetImpl extends Pet {
     _is.UuidValue? ownerId,
     String? speciesKey,
     String? name,
+    Object? portraitId = _Undefined,
     int? level,
     int? xp,
     int? health,
@@ -342,6 +355,7 @@ class _PetImpl extends Pet {
       ownerId: ownerId ?? this.ownerId,
       speciesKey: speciesKey ?? this.speciesKey,
       name: name ?? this.name,
+      portraitId: portraitId is int? ? portraitId : this.portraitId,
       level: level ?? this.level,
       xp: xp ?? this.xp,
       health: health ?? this.health,
@@ -380,6 +394,11 @@ class PetUpdateTable extends _is.UpdateTable<PetTable> {
 
   _is.ColumnValue<String, String> name(String value) => _is.ColumnValue(
     table.name,
+    value,
+  );
+
+  _is.ColumnValue<int, int> portraitId(int? value) => _is.ColumnValue(
+    table.portraitId,
     value,
   );
 
@@ -483,6 +502,10 @@ class PetTable extends _is.Table<int?> {
       'name',
       this,
     );
+    portraitId = _is.ColumnInt(
+      'portraitId',
+      this,
+    );
     level = _is.ColumnInt(
       'level',
       this,
@@ -562,6 +585,10 @@ class PetTable extends _is.Table<int?> {
 
   late final _is.ColumnString name;
 
+  /// The user's own pet, redrawn (see PetPortrait). Shown instead of the
+  /// species picture when set; the species still decides nothing else.
+  late final _is.ColumnInt portraitId;
+
   late final _is.ColumnInt level;
 
   /// XP towards the next level; a level needs level * 100 XP.
@@ -608,6 +635,7 @@ class PetTable extends _is.Table<int?> {
     ownerId,
     speciesKey,
     name,
+    portraitId,
     level,
     xp,
     health,

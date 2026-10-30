@@ -59,11 +59,22 @@ class ClaudeNutritionAi implements NutritionAiProvider {
     required String system,
     required String prompt,
     required Map<String, dynamic> schema,
+    Uint8List? photo,
+    String photoMimeType = 'image/jpeg',
   }) async {
     final text = await _generate(
       session,
       system: system,
       content: [
+        if (photo != null)
+          {
+            'type': 'image',
+            'source': {
+              'type': 'base64',
+              'media_type': photoMimeType,
+              'data': base64Encode(photo),
+            },
+          },
         {'type': 'text', 'text': prompt},
       ],
       schema: schema,

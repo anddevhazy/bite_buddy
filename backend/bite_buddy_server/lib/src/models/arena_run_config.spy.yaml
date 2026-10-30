@@ -4,6 +4,7 @@ fields:
   runId: int
   petName: String
   petSpeciesKey: String
+  petPortraitId: int?
   petStats: BattleStats
   opponent: Opponent
   rules: ArenaRules

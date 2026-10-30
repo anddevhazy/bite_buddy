@@ -1,7 +1,7 @@
 import 'package:bite_buddy/features/battle/presentation/widgets/stat_chips.dart';
+import 'package:bite_buddy/features/global/components/buddy_picture.dart';
 import 'package:bite_buddy/features/global/components/app_toast.dart';
 import 'package:bite_buddy/features/global/components/forest_background.dart';
-import 'package:bite_buddy/features/global/components/game_art.dart';
 import 'package:bite_buddy/features/global/components/glass_card.dart';
 import 'package:bite_buddy/features/global/constants/app_images.dart';
 import 'package:bite_buddy/features/global/constants/colors.dart';
@@ -127,6 +127,7 @@ class _DuelView extends StatelessWidget {
               child: _Fighter(
                 name: duel.theirPetName,
                 speciesKey: duel.theirSpeciesKey,
+                portraitId: duel.theirPortraitId,
                 hp: duel.theirHp,
                 maxHp: duel.theirMaxHp,
                 attack: duel.theirAttack,
@@ -146,6 +147,7 @@ class _DuelView extends StatelessWidget {
               child: _Fighter(
                 name: '${duel.myPetName} (You)',
                 speciesKey: duel.mySpeciesKey,
+                portraitId: duel.myPortraitId,
                 hp: duel.myHp,
                 maxHp: duel.myMaxHp,
                 attack: duel.myAttack,
@@ -193,6 +195,7 @@ class _DuelView extends StatelessWidget {
 class _Fighter extends StatelessWidget {
   final String name;
   final String speciesKey;
+  final int? portraitId;
   final int hp;
   final int maxHp;
   final int attack;
@@ -202,6 +205,7 @@ class _Fighter extends StatelessWidget {
   const _Fighter({
     required this.name,
     required this.speciesKey,
+    required this.portraitId,
     required this.hp,
     required this.maxHp,
     required this.attack,
@@ -213,7 +217,7 @@ class _Fighter extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        GameArt(AppImages.pet(speciesKey), size: 96),
+        BuddyPicture(speciesKey: speciesKey, portraitId: portraitId, size: 96),
         Text(
           name,
           style: AppTextStyles.h3,

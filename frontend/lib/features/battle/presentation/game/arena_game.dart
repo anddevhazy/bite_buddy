@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
+import 'dart:ui' as ui;
 
 import 'package:bite_buddy/features/global/services/sound_service.dart';
 import 'package:bite_buddy/features/battle/presentation/game/fight_engine.dart';
@@ -26,6 +27,9 @@ class ArenaGame extends FlameGame {
   // A character without them is drawn from its still picture.
   final String? petAnimations;
   final String? opponentAnimations;
+  // The photo of the user's own pet, if their buddy is made from one. It
+  // replaces [petImage] and the pet's animations.
+  final Future<ui.Image?> Function()? petPortrait;
   // Null in tests
   final SoundService? sounds;
 
@@ -39,6 +43,7 @@ class ArenaGame extends FlameGame {
     required this.backgroundImage,
     this.petAnimations,
     this.opponentAnimations,
+    this.petPortrait,
     this.sounds,
   });
 
@@ -77,12 +82,15 @@ class ArenaGame extends FlameGame {
             animations: opponentAnimations,
           )
           ..priority = 2;
+    final portrait = await petPortrait?.call();
     _pet =
-        await _FighterSprite.load(
-            images,
-            picture: petImage,
-            animations: petAnimations,
-          )
+        (portrait != null
+              ? _FighterSprite.still(Sprite(portrait))
+              : await _FighterSprite.load(
+                  images,
+                  picture: petImage,
+                  animations: petAnimations,
+                ))
           ..priority = 3;
     addAll([_opponent, _pet]);
 
@@ -376,11 +384,14 @@ class _FighterSprite extends SpriteAnimationGroupComponent<_Pose> {
         // No sheets for this character yet: use the still picture
       }
     }
-    final still = SpriteAnimation.spriteList([
-      await Sprite.load(picture, images: images),
-    ], stepTime: 1);
+    return still(await Sprite.load(picture, images: images));
+  }
+
+  // One picture for every pose; the movement is all done in code
+  static _FighterSprite still(Sprite sprite) {
+    final animation = SpriteAnimation.spriteList([sprite], stepTime: 1);
     return _FighterSprite._(
-      animations: {for (final pose in _Pose.values) pose: still},
+      animations: {for (final pose in _Pose.values) pose: animation},
       animated: false,
       aspect: 1,
     );

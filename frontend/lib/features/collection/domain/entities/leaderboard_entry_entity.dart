@@ -5,6 +5,7 @@ class LeaderboardEntryEntity extends Equatable {
   final int petId;
   final String petName;
   final String speciesKey;
+  final int? portraitId;
   final int level;
   final int nutrition;
   final bool isYou;
@@ -14,6 +15,7 @@ class LeaderboardEntryEntity extends Equatable {
     required this.petId,
     required this.petName,
     required this.speciesKey,
+    this.portraitId,
     required this.level,
     required this.nutrition,
     required this.isYou,

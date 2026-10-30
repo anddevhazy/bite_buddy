@@ -85,11 +85,20 @@ class GeminiNutritionAi implements NutritionAiProvider {
     required String system,
     required String prompt,
     required Map<String, dynamic> schema,
+    Uint8List? photo,
+    String photoMimeType = 'image/jpeg',
   }) async {
     final text = await _generate(
       session,
       system: system,
       parts: [
+        if (photo != null)
+          {
+            'inlineData': {
+              'mimeType': photoMimeType,
+              'data': base64Encode(photo),
+            },
+          },
         {'text': prompt},
       ],
       schema: toGeminiSchema(schema),

@@ -13,6 +13,8 @@ fields:
   bPetName: String
   aSpeciesKey: String
   bSpeciesKey: String
+  aPortraitId: int?
+  bPortraitId: int?
   ### Fighter stats, fixed when the duel starts.
   aMaxHp: int
   bMaxHp: int

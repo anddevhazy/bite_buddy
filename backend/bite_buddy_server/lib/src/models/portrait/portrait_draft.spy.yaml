@@ -1,0 +1,8 @@
+### A freshly made portrait for the user to look at before using it.
+class: PortraitDraft
+fields:
+  id: int
+  image: ByteData
+  animal: String
+  ### Redraws left today, after this one.
+  triesLeftToday: int

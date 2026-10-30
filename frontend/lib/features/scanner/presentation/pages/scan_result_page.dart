@@ -352,7 +352,13 @@ class _Fed extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.lg),
       children: [
-        Center(child: PetAvatar(speciesKey: pet.speciesKey, interactive: true)),
+        Center(
+          child: PetAvatar(
+            speciesKey: pet.speciesKey,
+            portraitId: pet.portraitId,
+            interactive: true,
+          ),
+        ),
         Text(
           'Feeding successful!',
           textAlign: TextAlign.center,

@@ -1,10 +1,9 @@
+import 'package:bite_buddy/features/global/components/buddy_picture.dart';
 import 'package:bite_buddy/features/global/components/app_error_view.dart';
 import 'package:bite_buddy/features/global/components/app_toast.dart';
 import 'package:bite_buddy/features/global/components/forest_background.dart';
-import 'package:bite_buddy/features/global/components/game_art.dart';
 import 'package:bite_buddy/features/global/components/game_button.dart';
 import 'package:bite_buddy/features/global/components/glass_card.dart';
-import 'package:bite_buddy/features/global/constants/app_images.dart';
 import 'package:bite_buddy/features/global/constants/colors.dart';
 import 'package:bite_buddy/features/global/constants/spacing.dart';
 import 'package:bite_buddy/features/global/constants/text_styles.dart';
@@ -410,7 +409,11 @@ class _StandingRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
-          GameArt(AppImages.pet(s.speciesKey), size: 40),
+          BuddyPicture(
+            speciesKey: s.speciesKey,
+            portraitId: s.portraitId,
+            size: 40,
+          ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Column(
@@ -481,7 +484,11 @@ class _DuelTile extends StatelessWidget {
       borderColor: duel.yourTurn ? AppColors.accent : null,
       child: Row(
         children: [
-          GameArt(AppImages.pet(duel.theirSpeciesKey), size: 40),
+          BuddyPicture(
+            speciesKey: duel.theirSpeciesKey,
+            portraitId: duel.theirPortraitId,
+            size: 40,
+          ),
           const SizedBox(width: AppSpacing.md),
           Expanded(
             child: Column(

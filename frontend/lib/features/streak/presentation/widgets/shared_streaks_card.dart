@@ -1,7 +1,6 @@
+import 'package:bite_buddy/features/global/components/buddy_picture.dart';
 import 'package:bite_buddy/features/global/components/app_toast.dart';
-import 'package:bite_buddy/features/global/components/game_art.dart';
 import 'package:bite_buddy/features/global/components/glass_card.dart';
-import 'package:bite_buddy/features/global/constants/app_images.dart';
 import 'package:bite_buddy/features/global/constants/colors.dart';
 import 'package:bite_buddy/features/global/constants/spacing.dart';
 import 'package:bite_buddy/features/global/constants/text_styles.dart';
@@ -109,7 +108,11 @@ class _StreakRow extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: AppSpacing.sm),
       child: Row(
         children: [
-          GameArt(AppImages.pet(s.friendSpeciesKey), size: 44),
+          BuddyPicture(
+            speciesKey: s.friendSpeciesKey,
+            portraitId: s.friendPortraitId,
+            size: 44,
+          ),
           const SizedBox(width: AppSpacing.sm),
           Expanded(
             child: Column(
@@ -291,7 +294,11 @@ Future<void> _pickFriend(BuildContext context) async {
                   for (final f in friends)
                     ListTile(
                       contentPadding: EdgeInsets.zero,
-                      leading: GameArt(AppImages.pet(f.speciesKey), size: 40),
+                      leading: BuddyPicture(
+                        speciesKey: f.speciesKey,
+                        portraitId: f.portraitId,
+                        size: 40,
+                      ),
                       title: Text(f.petName, style: AppTextStyles.bodyLarge),
                       trailing: const Icon(Icons.send_rounded),
                       onTap: () => Navigator.pop(sheetContext, f),

@@ -5,8 +5,10 @@ fields:
   leagueId: int
   myPetName: String
   mySpeciesKey: String
+  myPortraitId: int?
   theirPetName: String
   theirSpeciesKey: String
+  theirPortraitId: int?
   myHp: int
   myMaxHp: int
   theirHp: int

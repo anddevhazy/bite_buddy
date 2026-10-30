@@ -5,6 +5,7 @@ import 'package:bite_buddy/features/global/services/sound_service.dart';
 import 'package:bite_buddy/features/battle/domain/entities/arena_run_entities.dart';
 import 'package:bite_buddy/features/battle/presentation/bloc/battle_cubit.dart';
 import 'package:bite_buddy/features/battle/presentation/game/arena_game.dart';
+import 'package:bite_buddy/features/global/services/portrait_cache.dart';
 import 'package:bite_buddy/features/battle/presentation/game/fight_engine.dart';
 import 'package:bite_buddy/features/global/components/game_button.dart';
 import 'package:bite_buddy/features/global/constants/app_images.dart';
@@ -39,6 +40,13 @@ class _FightPageState extends State<FightPage> {
     opponentImage: AppImages.opponent(widget.config.opponent.key),
     backgroundImage: AppImages.arenaBackground,
     petAnimations: AppImages.animations('pet_${widget.config.petSpeciesKey}'),
+    petPortrait: switch (widget.config.petPortraitId) {
+      final id? => () async {
+        final bytes = await sl<PortraitCache>().load(id);
+        return bytes == null ? null : circularPortrait(bytes);
+      },
+      null => null,
+    },
     opponentAnimations: AppImages.animations(
       'opp_${widget.config.opponent.key}',
     ),

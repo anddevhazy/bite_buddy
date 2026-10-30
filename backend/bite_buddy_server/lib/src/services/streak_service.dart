@@ -51,6 +51,7 @@ class StreakService {
           userId: pet.ownerId,
           petName: pet.name,
           speciesKey: pet.speciesKey,
+          portraitId: pet.portraitId,
         ),
     ]..sort((a, b) => a.petName.compareTo(b.petName));
   }
@@ -233,6 +234,7 @@ class StreakService {
           : StreakBuddyStatus.incoming,
       friendPetName: friend.name,
       friendSpeciesKey: friend.speciesKey,
+      friendPortraitId: friend.portraitId,
       streak: liveSharedStreak(buddy, pairToday(myToday, friendToday)),
       bestStreak: buddy.bestStreak,
       youFedToday: myLast == myToday,

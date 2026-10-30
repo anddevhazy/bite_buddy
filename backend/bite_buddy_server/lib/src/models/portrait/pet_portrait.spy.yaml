@@ -1,0 +1,17 @@
+### A picture of the user's real pet, redrawn as their buddy. Drafts that were
+### never used are cleaned up after a day; used ones are kept because old
+### friend battles still show them.
+class: PetPortrait
+table: pet_portrait
+fields:
+  ownerId: UuidValue
+  ### PNG or JPEG bytes.
+  image: ByteData
+  ### What the AI saw, e.g. "dog", "cat", "rabbit".
+  animal: String
+  ### True once it has been put on the owner's pet.
+  used: bool
+  createdAt: DateTime
+indexes:
+  pet_portrait_owner_idx:
+    fields: ownerId

@@ -19,12 +19,14 @@ abstract class StreakFriend
     required this.userId,
     required this.petName,
     required this.speciesKey,
+    this.portraitId,
   });
 
   factory StreakFriend({
     required _is.UuidValue userId,
     required String petName,
     required String speciesKey,
+    int? portraitId,
   }) = _StreakFriendImpl;
 
   factory StreakFriend.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -32,6 +34,7 @@ abstract class StreakFriend
       userId: _is.UuidValueJsonExtension.fromJson(jsonSerialization['userId']),
       petName: jsonSerialization['petName'] as String,
       speciesKey: jsonSerialization['speciesKey'] as String,
+      portraitId: jsonSerialization['portraitId'] as int?,
     );
   }
 
@@ -41,6 +44,8 @@ abstract class StreakFriend
 
   String speciesKey;
 
+  int? portraitId;
+
   /// Returns a shallow copy of this [StreakFriend]
   /// with some or all fields replaced by the given arguments.
   @_is.useResult
@@ -48,6 +53,7 @@ abstract class StreakFriend
     _is.UuidValue? userId,
     String? petName,
     String? speciesKey,
+    int? portraitId,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -56,6 +62,7 @@ abstract class StreakFriend
       'userId': userId.toJson(),
       'petName': petName,
       'speciesKey': speciesKey,
+      if (portraitId != null) 'portraitId': portraitId,
     };
   }
 
@@ -66,6 +73,7 @@ abstract class StreakFriend
       'userId': userId.toJson(),
       'petName': petName,
       'speciesKey': speciesKey,
+      if (portraitId != null) 'portraitId': portraitId,
     };
   }
 
@@ -75,15 +83,19 @@ abstract class StreakFriend
   }
 }
 
+class _Undefined {}
+
 class _StreakFriendImpl extends StreakFriend {
   _StreakFriendImpl({
     required _is.UuidValue userId,
     required String petName,
     required String speciesKey,
+    int? portraitId,
   }) : super._(
          userId: userId,
          petName: petName,
          speciesKey: speciesKey,
+         portraitId: portraitId,
        );
 
   /// Returns a shallow copy of this [StreakFriend]
@@ -94,11 +106,13 @@ class _StreakFriendImpl extends StreakFriend {
     _is.UuidValue? userId,
     String? petName,
     String? speciesKey,
+    Object? portraitId = _Undefined,
   }) {
     return StreakFriend(
       userId: userId ?? this.userId,
       petName: petName ?? this.petName,
       speciesKey: speciesKey ?? this.speciesKey,
+      portraitId: portraitId is int? ? portraitId : this.portraitId,
     );
   }
 }

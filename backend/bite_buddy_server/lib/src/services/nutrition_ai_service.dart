@@ -32,9 +32,16 @@ class NutritionAiService {
     required String system,
     required String prompt,
     required Map<String, dynamic> schema,
-  }) => _provider(
+    Uint8List? photo,
+    String photoMimeType = 'image/jpeg',
+  }) => _provider(session).generateJson(
     session,
-  ).generateJson(session, system: system, prompt: prompt, schema: schema);
+    system: system,
+    prompt: prompt,
+    schema: schema,
+    photo: photo,
+    photoMimeType: photoMimeType,
+  );
 
   NutritionAiProvider _provider(Session session) {
     final name = session.passwords['nutritionAiProvider'] ?? defaultProvider;

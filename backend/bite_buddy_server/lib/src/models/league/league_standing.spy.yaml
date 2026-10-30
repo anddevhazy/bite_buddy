@@ -7,6 +7,7 @@ fields:
   memberId: int
   petName: String
   speciesKey: String
+  portraitId: int?
   level: int
   ### Average health score of the meals fed this season.
   averageMealScore: int

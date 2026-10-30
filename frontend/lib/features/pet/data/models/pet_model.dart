@@ -19,6 +19,7 @@ class PetModel extends PetEntity {
     required super.streak,
     required super.bestStreak,
     super.lastFedAt,
+    super.portraitId,
   });
 
   // A level needs level * 100 XP (same rule as the server's pet_stats.dart)
@@ -40,6 +41,7 @@ class PetModel extends PetEntity {
       streak: pet.streak,
       bestStreak: pet.bestStreak,
       lastFedAt: pet.lastFedAt?.toLocal(),
+      portraitId: pet.portraitId,
     );
   }
 }

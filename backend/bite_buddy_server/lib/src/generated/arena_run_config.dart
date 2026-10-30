@@ -23,6 +23,7 @@ abstract class ArenaRunConfig
     required this.runId,
     required this.petName,
     required this.petSpeciesKey,
+    this.petPortraitId,
     required this.petStats,
     required this.opponent,
     required this.rules,
@@ -33,6 +34,7 @@ abstract class ArenaRunConfig
     required int runId,
     required String petName,
     required String petSpeciesKey,
+    int? petPortraitId,
     required _ievndlqk.BattleStats petStats,
     required _i2ot5zrj.Opponent opponent,
     required _ildu9ri2.ArenaRules rules,
@@ -44,6 +46,7 @@ abstract class ArenaRunConfig
       runId: jsonSerialization['runId'] as int,
       petName: jsonSerialization['petName'] as String,
       petSpeciesKey: jsonSerialization['petSpeciesKey'] as String,
+      petPortraitId: jsonSerialization['petPortraitId'] as int?,
       petStats: _i61ow1lb.Protocol().deserialize<_ievndlqk.BattleStats>(
         jsonSerialization['petStats'],
       ),
@@ -63,6 +66,8 @@ abstract class ArenaRunConfig
 
   String petSpeciesKey;
 
+  int? petPortraitId;
+
   _ievndlqk.BattleStats petStats;
 
   _i2ot5zrj.Opponent opponent;
@@ -79,6 +84,7 @@ abstract class ArenaRunConfig
     int? runId,
     String? petName,
     String? petSpeciesKey,
+    int? petPortraitId,
     _ievndlqk.BattleStats? petStats,
     _i2ot5zrj.Opponent? opponent,
     _ildu9ri2.ArenaRules? rules,
@@ -91,6 +97,7 @@ abstract class ArenaRunConfig
       'runId': runId,
       'petName': petName,
       'petSpeciesKey': petSpeciesKey,
+      if (petPortraitId != null) 'petPortraitId': petPortraitId,
       'petStats': petStats.toJson(),
       'opponent': opponent.toJson(),
       'rules': rules.toJson(),
@@ -105,6 +112,7 @@ abstract class ArenaRunConfig
       'runId': runId,
       'petName': petName,
       'petSpeciesKey': petSpeciesKey,
+      if (petPortraitId != null) 'petPortraitId': petPortraitId,
       'petStats': petStats.toJsonForProtocol(),
       'opponent': opponent.toJsonForProtocol(),
       'rules': rules.toJsonForProtocol(),
@@ -118,11 +126,14 @@ abstract class ArenaRunConfig
   }
 }
 
+class _Undefined {}
+
 class _ArenaRunConfigImpl extends ArenaRunConfig {
   _ArenaRunConfigImpl({
     required int runId,
     required String petName,
     required String petSpeciesKey,
+    int? petPortraitId,
     required _ievndlqk.BattleStats petStats,
     required _i2ot5zrj.Opponent opponent,
     required _ildu9ri2.ArenaRules rules,
@@ -131,6 +142,7 @@ class _ArenaRunConfigImpl extends ArenaRunConfig {
          runId: runId,
          petName: petName,
          petSpeciesKey: petSpeciesKey,
+         petPortraitId: petPortraitId,
          petStats: petStats,
          opponent: opponent,
          rules: rules,
@@ -145,6 +157,7 @@ class _ArenaRunConfigImpl extends ArenaRunConfig {
     int? runId,
     String? petName,
     String? petSpeciesKey,
+    Object? petPortraitId = _Undefined,
     _ievndlqk.BattleStats? petStats,
     _i2ot5zrj.Opponent? opponent,
     _ildu9ri2.ArenaRules? rules,
@@ -154,6 +167,7 @@ class _ArenaRunConfigImpl extends ArenaRunConfig {
       runId: runId ?? this.runId,
       petName: petName ?? this.petName,
       petSpeciesKey: petSpeciesKey ?? this.petSpeciesKey,
+      petPortraitId: petPortraitId is int? ? petPortraitId : this.petPortraitId,
       petStats: petStats ?? this.petStats.copyWith(),
       opponent: opponent ?? this.opponent.copyWith(),
       rules: rules ?? this.rules.copyWith(),

@@ -42,6 +42,8 @@ import 'package:bite_buddy_server/src/generated/nutrition_insights.dart'
     as _irm6gbir;
 import 'package:bite_buddy_server/src/generated/pet.dart' as _i9zqw63y;
 import 'package:bite_buddy_server/src/generated/pet_species.dart' as _it8ve0l0;
+import 'package:bite_buddy_server/src/generated/portrait/portrait_draft.dart'
+    as _iohd8sul;
 import 'package:bite_buddy_server/src/generated/streak/streak_buddy_view.dart'
     as _iaktjz74;
 import 'package:bite_buddy_server/src/generated/streak/streak_friend.dart'
@@ -201,6 +203,8 @@ class TestEndpoints {
 
   late final _PetEndpoint pet;
 
+  late final _PortraitEndpoint portrait;
+
   late final _StreakEndpoint streak;
 }
 
@@ -244,6 +248,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     pet = _PetEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    portrait = _PortraitEndpoint(
       endpoints,
       serializationManager,
     );
@@ -1341,6 +1349,140 @@ class _PetEndpoint {
                   _localCallContext.arguments,
                 )
                 as _ida.Future<_i9zqw63y.Pet>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _PortraitEndpoint {
+  _PortraitEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<_iohd8sul.PortraitDraft> create(
+    _ist.TestSessionBuilder sessionBuilder,
+    _idt.ByteData photo,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'portrait',
+            method: 'create',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'portrait',
+          methodName: 'create',
+          parameters: _ist.testObjectToJson({'photo': photo}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iohd8sul.PortraitDraft>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_i9zqw63y.Pet> apply(
+    _ist.TestSessionBuilder sessionBuilder,
+    int portraitId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'portrait',
+            method: 'apply',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'portrait',
+          methodName: 'apply',
+          parameters: _ist.testObjectToJson({'portraitId': portraitId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_i9zqw63y.Pet>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_i9zqw63y.Pet> clear(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'portrait',
+            method: 'clear',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'portrait',
+          methodName: 'clear',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_i9zqw63y.Pet>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_idt.ByteData> image(
+    _ist.TestSessionBuilder sessionBuilder,
+    int portraitId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'portrait',
+            method: 'image',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'portrait',
+          methodName: 'image',
+          parameters: _ist.testObjectToJson({'portraitId': portraitId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_idt.ByteData>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

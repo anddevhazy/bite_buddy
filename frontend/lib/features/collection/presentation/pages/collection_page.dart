@@ -1,14 +1,13 @@
 import 'package:go_router/go_router.dart';
 import 'package:bite_buddy/features/scanner/presentation/bloc/scanner_cubit.dart';
+import 'package:bite_buddy/features/global/components/buddy_picture.dart';
 import 'package:bite_buddy/features/global/routes/routes.dart';
 import 'package:bite_buddy/features/global/components/game_button.dart';
 import 'package:bite_buddy/features/collection/domain/entities/leaderboard_entry_entity.dart';
 import 'package:bite_buddy/features/collection/presentation/bloc/collection_cubit.dart';
 import 'package:bite_buddy/features/global/components/app_error_view.dart';
-import 'package:bite_buddy/features/global/components/game_art.dart';
 import 'package:bite_buddy/features/global/components/glass_card.dart';
 import 'package:bite_buddy/features/global/components/page_header.dart';
-import 'package:bite_buddy/features/global/constants/app_images.dart';
 import 'package:bite_buddy/features/global/constants/colors.dart';
 import 'package:bite_buddy/features/global/constants/spacing.dart';
 import 'package:bite_buddy/features/global/constants/text_styles.dart';
@@ -285,7 +284,11 @@ class _Leaderboard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: AppSpacing.sm),
-                  GameArt(AppImages.pet(e.speciesKey), size: 40),
+                  BuddyPicture(
+                    speciesKey: e.speciesKey,
+                    portraitId: e.portraitId,
+                    size: 40,
+                  ),
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: Column(

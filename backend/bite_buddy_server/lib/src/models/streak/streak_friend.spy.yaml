@@ -4,3 +4,4 @@ fields:
   userId: UuidValue
   petName: String
   speciesKey: String
+  portraitId: int?

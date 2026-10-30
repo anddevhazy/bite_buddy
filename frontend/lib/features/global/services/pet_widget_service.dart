@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bite_buddy/features/global/constants/app_images.dart';
+import 'package:bite_buddy/features/global/services/portrait_cache.dart';
 import 'package:bite_buddy/features/pet/domain/entities/pet_entity.dart';
 import 'package:flutter/widgets.dart';
 import 'package:home_widget/home_widget.dart';
@@ -10,6 +11,10 @@ import 'package:home_widget/home_widget.dart';
 // BuddyWidgetProvider.kt, iOS: ios/BuddyWidget/BuddyWidget.swift) works out
 // the mood from the last meal time, so it stays right between app opens.
 class PetWidgetService {
+  final PortraitCache portraits;
+
+  PetWidgetService({required this.portraits});
+
   static const _androidName = 'BuddyWidgetProvider';
   static const _iOSName = 'BuddyWidget';
   // iOS widgets can only read data from a shared App Group; this id must
@@ -34,13 +39,11 @@ class PetWidgetService {
           pet.lastFedAt?.millisecondsSinceEpoch.toString() ?? '',
         ),
       ).wait;
-      // The picture only needs saving again when the species changes
-      if (_savedImageFor != pet.speciesKey) {
-        await HomeWidget.saveImage(
-          'petImage',
-          AssetImage(AppImages.pet(pet.speciesKey)),
-        );
-        _savedImageFor = pet.speciesKey;
+      // The picture only needs saving again when it changes
+      final picture = '${pet.speciesKey}/${pet.portraitId}';
+      if (_savedImageFor != picture) {
+        await HomeWidget.saveImage('petImage', await _picture(pet));
+        _savedImageFor = picture;
       }
       await HomeWidget.updateWidget(
         androidName: _androidName,
@@ -50,6 +53,16 @@ class PetWidgetService {
       // A widget that didn't update is never worth interrupting the app for
       debugPrint('Home widget update failed: $e');
     }
+  }
+
+  // The photo of their own pet, already cut into a circle, or the species art
+  Future<ImageProvider> _picture(PetEntity pet) async {
+    final id = pet.portraitId;
+    final bytes = id == null ? null : await portraits.load(id);
+    final circle = bytes == null ? null : await circularPortraitPng(bytes);
+    return circle != null
+        ? MemoryImage(circle)
+        : AssetImage(AppImages.pet(pet.speciesKey));
   }
 
   // After signing out, so the widget doesn't show the last user's buddy

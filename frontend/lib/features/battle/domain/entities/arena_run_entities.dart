@@ -54,6 +54,7 @@ class ArenaRunConfigEntity extends Equatable {
   final int runId;
   final String petName;
   final String petSpeciesKey;
+  final int? petPortraitId;
   final BattleStatsEntity petStats;
   final OpponentEntity opponent;
   final ArenaRulesEntity rules;
@@ -63,6 +64,7 @@ class ArenaRunConfigEntity extends Equatable {
     required this.runId,
     required this.petName,
     required this.petSpeciesKey,
+    this.petPortraitId,
     required this.petStats,
     required this.opponent,
     required this.rules,

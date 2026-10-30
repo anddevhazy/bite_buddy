@@ -31,6 +31,8 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Bite Buddy lets you choose a photo of your own pet to turn into your buddy.</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>Bite Buddy reads your steps and sleep so walking and resting well can boost your buddy's energy and health.</string>
 	<key>NSHealthUpdateUsageDescription</key>

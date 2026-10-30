@@ -6,6 +6,7 @@ import 'league_service.dart';
 import 'meal_service.dart';
 import 'nutrition_ai_service.dart';
 import 'pet_service.dart';
+import 'portrait_service.dart';
 import 'streak_service.dart';
 
 // One shared instance of each service, used by the endpoints
@@ -22,3 +23,7 @@ final mealService = MealService(
 final battleService = BattleService(pets: petService);
 final duelService = DuelService(pets: petService);
 final leagueService = LeagueService(pets: petService, duels: duelService);
+final portraitService = PortraitService(
+  ai: nutritionAiService,
+  pets: petService,
+);

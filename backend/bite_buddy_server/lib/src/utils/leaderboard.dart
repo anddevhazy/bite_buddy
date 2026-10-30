@@ -29,6 +29,7 @@ List<LeaderboardEntry> rankLeaderboard(
       petId: pet.id!,
       petName: pet.name,
       speciesKey: pet.speciesKey,
+      portraitId: pet.portraitId,
       level: pet.level,
       nutrition: pet.nutrition,
       isYou: pet.ownerId == callerId,

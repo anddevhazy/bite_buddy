@@ -4,6 +4,8 @@ class PetEntity extends Equatable {
   final int id;
   final String speciesKey;
   final String name;
+  // A photo of the user's own pet, shown instead of the species art
+  final int? portraitId;
   final int level;
   final int xp;
   final int xpToNextLevel;
@@ -36,6 +38,7 @@ class PetEntity extends Equatable {
     required this.streak,
     required this.bestStreak,
     this.lastFedAt,
+    this.portraitId,
   });
 
   @override
@@ -56,5 +59,6 @@ class PetEntity extends Equatable {
     streak,
     bestStreak,
     lastFedAt,
+    portraitId,
   ];
 }

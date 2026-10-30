@@ -30,6 +30,8 @@ abstract class Duel implements _is.TableRow<int?>, _is.ProtocolSerialization {
     required this.bPetName,
     required this.aSpeciesKey,
     required this.bSpeciesKey,
+    this.aPortraitId,
+    this.bPortraitId,
     required this.aMaxHp,
     required this.bMaxHp,
     required this.aAttack,
@@ -66,6 +68,8 @@ abstract class Duel implements _is.TableRow<int?>, _is.ProtocolSerialization {
     required String bPetName,
     required String aSpeciesKey,
     required String bSpeciesKey,
+    int? aPortraitId,
+    int? bPortraitId,
     required int aMaxHp,
     required int bMaxHp,
     required int aAttack,
@@ -109,6 +113,8 @@ abstract class Duel implements _is.TableRow<int?>, _is.ProtocolSerialization {
       bPetName: jsonSerialization['bPetName'] as String,
       aSpeciesKey: jsonSerialization['aSpeciesKey'] as String,
       bSpeciesKey: jsonSerialization['bSpeciesKey'] as String,
+      aPortraitId: jsonSerialization['aPortraitId'] as int?,
+      bPortraitId: jsonSerialization['bPortraitId'] as int?,
       aMaxHp: jsonSerialization['aMaxHp'] as int,
       bMaxHp: jsonSerialization['bMaxHp'] as int,
       aAttack: jsonSerialization['aAttack'] as int,
@@ -188,6 +194,10 @@ abstract class Duel implements _is.TableRow<int?>, _is.ProtocolSerialization {
 
   String bSpeciesKey;
 
+  int? aPortraitId;
+
+  int? bPortraitId;
+
   /// Fighter stats, fixed when the duel starts.
   int aMaxHp;
 
@@ -258,6 +268,8 @@ abstract class Duel implements _is.TableRow<int?>, _is.ProtocolSerialization {
     String? bPetName,
     String? aSpeciesKey,
     String? bSpeciesKey,
+    int? aPortraitId,
+    int? bPortraitId,
     int? aMaxHp,
     int? bMaxHp,
     int? aAttack,
@@ -296,6 +308,8 @@ abstract class Duel implements _is.TableRow<int?>, _is.ProtocolSerialization {
       'bPetName': bPetName,
       'aSpeciesKey': aSpeciesKey,
       'bSpeciesKey': bSpeciesKey,
+      if (aPortraitId != null) 'aPortraitId': aPortraitId,
+      if (bPortraitId != null) 'bPortraitId': bPortraitId,
       'aMaxHp': aMaxHp,
       'bMaxHp': bMaxHp,
       'aAttack': aAttack,
@@ -336,6 +350,8 @@ abstract class Duel implements _is.TableRow<int?>, _is.ProtocolSerialization {
       'bPetName': bPetName,
       'aSpeciesKey': aSpeciesKey,
       'bSpeciesKey': bSpeciesKey,
+      if (aPortraitId != null) 'aPortraitId': aPortraitId,
+      if (bPortraitId != null) 'bPortraitId': bPortraitId,
       'aMaxHp': aMaxHp,
       'bMaxHp': bMaxHp,
       'aAttack': aAttack,
@@ -402,6 +418,8 @@ class _DuelImpl extends Duel {
     required String bPetName,
     required String aSpeciesKey,
     required String bSpeciesKey,
+    int? aPortraitId,
+    int? bPortraitId,
     required int aMaxHp,
     required int bMaxHp,
     required int aAttack,
@@ -436,6 +454,8 @@ class _DuelImpl extends Duel {
          bPetName: bPetName,
          aSpeciesKey: aSpeciesKey,
          bSpeciesKey: bSpeciesKey,
+         aPortraitId: aPortraitId,
+         bPortraitId: bPortraitId,
          aMaxHp: aMaxHp,
          bMaxHp: bMaxHp,
          aAttack: aAttack,
@@ -476,6 +496,8 @@ class _DuelImpl extends Duel {
     String? bPetName,
     String? aSpeciesKey,
     String? bSpeciesKey,
+    Object? aPortraitId = _Undefined,
+    Object? bPortraitId = _Undefined,
     int? aMaxHp,
     int? bMaxHp,
     int? aAttack,
@@ -511,6 +533,8 @@ class _DuelImpl extends Duel {
       bPetName: bPetName ?? this.bPetName,
       aSpeciesKey: aSpeciesKey ?? this.aSpeciesKey,
       bSpeciesKey: bSpeciesKey ?? this.bSpeciesKey,
+      aPortraitId: aPortraitId is int? ? aPortraitId : this.aPortraitId,
+      bPortraitId: bPortraitId is int? ? bPortraitId : this.bPortraitId,
       aMaxHp: aMaxHp ?? this.aMaxHp,
       bMaxHp: bMaxHp ?? this.bMaxHp,
       aAttack: aAttack ?? this.aAttack,
@@ -586,6 +610,16 @@ class DuelUpdateTable extends _is.UpdateTable<DuelTable> {
 
   _is.ColumnValue<String, String> bSpeciesKey(String value) => _is.ColumnValue(
     table.bSpeciesKey,
+    value,
+  );
+
+  _is.ColumnValue<int, int> aPortraitId(int? value) => _is.ColumnValue(
+    table.aPortraitId,
+    value,
+  );
+
+  _is.ColumnValue<int, int> bPortraitId(int? value) => _is.ColumnValue(
+    table.bPortraitId,
     value,
   );
 
@@ -760,6 +794,14 @@ class DuelTable extends _is.Table<int?> {
       'bSpeciesKey',
       this,
     );
+    aPortraitId = _is.ColumnInt(
+      'aPortraitId',
+      this,
+    );
+    bPortraitId = _is.ColumnInt(
+      'bPortraitId',
+      this,
+    );
     aMaxHp = _is.ColumnInt(
       'aMaxHp',
       this,
@@ -880,6 +922,10 @@ class DuelTable extends _is.Table<int?> {
 
   late final _is.ColumnString bSpeciesKey;
 
+  late final _is.ColumnInt aPortraitId;
+
+  late final _is.ColumnInt bPortraitId;
+
   /// Fighter stats, fixed when the duel starts.
   late final _is.ColumnInt aMaxHp;
 
@@ -945,6 +991,8 @@ class DuelTable extends _is.Table<int?> {
     bPetName,
     aSpeciesKey,
     bSpeciesKey,
+    aPortraitId,
+    bPortraitId,
     aMaxHp,
     bMaxHp,
     aAttack,

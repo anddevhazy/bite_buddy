@@ -7,6 +7,9 @@ fields:
   ### Key into the species catalog (fluffy, sparkle, thunder, mystic).
   speciesKey: String
   name: String
+  ### The user's own pet, redrawn (see PetPortrait). Shown instead of the
+  ### species picture when set; the species still decides nothing else.
+  portraitId: int?
   level: int
   ### XP towards the next level; a level needs level * 100 XP.
   xp: int

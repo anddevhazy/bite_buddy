@@ -65,6 +65,8 @@ import 'nutrition_insights.dart' as _ik434gbd;
 import 'opponent.dart' as _i2ot5zrj;
 import 'pet.dart' as _ie9pyd3w;
 import 'pet_species.dart' as _it7bnlgl;
+import 'portrait/pet_portrait.dart' as _i1jr9gvy;
+import 'portrait/portrait_draft.dart' as _ijnz0svl;
 import 'streak/streak_buddy.dart' as _igrz7ax7;
 import 'streak/streak_buddy_status.dart' as _io8ln7w8;
 import 'streak/streak_buddy_view.dart' as _i5rddhms;
@@ -103,6 +105,8 @@ export 'nutrition_insights.dart';
 export 'opponent.dart';
 export 'pet.dart';
 export 'pet_species.dart';
+export 'portrait/pet_portrait.dart';
+export 'portrait/portrait_draft.dart';
 export 'streak/streak_buddy.dart';
 export 'streak/streak_buddy_status.dart';
 export 'streak/streak_buddy_view.dart';
@@ -390,6 +394,18 @@ class Protocol extends _is.DatabaseSerializationManager {
           columnType: _isp.ColumnType.text,
           isNullable: false,
           dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'aPortraitId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'bPortraitId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
         ),
         _isp.ColumnDefinition(
           name: 'aMaxHp',
@@ -940,6 +956,12 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'String',
         ),
         _isp.ColumnDefinition(
+          name: 'portraitId',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: true,
+          dartType: 'int?',
+        ),
+        _isp.ColumnDefinition(
           name: 'level',
           columnType: _isp.ColumnType.bigint,
           isNullable: false,
@@ -1061,6 +1083,68 @@ class Protocol extends _is.DatabaseSerializationManager {
             _isp.IndexElementDefinition(
               type: _isp.IndexElementDefinitionType.column,
               definition: 'nutrition',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'pet_portrait',
+      dartName: 'PetPortrait',
+      schema: 'public',
+      module: 'bite_buddy',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'ownerId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'image',
+          columnType: _isp.ColumnType.bytea,
+          isNullable: false,
+          dartType: 'dart:typed_data:ByteData',
+        ),
+        _isp.ColumnDefinition(
+          name: 'animal',
+          columnType: _isp.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+        _isp.ColumnDefinition(
+          name: 'used',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+        ),
+        _isp.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'pet_portrait_owner_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'ownerId',
             ),
           ],
           type: 'btree',
@@ -1448,6 +1532,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _it7bnlgl.PetSpecies) {
       return _it7bnlgl.PetSpecies.fromJson(data) as T;
     }
+    if (t == _i1jr9gvy.PetPortrait) {
+      return _i1jr9gvy.PetPortrait.fromJson(data) as T;
+    }
+    if (t == _ijnz0svl.PortraitDraft) {
+      return _ijnz0svl.PortraitDraft.fromJson(data) as T;
+    }
     if (t == _igrz7ax7.StreakBuddy) {
       return _igrz7ax7.StreakBuddy.fromJson(data) as T;
     }
@@ -1574,6 +1664,13 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _is.getType<_it7bnlgl.PetSpecies?>()) {
       return (data != null ? _it7bnlgl.PetSpecies.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i1jr9gvy.PetPortrait?>()) {
+      return (data != null ? _i1jr9gvy.PetPortrait.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_ijnz0svl.PortraitDraft?>()) {
+      return (data != null ? _ijnz0svl.PortraitDraft.fromJson(data) : null)
+          as T;
     }
     if (t == _is.getType<_igrz7ax7.StreakBuddy?>()) {
       return (data != null ? _igrz7ax7.StreakBuddy.fromJson(data) : null) as T;
@@ -1716,6 +1813,8 @@ class Protocol extends _is.DatabaseSerializationManager {
       _i2ot5zrj.Opponent => 'Opponent',
       _ie9pyd3w.Pet => 'Pet',
       _it7bnlgl.PetSpecies => 'PetSpecies',
+      _i1jr9gvy.PetPortrait => 'PetPortrait',
+      _ijnz0svl.PortraitDraft => 'PortraitDraft',
       _igrz7ax7.StreakBuddy => 'StreakBuddy',
       _io8ln7w8.StreakBuddyStatus => 'StreakBuddyStatus',
       _i5rddhms.StreakBuddyView => 'StreakBuddyView',
@@ -1802,6 +1901,10 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'Pet';
       case _it7bnlgl.PetSpecies():
         return 'PetSpecies';
+      case _i1jr9gvy.PetPortrait():
+        return 'PetPortrait';
+      case _ijnz0svl.PortraitDraft():
+        return 'PortraitDraft';
       case _igrz7ax7.StreakBuddy():
         return 'StreakBuddy';
       case _io8ln7w8.StreakBuddyStatus():
@@ -1938,6 +2041,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'PetSpecies') {
       return deserialize<_it7bnlgl.PetSpecies>(data['data']);
     }
+    if (dataClassName == 'PetPortrait') {
+      return deserialize<_i1jr9gvy.PetPortrait>(data['data']);
+    }
+    if (dataClassName == 'PortraitDraft') {
+      return deserialize<_ijnz0svl.PortraitDraft>(data['data']);
+    }
     if (dataClassName == 'StreakBuddy') {
       return deserialize<_igrz7ax7.StreakBuddy>(data['data']);
     }
@@ -2011,6 +2120,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return _igmlprfo.MealIdeas.t;
       case _ie9pyd3w.Pet:
         return _ie9pyd3w.Pet.t;
+      case _i1jr9gvy.PetPortrait:
+        return _i1jr9gvy.PetPortrait.t;
       case _igrz7ax7.StreakBuddy:
         return _igrz7ax7.StreakBuddy.t;
     }

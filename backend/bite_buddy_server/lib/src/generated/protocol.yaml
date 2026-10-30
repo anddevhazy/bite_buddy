@@ -38,6 +38,11 @@ pet:
   - listSpecies:
   - getMyPet:
   - adopt:
+portrait:
+  - create:
+  - apply:
+  - clear:
+  - image:
 streak:
   - mine:
   - candidates:

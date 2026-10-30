@@ -15,6 +15,7 @@ class SharedStreakEntity extends Equatable {
   final SharedStreakStatus status;
   final String friendPetName;
   final String friendSpeciesKey;
+  final int? friendPortraitId;
   final int streak;
   final int bestStreak;
   final bool youFedToday;
@@ -25,6 +26,7 @@ class SharedStreakEntity extends Equatable {
     required this.status,
     required this.friendPetName,
     required this.friendSpeciesKey,
+    this.friendPortraitId,
     required this.streak,
     required this.bestStreak,
     required this.youFedToday,
@@ -47,11 +49,13 @@ class StreakFriendEntity extends Equatable {
   final String userId;
   final String petName;
   final String speciesKey;
+  final int? portraitId;
 
   const StreakFriendEntity({
     required this.userId,
     required this.petName,
     required this.speciesKey,
+    this.portraitId,
   });
 
   @override

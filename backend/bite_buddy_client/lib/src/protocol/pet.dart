@@ -20,6 +20,7 @@ abstract class Pet
     required this.ownerId,
     required this.speciesKey,
     required this.name,
+    this.portraitId,
     required this.level,
     required this.xp,
     required this.health,
@@ -45,6 +46,7 @@ abstract class Pet
     required _isc.UuidValue ownerId,
     required String speciesKey,
     required String name,
+    int? portraitId,
     required int level,
     required int xp,
     required int health,
@@ -71,6 +73,7 @@ abstract class Pet
       ),
       speciesKey: jsonSerialization['speciesKey'] as String,
       name: jsonSerialization['name'] as String,
+      portraitId: jsonSerialization['portraitId'] as int?,
       level: jsonSerialization['level'] as int,
       xp: jsonSerialization['xp'] as int,
       health: jsonSerialization['health'] as int,
@@ -112,6 +115,10 @@ abstract class Pet
   String speciesKey;
 
   String name;
+
+  /// The user's own pet, redrawn (see PetPortrait). Shown instead of the
+  /// species picture when set; the species still decides nothing else.
+  int? portraitId;
 
   int level;
 
@@ -161,6 +168,7 @@ abstract class Pet
     _isc.UuidValue? ownerId,
     String? speciesKey,
     String? name,
+    int? portraitId,
     int? level,
     int? xp,
     int? health,
@@ -186,6 +194,7 @@ abstract class Pet
       'ownerId': ownerId.toJson(),
       'speciesKey': speciesKey,
       'name': name,
+      if (portraitId != null) 'portraitId': portraitId,
       'level': level,
       'xp': xp,
       'health': health,
@@ -213,6 +222,7 @@ abstract class Pet
       'ownerId': ownerId.toJson(),
       'speciesKey': speciesKey,
       'name': name,
+      if (portraitId != null) 'portraitId': portraitId,
       'level': level,
       'xp': xp,
       'health': health,
@@ -246,6 +256,7 @@ class _PetImpl extends Pet {
     required _isc.UuidValue ownerId,
     required String speciesKey,
     required String name,
+    int? portraitId,
     required int level,
     required int xp,
     required int health,
@@ -267,6 +278,7 @@ class _PetImpl extends Pet {
          ownerId: ownerId,
          speciesKey: speciesKey,
          name: name,
+         portraitId: portraitId,
          level: level,
          xp: xp,
          health: health,
@@ -294,6 +306,7 @@ class _PetImpl extends Pet {
     _isc.UuidValue? ownerId,
     String? speciesKey,
     String? name,
+    Object? portraitId = _Undefined,
     int? level,
     int? xp,
     int? health,
@@ -316,6 +329,7 @@ class _PetImpl extends Pet {
       ownerId: ownerId ?? this.ownerId,
       speciesKey: speciesKey ?? this.speciesKey,
       name: name ?? this.name,
+      portraitId: portraitId is int? ? portraitId : this.portraitId,
       level: level ?? this.level,
       xp: xp ?? this.xp,
       health: health ?? this.health,

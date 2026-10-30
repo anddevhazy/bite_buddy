@@ -20,6 +20,7 @@ abstract class LeaderboardEntry
     required this.petId,
     required this.petName,
     required this.speciesKey,
+    this.portraitId,
     required this.level,
     required this.nutrition,
     required this.isYou,
@@ -30,6 +31,7 @@ abstract class LeaderboardEntry
     required int petId,
     required String petName,
     required String speciesKey,
+    int? portraitId,
     required int level,
     required int nutrition,
     required bool isYou,
@@ -41,6 +43,7 @@ abstract class LeaderboardEntry
       petId: jsonSerialization['petId'] as int,
       petName: jsonSerialization['petName'] as String,
       speciesKey: jsonSerialization['speciesKey'] as String,
+      portraitId: jsonSerialization['portraitId'] as int?,
       level: jsonSerialization['level'] as int,
       nutrition: jsonSerialization['nutrition'] as int,
       isYou: _isc.BoolJsonExtension.fromJson(jsonSerialization['isYou']),
@@ -54,6 +57,8 @@ abstract class LeaderboardEntry
   String petName;
 
   String speciesKey;
+
+  int? portraitId;
 
   int level;
 
@@ -69,6 +74,7 @@ abstract class LeaderboardEntry
     int? petId,
     String? petName,
     String? speciesKey,
+    int? portraitId,
     int? level,
     int? nutrition,
     bool? isYou,
@@ -81,6 +87,7 @@ abstract class LeaderboardEntry
       'petId': petId,
       'petName': petName,
       'speciesKey': speciesKey,
+      if (portraitId != null) 'portraitId': portraitId,
       'level': level,
       'nutrition': nutrition,
       'isYou': isYou,
@@ -95,6 +102,7 @@ abstract class LeaderboardEntry
       'petId': petId,
       'petName': petName,
       'speciesKey': speciesKey,
+      if (portraitId != null) 'portraitId': portraitId,
       'level': level,
       'nutrition': nutrition,
       'isYou': isYou,
@@ -107,12 +115,15 @@ abstract class LeaderboardEntry
   }
 }
 
+class _Undefined {}
+
 class _LeaderboardEntryImpl extends LeaderboardEntry {
   _LeaderboardEntryImpl({
     required int rank,
     required int petId,
     required String petName,
     required String speciesKey,
+    int? portraitId,
     required int level,
     required int nutrition,
     required bool isYou,
@@ -121,6 +132,7 @@ class _LeaderboardEntryImpl extends LeaderboardEntry {
          petId: petId,
          petName: petName,
          speciesKey: speciesKey,
+         portraitId: portraitId,
          level: level,
          nutrition: nutrition,
          isYou: isYou,
@@ -135,6 +147,7 @@ class _LeaderboardEntryImpl extends LeaderboardEntry {
     int? petId,
     String? petName,
     String? speciesKey,
+    Object? portraitId = _Undefined,
     int? level,
     int? nutrition,
     bool? isYou,
@@ -144,6 +157,7 @@ class _LeaderboardEntryImpl extends LeaderboardEntry {
       petId: petId ?? this.petId,
       petName: petName ?? this.petName,
       speciesKey: speciesKey ?? this.speciesKey,
+      portraitId: portraitId is int? ? portraitId : this.portraitId,
       level: level ?? this.level,
       nutrition: nutrition ?? this.nutrition,
       isYou: isYou ?? this.isYou,

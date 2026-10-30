@@ -21,6 +21,7 @@ abstract class StreakBuddyView
     required this.status,
     required this.friendPetName,
     required this.friendSpeciesKey,
+    this.friendPortraitId,
     required this.streak,
     required this.bestStreak,
     required this.youFedToday,
@@ -32,6 +33,7 @@ abstract class StreakBuddyView
     required _iwq0twic.StreakBuddyStatus status,
     required String friendPetName,
     required String friendSpeciesKey,
+    int? friendPortraitId,
     required int streak,
     required int bestStreak,
     required bool youFedToday,
@@ -46,6 +48,7 @@ abstract class StreakBuddyView
       ),
       friendPetName: jsonSerialization['friendPetName'] as String,
       friendSpeciesKey: jsonSerialization['friendSpeciesKey'] as String,
+      friendPortraitId: jsonSerialization['friendPortraitId'] as int?,
       streak: jsonSerialization['streak'] as int,
       bestStreak: jsonSerialization['bestStreak'] as int,
       youFedToday: _isc.BoolJsonExtension.fromJson(
@@ -65,6 +68,8 @@ abstract class StreakBuddyView
 
   String friendSpeciesKey;
 
+  int? friendPortraitId;
+
   int streak;
 
   int bestStreak;
@@ -81,6 +86,7 @@ abstract class StreakBuddyView
     _iwq0twic.StreakBuddyStatus? status,
     String? friendPetName,
     String? friendSpeciesKey,
+    int? friendPortraitId,
     int? streak,
     int? bestStreak,
     bool? youFedToday,
@@ -94,6 +100,7 @@ abstract class StreakBuddyView
       'status': status.toJson(),
       'friendPetName': friendPetName,
       'friendSpeciesKey': friendSpeciesKey,
+      if (friendPortraitId != null) 'friendPortraitId': friendPortraitId,
       'streak': streak,
       'bestStreak': bestStreak,
       'youFedToday': youFedToday,
@@ -109,6 +116,7 @@ abstract class StreakBuddyView
       'status': status.toJson(),
       'friendPetName': friendPetName,
       'friendSpeciesKey': friendSpeciesKey,
+      if (friendPortraitId != null) 'friendPortraitId': friendPortraitId,
       'streak': streak,
       'bestStreak': bestStreak,
       'youFedToday': youFedToday,
@@ -122,12 +130,15 @@ abstract class StreakBuddyView
   }
 }
 
+class _Undefined {}
+
 class _StreakBuddyViewImpl extends StreakBuddyView {
   _StreakBuddyViewImpl({
     required int id,
     required _iwq0twic.StreakBuddyStatus status,
     required String friendPetName,
     required String friendSpeciesKey,
+    int? friendPortraitId,
     required int streak,
     required int bestStreak,
     required bool youFedToday,
@@ -137,6 +148,7 @@ class _StreakBuddyViewImpl extends StreakBuddyView {
          status: status,
          friendPetName: friendPetName,
          friendSpeciesKey: friendSpeciesKey,
+         friendPortraitId: friendPortraitId,
          streak: streak,
          bestStreak: bestStreak,
          youFedToday: youFedToday,
@@ -152,6 +164,7 @@ class _StreakBuddyViewImpl extends StreakBuddyView {
     _iwq0twic.StreakBuddyStatus? status,
     String? friendPetName,
     String? friendSpeciesKey,
+    Object? friendPortraitId = _Undefined,
     int? streak,
     int? bestStreak,
     bool? youFedToday,
@@ -162,6 +175,9 @@ class _StreakBuddyViewImpl extends StreakBuddyView {
       status: status ?? this.status,
       friendPetName: friendPetName ?? this.friendPetName,
       friendSpeciesKey: friendSpeciesKey ?? this.friendSpeciesKey,
+      friendPortraitId: friendPortraitId is int?
+          ? friendPortraitId
+          : this.friendPortraitId,
       streak: streak ?? this.streak,
       bestStreak: bestStreak ?? this.bestStreak,
       youFedToday: youFedToday ?? this.youFedToday,

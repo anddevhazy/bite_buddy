@@ -21,6 +21,7 @@ enum GuideTopicId {
   teamChallenges,
   activity,
   homeWidget,
+  ownPet,
 }
 
 // One section of the "How to play" guide

@@ -10,6 +10,7 @@ import 'package:bite_buddy/features/league/presentation/pages/duel_page.dart';
 import 'package:bite_buddy/features/league/presentation/pages/league_detail_page.dart';
 import 'package:bite_buddy/features/pet/presentation/pages/choose_buddy_page.dart';
 import 'package:bite_buddy/features/pet/presentation/pages/pet_home_page.dart';
+import 'package:bite_buddy/features/portrait/presentation/pages/my_pet_photo_page.dart';
 import 'package:bite_buddy/features/profile/presentation/pages/profile_page.dart';
 import 'package:bite_buddy/features/scanner/presentation/pages/food_scanner_page.dart';
 import 'package:bite_buddy/features/scanner/presentation/pages/scan_result_page.dart';
@@ -58,6 +59,10 @@ class Routes {
 
   static const String duelPath = '/duel/:id';
   static const String duelName = 'duel';
+
+  // "Use my own pet": a photo of their real pet becomes their buddy
+  static const String myPetPhotoPath = '/myPetPhoto';
+  static const String myPetPhotoName = 'myPetPhoto';
 
   static void goToSignIn() {
     if (router.state.matchedLocation != signInPath) {
@@ -156,6 +161,12 @@ class Routes {
         parentNavigatorKey: rootNavigatorKey,
         builder: (context, state) =>
             DuelPage(duelId: int.parse(state.pathParameters['id']!)),
+      ),
+      GoRoute(
+        path: myPetPhotoPath,
+        name: myPetPhotoName,
+        parentNavigatorKey: rootNavigatorKey,
+        builder: (context, state) => const MyPetPhotoPage(),
       ),
       GoRoute(
         path: guidePath,

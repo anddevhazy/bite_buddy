@@ -63,6 +63,8 @@ import 'nutrition_insights.dart' as _ik434gbd;
 import 'opponent.dart' as _i2ot5zrj;
 import 'pet.dart' as _ie9pyd3w;
 import 'pet_species.dart' as _it7bnlgl;
+import 'portrait/pet_portrait.dart' as _i1jr9gvy;
+import 'portrait/portrait_draft.dart' as _ijnz0svl;
 import 'streak/streak_buddy.dart' as _igrz7ax7;
 import 'streak/streak_buddy_status.dart' as _io8ln7w8;
 import 'streak/streak_buddy_view.dart' as _i5rddhms;
@@ -101,6 +103,8 @@ export 'nutrition_insights.dart';
 export 'opponent.dart';
 export 'pet.dart';
 export 'pet_species.dart';
+export 'portrait/pet_portrait.dart';
+export 'portrait/portrait_draft.dart';
 export 'streak/streak_buddy.dart';
 export 'streak/streak_buddy_status.dart';
 export 'streak/streak_buddy_view.dart';
@@ -243,6 +247,12 @@ class Protocol extends _isc.SerializationManager {
     if (t == _it7bnlgl.PetSpecies) {
       return _it7bnlgl.PetSpecies.fromJson(data) as T;
     }
+    if (t == _i1jr9gvy.PetPortrait) {
+      return _i1jr9gvy.PetPortrait.fromJson(data) as T;
+    }
+    if (t == _ijnz0svl.PortraitDraft) {
+      return _ijnz0svl.PortraitDraft.fromJson(data) as T;
+    }
     if (t == _igrz7ax7.StreakBuddy) {
       return _igrz7ax7.StreakBuddy.fromJson(data) as T;
     }
@@ -369,6 +379,13 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _isc.getType<_it7bnlgl.PetSpecies?>()) {
       return (data != null ? _it7bnlgl.PetSpecies.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_i1jr9gvy.PetPortrait?>()) {
+      return (data != null ? _i1jr9gvy.PetPortrait.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_ijnz0svl.PortraitDraft?>()) {
+      return (data != null ? _ijnz0svl.PortraitDraft.fromJson(data) : null)
+          as T;
     }
     if (t == _isc.getType<_igrz7ax7.StreakBuddy?>()) {
       return (data != null ? _igrz7ax7.StreakBuddy.fromJson(data) : null) as T;
@@ -508,6 +525,8 @@ class Protocol extends _isc.SerializationManager {
       _i2ot5zrj.Opponent => 'Opponent',
       _ie9pyd3w.Pet => 'Pet',
       _it7bnlgl.PetSpecies => 'PetSpecies',
+      _i1jr9gvy.PetPortrait => 'PetPortrait',
+      _ijnz0svl.PortraitDraft => 'PortraitDraft',
       _igrz7ax7.StreakBuddy => 'StreakBuddy',
       _io8ln7w8.StreakBuddyStatus => 'StreakBuddyStatus',
       _i5rddhms.StreakBuddyView => 'StreakBuddyView',
@@ -594,6 +613,10 @@ class Protocol extends _isc.SerializationManager {
         return 'Pet';
       case _it7bnlgl.PetSpecies():
         return 'PetSpecies';
+      case _i1jr9gvy.PetPortrait():
+        return 'PetPortrait';
+      case _ijnz0svl.PortraitDraft():
+        return 'PortraitDraft';
       case _igrz7ax7.StreakBuddy():
         return 'StreakBuddy';
       case _io8ln7w8.StreakBuddyStatus():
@@ -725,6 +748,12 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'PetSpecies') {
       return deserialize<_it7bnlgl.PetSpecies>(data['data']);
+    }
+    if (dataClassName == 'PetPortrait') {
+      return deserialize<_i1jr9gvy.PetPortrait>(data['data']);
+    }
+    if (dataClassName == 'PortraitDraft') {
+      return deserialize<_ijnz0svl.PortraitDraft>(data['data']);
     }
     if (dataClassName == 'StreakBuddy') {
       return deserialize<_igrz7ax7.StreakBuddy>(data['data']);

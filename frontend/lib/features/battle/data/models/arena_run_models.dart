@@ -9,6 +9,7 @@ class ArenaRunModels {
     runId: c.runId,
     petName: c.petName,
     petSpeciesKey: c.petSpeciesKey,
+    petPortraitId: c.petPortraitId,
     petStats: BattleStatsEntity(
       hp: c.petStats.hp,
       attack: c.petStats.attack,

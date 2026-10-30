@@ -24,8 +24,10 @@ abstract class DuelView
     required this.leagueId,
     required this.myPetName,
     required this.mySpeciesKey,
+    this.myPortraitId,
     required this.theirPetName,
     required this.theirSpeciesKey,
+    this.theirPortraitId,
     required this.myHp,
     required this.myMaxHp,
     required this.theirHp,
@@ -52,8 +54,10 @@ abstract class DuelView
     required int leagueId,
     required String myPetName,
     required String mySpeciesKey,
+    int? myPortraitId,
     required String theirPetName,
     required String theirSpeciesKey,
+    int? theirPortraitId,
     required int myHp,
     required int myMaxHp,
     required int theirHp,
@@ -81,8 +85,10 @@ abstract class DuelView
       leagueId: jsonSerialization['leagueId'] as int,
       myPetName: jsonSerialization['myPetName'] as String,
       mySpeciesKey: jsonSerialization['mySpeciesKey'] as String,
+      myPortraitId: jsonSerialization['myPortraitId'] as int?,
       theirPetName: jsonSerialization['theirPetName'] as String,
       theirSpeciesKey: jsonSerialization['theirSpeciesKey'] as String,
+      theirPortraitId: jsonSerialization['theirPortraitId'] as int?,
       myHp: jsonSerialization['myHp'] as int,
       myMaxHp: jsonSerialization['myMaxHp'] as int,
       theirHp: jsonSerialization['theirHp'] as int,
@@ -126,9 +132,13 @@ abstract class DuelView
 
   String mySpeciesKey;
 
+  int? myPortraitId;
+
   String theirPetName;
 
   String theirSpeciesKey;
+
+  int? theirPortraitId;
 
   int myHp;
 
@@ -182,8 +192,10 @@ abstract class DuelView
     int? leagueId,
     String? myPetName,
     String? mySpeciesKey,
+    int? myPortraitId,
     String? theirPetName,
     String? theirSpeciesKey,
+    int? theirPortraitId,
     int? myHp,
     int? myMaxHp,
     int? theirHp,
@@ -212,8 +224,10 @@ abstract class DuelView
       'leagueId': leagueId,
       'myPetName': myPetName,
       'mySpeciesKey': mySpeciesKey,
+      if (myPortraitId != null) 'myPortraitId': myPortraitId,
       'theirPetName': theirPetName,
       'theirSpeciesKey': theirSpeciesKey,
+      if (theirPortraitId != null) 'theirPortraitId': theirPortraitId,
       'myHp': myHp,
       'myMaxHp': myMaxHp,
       'theirHp': theirHp,
@@ -246,8 +260,10 @@ abstract class DuelView
       'leagueId': leagueId,
       'myPetName': myPetName,
       'mySpeciesKey': mySpeciesKey,
+      if (myPortraitId != null) 'myPortraitId': myPortraitId,
       'theirPetName': theirPetName,
       'theirSpeciesKey': theirSpeciesKey,
+      if (theirPortraitId != null) 'theirPortraitId': theirPortraitId,
       'myHp': myHp,
       'myMaxHp': myMaxHp,
       'theirHp': theirHp,
@@ -286,8 +302,10 @@ class _DuelViewImpl extends DuelView {
     required int leagueId,
     required String myPetName,
     required String mySpeciesKey,
+    int? myPortraitId,
     required String theirPetName,
     required String theirSpeciesKey,
+    int? theirPortraitId,
     required int myHp,
     required int myMaxHp,
     required int theirHp,
@@ -312,8 +330,10 @@ class _DuelViewImpl extends DuelView {
          leagueId: leagueId,
          myPetName: myPetName,
          mySpeciesKey: mySpeciesKey,
+         myPortraitId: myPortraitId,
          theirPetName: theirPetName,
          theirSpeciesKey: theirSpeciesKey,
+         theirPortraitId: theirPortraitId,
          myHp: myHp,
          myMaxHp: myMaxHp,
          theirHp: theirHp,
@@ -344,8 +364,10 @@ class _DuelViewImpl extends DuelView {
     int? leagueId,
     String? myPetName,
     String? mySpeciesKey,
+    Object? myPortraitId = _Undefined,
     String? theirPetName,
     String? theirSpeciesKey,
+    Object? theirPortraitId = _Undefined,
     int? myHp,
     int? myMaxHp,
     int? theirHp,
@@ -371,8 +393,12 @@ class _DuelViewImpl extends DuelView {
       leagueId: leagueId ?? this.leagueId,
       myPetName: myPetName ?? this.myPetName,
       mySpeciesKey: mySpeciesKey ?? this.mySpeciesKey,
+      myPortraitId: myPortraitId is int? ? myPortraitId : this.myPortraitId,
       theirPetName: theirPetName ?? this.theirPetName,
       theirSpeciesKey: theirSpeciesKey ?? this.theirSpeciesKey,
+      theirPortraitId: theirPortraitId is int?
+          ? theirPortraitId
+          : this.theirPortraitId,
       myHp: myHp ?? this.myHp,
       myMaxHp: myMaxHp ?? this.myMaxHp,
       theirHp: theirHp ?? this.theirHp,

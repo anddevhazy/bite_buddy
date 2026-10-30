@@ -33,6 +33,7 @@ class StandingEntity extends Equatable {
   final int memberId;
   final String petName;
   final String speciesKey;
+  final int? portraitId;
   final int level;
   final int averageMealScore;
   final int daysFed;
@@ -47,6 +48,7 @@ class StandingEntity extends Equatable {
     required this.memberId,
     required this.petName,
     required this.speciesKey,
+    this.portraitId,
     required this.level,
     required this.averageMealScore,
     required this.daysFed,
@@ -160,8 +162,10 @@ class DuelEntity extends Equatable {
   final int leagueId;
   final String myPetName;
   final String mySpeciesKey;
+  final int? myPortraitId;
   final String theirPetName;
   final String theirSpeciesKey;
+  final int? theirPortraitId;
   final int myHp;
   final int myMaxHp;
   final int theirHp;
@@ -191,8 +195,10 @@ class DuelEntity extends Equatable {
     required this.leagueId,
     required this.myPetName,
     required this.mySpeciesKey,
+    this.myPortraitId,
     required this.theirPetName,
     required this.theirSpeciesKey,
+    this.theirPortraitId,
     required this.myHp,
     required this.myMaxHp,
     required this.theirHp,

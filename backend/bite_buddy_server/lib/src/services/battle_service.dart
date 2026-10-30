@@ -86,6 +86,7 @@ class BattleService {
         runId: run.id!,
         petName: pet.name,
         petSpeciesKey: pet.speciesKey,
+        petPortraitId: pet.portraitId,
         petStats: _stats(fighter),
         opponent: opponent.toProtocol(),
         rules: arenaRules(),
