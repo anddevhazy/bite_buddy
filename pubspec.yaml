@@ -10,6 +10,3 @@ workspace:
   - backend/bite_buddy_client
   - backend/bite_buddy_server
   - frontend
-
-dependency_overrides:
-  flutter_secure_storage: ^10.0.0

@@ -1,0 +1,15 @@
+# This file configures your Serverpod Cloud project.
+# It is automatically generated and updated by the `scloud` command.
+# 
+# Useful commands:
+# - Deploy: `scloud deploy`
+# - Get Help: `scloud help`
+#
+# For full documentation, visit: https://docs.serverpod.dev/cloud
+
+project:
+  projectId: "bite-buddy"
+  dartSdk: "3.13.5"
+  scripts:
+    pre_deploy: []
+    post_deploy: []

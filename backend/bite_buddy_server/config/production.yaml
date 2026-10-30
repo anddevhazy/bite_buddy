@@ -7,14 +7,14 @@
 # Configuration for the main API server.
 apiServer:
   port: 8080
-  publicHost: api.examplepod.com
+  publicHost: bite-buddy.api.serverpod.space
   publicPort: 443
   publicScheme: https
 
 # Configuration for the Insights server.
 insightsServer:
   port: 8081
-  publicHost: insights.examplepod.com
+  publicHost: bite-buddy.insights.serverpod.space
   publicPort: 443
   publicScheme: https
 
@@ -23,7 +23,7 @@ insightsServer:
 # BASE_URI the contract is deployed with (https://<host>/keepsakes/).
 webServer:
   port: 8082
-  publicHost: web.examplepod.com
+  publicHost: bite-buddy.serverpod.space
   publicPort: 443
   publicScheme: https
 
