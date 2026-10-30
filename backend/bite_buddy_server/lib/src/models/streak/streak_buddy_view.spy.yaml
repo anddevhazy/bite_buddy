@@ -1,0 +1,11 @@
+### One shared streak as the caller sees it.
+class: StreakBuddyView
+fields:
+  id: int
+  status: StreakBuddyStatus
+  friendPetName: String
+  friendSpeciesKey: String
+  streak: int
+  bestStreak: int
+  youFedToday: bool
+  friendFedToday: bool

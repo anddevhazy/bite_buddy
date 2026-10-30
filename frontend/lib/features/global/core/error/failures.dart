@@ -36,3 +36,8 @@ class UnexpectedFailure extends Failure {
 class MealRejectedFailure extends Failure {
   const MealRejectedFailure(super.message);
 }
+
+// The phone's health app is missing, or the user didn't allow access
+class HealthFailure extends Failure {
+  const HealthFailure(super.message);
+}

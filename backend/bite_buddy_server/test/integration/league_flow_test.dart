@@ -1,4 +1,5 @@
 import 'package:bite_buddy_server/src/generated/protocol.dart';
+import 'package:bite_buddy_server/src/utils/league_challenge.dart';
 import 'package:bite_buddy_server/src/utils/season.dart';
 import 'package:serverpod/serverpod.dart';
 import 'package:test/test.dart';
@@ -37,7 +38,7 @@ void main() {
           name: 'Salad',
           description: '',
           calories: 300,
-          proteinPct: 20,
+          proteinPct: 30,
           carbsPct: 20,
           fatsPct: 10,
           vitaminsPct: 40,
@@ -200,6 +201,59 @@ void main() {
       final trophies = await endpoints.league.trophies(alice);
       expect(trophies.single.leagueName, 'Lunch Crew');
       expect(await endpoints.league.trophies(bob), isEmpty);
+    });
+
+    test('a met team challenge pays every member once', () async {
+      final (league, _) = await leagueOfTwo();
+
+      // Use last week, or the week before if last week's challenge is the
+      // battles one (this test only feeds meals)
+      final thisWeek = weekStart(DateTime.now().toUtc());
+      var week = thisWeek.subtract(const Duration(days: 7));
+      if (weeklyChallenge(
+            leagueId: league.id,
+            week: week,
+            memberCount: 2,
+            fedMeals: const [],
+            finishedDuels: 0,
+            offsets: const {},
+          ).key ==
+          'battles') {
+        week = week.subtract(const Duration(days: 7));
+      }
+      final row = (await League.db.findById(alice.build(), league.id))!;
+      await League.db.updateRow(alice.build(), row.copyWith(createdAt: week));
+      // A good, high-protein meal each, every day: meets every meal challenge
+      for (var day = 0; day < 7; day++) {
+        final at = week.add(Duration(days: day, hours: 12));
+        await feedMeal(aliceId, 95, at);
+        await feedMeal(bobId, 95, at);
+      }
+
+      final aliceBefore = (await endpoints.pet.getMyPet(alice))!.coins;
+      final bobBefore = (await endpoints.pet.getMyPet(bob))!.coins;
+      await endpoints.league.detail(alice, league.id);
+      await endpoints.league.detail(bob, league.id);
+
+      final result = await SeasonResult.db.findFirstRow(
+        alice.build(),
+        where: (t) => t.leagueId.equals(league.id) & t.weekStart.equals(week),
+      );
+      expect(result!.challengeCompleted, isTrue);
+      expect(
+        (await endpoints.pet.getMyPet(bob))!.coins,
+        bobBefore + challengeRewardCoins,
+      );
+      // Alice also won the season (a tie on score goes to level, then order)
+      final aliceGain =
+          (await endpoints.pet.getMyPet(alice))!.coins - aliceBefore;
+      expect(
+        aliceGain,
+        anyOf(
+          challengeRewardCoins,
+          challengeRewardCoins + seasonWinnerCoins,
+        ),
+      );
     });
 
     test(

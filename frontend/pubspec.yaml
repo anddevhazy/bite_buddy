@@ -32,7 +32,8 @@ dependencies:
   intl: ^0.20.2
   flame: ^1.38.2
   flame_audio: ^2.12.2
-
+  home_widget: ^0.10.0
+  health: ^13.3.2
 dev_dependencies:
   flutter_test:
     sdk: flutter

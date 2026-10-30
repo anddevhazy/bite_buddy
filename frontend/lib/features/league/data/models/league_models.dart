@@ -37,9 +37,18 @@ class LeagueModels {
     seasonStartsAt: d.seasonStartsAt.toLocal(),
     seasonEndsAt: d.seasonEndsAt.toLocal(),
     standings: d.standings.map(standing).toList(),
+    challenge: LeagueChallengeEntity(
+      title: d.challenge.title,
+      description: d.challenge.description,
+      progress: d.challenge.progress,
+      target: d.challenge.target,
+      completed: d.challenge.completed,
+      rewardCoins: d.challenge.rewardCoins,
+    ),
     duels: d.duels.map(duel).toList(),
     lastSeasonWinner: d.lastSeasonWinner,
     lastSeasonYourRank: d.lastSeasonYourRank,
+    lastChallengeCompleted: d.lastChallengeCompleted,
   );
 
   static DuelEntity duel(DuelView d) {

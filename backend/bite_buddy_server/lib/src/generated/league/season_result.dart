@@ -24,8 +24,9 @@ abstract class SeasonResult
     required this.weekStart,
     this.winnerUserId,
     required this.standings,
+    bool? challengeCompleted,
     required this.createdAt,
-  });
+  }) : challengeCompleted = challengeCompleted ?? false;
 
   factory SeasonResult({
     int? id,
@@ -33,6 +34,7 @@ abstract class SeasonResult
     required DateTime weekStart,
     _is.UuidValue? winnerUserId,
     required List<_iyvw479e.LeagueStanding> standings,
+    bool? challengeCompleted,
     required DateTime createdAt,
   }) = _SeasonResultImpl;
 
@@ -52,6 +54,11 @@ abstract class SeasonResult
           .deserialize<List<_iyvw479e.LeagueStanding>>(
             jsonSerialization['standings'],
           ),
+      challengeCompleted: jsonSerialization['challengeCompleted'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(
+              jsonSerialization['challengeCompleted'],
+            ),
       createdAt: _is.DateTimeJsonExtension.fromJson(
         jsonSerialization['createdAt'],
       ),
@@ -75,6 +82,9 @@ abstract class SeasonResult
 
   List<_iyvw479e.LeagueStanding> standings;
 
+  /// Whether the league met that week's team challenge.
+  bool challengeCompleted;
+
   DateTime createdAt;
 
   @override
@@ -89,6 +99,7 @@ abstract class SeasonResult
     DateTime? weekStart,
     _is.UuidValue? winnerUserId,
     List<_iyvw479e.LeagueStanding>? standings,
+    bool? challengeCompleted,
     DateTime? createdAt,
   });
   @override
@@ -100,6 +111,7 @@ abstract class SeasonResult
       'weekStart': weekStart.toJson(),
       if (winnerUserId != null) 'winnerUserId': winnerUserId?.toJson(),
       'standings': standings.toJson(valueToJson: (v) => v.toJson()),
+      'challengeCompleted': challengeCompleted,
       'createdAt': createdAt.toJson(),
     };
   }
@@ -113,6 +125,7 @@ abstract class SeasonResult
       'weekStart': weekStart.toJson(),
       if (winnerUserId != null) 'winnerUserId': winnerUserId?.toJson(),
       'standings': standings.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      'challengeCompleted': challengeCompleted,
       'createdAt': createdAt.toJson(),
     };
   }
@@ -154,6 +167,7 @@ class _SeasonResultImpl extends SeasonResult {
     required DateTime weekStart,
     _is.UuidValue? winnerUserId,
     required List<_iyvw479e.LeagueStanding> standings,
+    bool? challengeCompleted,
     required DateTime createdAt,
   }) : super._(
          id: id,
@@ -161,6 +175,7 @@ class _SeasonResultImpl extends SeasonResult {
          weekStart: weekStart,
          winnerUserId: winnerUserId,
          standings: standings,
+         challengeCompleted: challengeCompleted,
          createdAt: createdAt,
        );
 
@@ -174,6 +189,7 @@ class _SeasonResultImpl extends SeasonResult {
     DateTime? weekStart,
     Object? winnerUserId = _Undefined,
     List<_iyvw479e.LeagueStanding>? standings,
+    bool? challengeCompleted,
     DateTime? createdAt,
   }) {
     return SeasonResult(
@@ -185,6 +201,7 @@ class _SeasonResultImpl extends SeasonResult {
           : this.winnerUserId,
       standings:
           standings ?? this.standings.map((e0) => e0.copyWith()).toList(),
+      challengeCompleted: challengeCompleted ?? this.challengeCompleted,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -220,6 +237,11 @@ class SeasonResultUpdateTable extends _is.UpdateTable<SeasonResultTable> {
     value,
   );
 
+  _is.ColumnValue<bool, bool> challengeCompleted(bool value) => _is.ColumnValue(
+    table.challengeCompleted,
+    value,
+  );
+
   _is.ColumnValue<DateTime, DateTime> createdAt(DateTime value) =>
       _is.ColumnValue(
         table.createdAt,
@@ -246,6 +268,11 @@ class SeasonResultTable extends _is.Table<int?> {
       'standings',
       this,
     );
+    challengeCompleted = _is.ColumnBool(
+      'challengeCompleted',
+      this,
+      hasDefault: true,
+    );
     createdAt = _is.ColumnDateTime(
       'createdAt',
       this,
@@ -264,6 +291,9 @@ class SeasonResultTable extends _is.Table<int?> {
 
   late final _is.ColumnSerializable<List<_iyvw479e.LeagueStanding>> standings;
 
+  /// Whether the league met that week's team challenge.
+  late final _is.ColumnBool challengeCompleted;
+
   late final _is.ColumnDateTime createdAt;
 
   @override
@@ -273,6 +303,7 @@ class SeasonResultTable extends _is.Table<int?> {
     weekStart,
     winnerUserId,
     standings,
+    challengeCompleted,
     createdAt,
   ];
 }

@@ -4,6 +4,7 @@ import 'package:serverpod/serverpod.dart';
 
 import '../errors/app_errors.dart';
 import '../generated/protocol.dart';
+import '../utils/league_challenge.dart';
 import '../utils/season.dart';
 import 'duel_service.dart';
 import 'pet_service.dart';
@@ -227,6 +228,7 @@ class LeagueService {
       where: (t) => t.leagueId.equals(leagueId) & t.userId.equals(userId),
     )).map((m) => m.id).toSet();
 
+    final season = await _season(session, leagueId, week, userId);
     return LeagueDetail(
       id: league.id!,
       name: league.name,
@@ -234,9 +236,11 @@ class LeagueService {
       isOwner: league.ownerId == userId,
       seasonStartsAt: week,
       seasonEndsAt: weekEnd(week),
-      standings: await _standings(session, leagueId, week, userId),
+      standings: season.standings,
+      challenge: season.challenge,
       duels: await duels.forLeague(session, userId, leagueId),
       lastSeasonWinner: lastWinner?.petName,
+      lastChallengeCompleted: last?.challengeCompleted,
       lastSeasonYourRank: last?.standings
           .where((s) => myMemberIds.contains(s.memberId))
           .firstOrNull
@@ -259,15 +263,42 @@ class LeagueService {
     DateTime week,
     UuidValue? callerId, {
     Transaction? transaction,
+  }) async => (await _season(
+    session,
+    leagueId,
+    week,
+    callerId,
+    transaction: transaction,
+  )).standings;
+
+  // The season table and the team challenge's progress for one week
+  Future<({List<LeagueStanding> standings, LeagueChallenge challenge})> _season(
+    Session session,
+    int leagueId,
+    DateTime week,
+    UuidValue? callerId, {
+    Transaction? transaction,
   }) async {
     final members = await LeagueMember.db.find(
       session,
       where: (t) => t.leagueId.equals(leagueId),
       transaction: transaction,
     );
-    if (members.isEmpty) return [];
     final userIds = members.map((m) => m.userId).toSet();
     final end = weekEnd(week);
+    if (userIds.isEmpty) {
+      return (
+        standings: <LeagueStanding>[],
+        challenge: weeklyChallenge(
+          leagueId: leagueId,
+          week: week,
+          memberCount: 0,
+          fedMeals: const [],
+          finishedDuels: 0,
+          offsets: const {},
+        ),
+      );
+    }
 
     final petsByOwner = {
       for (final p in await Pet.db.find(
@@ -286,17 +317,17 @@ class LeagueService {
           (t.createdAt < end),
       transaction: transaction,
     );
-    final wonDuels = await Duel.db.find(
+    final finishedDuels = await Duel.db.find(
       session,
       where: (t) =>
           t.leagueId.equals(leagueId) &
           t.weekStart.equals(week) &
-          t.status.equals(DuelStatus.finished) &
-          t.winnerUserId.notEquals(null),
+          t.status.equals(DuelStatus.finished),
       transaction: transaction,
     );
+    final wonDuels = finishedDuels.where((d) => d.winnerUserId != null);
 
-    return rankSeason([
+    final standings = rankSeason([
       for (final m in members)
         if (petsByOwner[m.userId] case final pet?)
           SeasonActivity(
@@ -314,6 +345,17 @@ class LeagueService {
             isCaller: m.userId == callerId,
           ),
     ]);
+    final challenge = weeklyChallenge(
+      leagueId: leagueId,
+      week: week,
+      memberCount: members.length,
+      fedMeals: meals,
+      finishedDuels: finishedDuels.length,
+      offsets: {
+        for (final p in petsByOwner.values) p.ownerId: p.utcOffsetMinutes,
+      },
+    );
+    return (standings: standings, challenge: challenge);
   }
 
   // Records the result of every finished season not yet settled, paying the
@@ -340,13 +382,15 @@ class LeagueService {
     for (; week.isBefore(currentWeek); week = weekEnd(week)) {
       try {
         await session.db.transaction((transaction) async {
-          final standings = await _standings(
+          final (:standings, :challenge) = await _season(
             session,
             league.id!,
             week,
             null,
             transaction: transaction,
           );
+          final challengePaid =
+              challenge.completed && standings.length >= minMembersForWinner;
           final top = standings.firstOrNull;
           final hasWinner =
               top != null &&
@@ -367,10 +411,33 @@ class LeagueService {
               weekStart: week,
               winnerUserId: winnerMember?.userId,
               standings: standings,
+              challengeCompleted: challengePaid,
               createdAt: DateTime.now().toUtc(),
             ),
             transaction: transaction,
           );
+
+          if (challengePaid) {
+            // Everyone in the league now, including anyone who joined late
+            final everyone = await LeagueMember.db.find(
+              session,
+              where: (t) => t.leagueId.equals(league.id!),
+              transaction: transaction,
+            );
+            for (final member in everyone) {
+              final pet = await pets.findMine(
+                session,
+                member.userId,
+                transaction: transaction,
+              );
+              if (pet == null) continue;
+              await Pet.db.updateRow(
+                session,
+                pet.copyWith(coins: pet.coins + challengeRewardCoins),
+                transaction: transaction,
+              );
+            }
+          }
           if (winnerMember == null) return;
 
           final pet = await pets.findMine(

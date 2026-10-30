@@ -60,6 +60,16 @@ class NutritionAnalysis {
 // One AI provider (Gemini, Claude, ...) that can read a meal photo
 abstract class NutritionAiProvider {
   Future<NutritionAnalysis> analyze(Session session, Uint8List jpeg);
+
+  // A text-only request whose answer matches [schema], a standard JSON schema
+  // (lower-case types, additionalProperties: false on every object). Throws
+  // AI_UNAVAILABLE if there's no usable answer.
+  Future<Map<String, dynamic>> generateJson(
+    Session session, {
+    required String system,
+    required String prompt,
+    required Map<String, dynamic> schema,
+  });
 }
 
 // Every provider gets the same instructions and returns the same fields, so

@@ -14,6 +14,8 @@
 import 'dart:async' as _ida;
 import 'dart:io' as _idi;
 import 'dart:typed_data' as _idt;
+import 'package:bite_buddy_server/src/generated/activity/activity_sync_result.dart'
+    as _ip7xvm0c;
 import 'package:bite_buddy_server/src/generated/arena.dart' as _ismcu0gw;
 import 'package:bite_buddy_server/src/generated/arena_run_config.dart'
     as _iqi8ai3t;
@@ -34,10 +36,16 @@ import 'package:bite_buddy_server/src/generated/league/league_summary.dart'
 import 'package:bite_buddy_server/src/generated/league/trophy.dart'
     as _i17xpjnn;
 import 'package:bite_buddy_server/src/generated/meal.dart' as _idk4xbnt;
+import 'package:bite_buddy_server/src/generated/meal_suggestion.dart'
+    as _ipo9v88q;
 import 'package:bite_buddy_server/src/generated/nutrition_insights.dart'
     as _irm6gbir;
 import 'package:bite_buddy_server/src/generated/pet.dart' as _i9zqw63y;
 import 'package:bite_buddy_server/src/generated/pet_species.dart' as _it8ve0l0;
+import 'package:bite_buddy_server/src/generated/streak/streak_buddy_view.dart'
+    as _iaktjz74;
+import 'package:bite_buddy_server/src/generated/streak/streak_friend.dart'
+    as _ic1heu54;
 import 'package:serverpod/serverpod.dart' as _is;
 import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _iacs;
@@ -179,6 +187,8 @@ class TestEndpoints {
 
   late final _JwtRefreshEndpoint jwtRefresh;
 
+  late final _ActivityEndpoint activity;
+
   late final _BattleEndpoint battle;
 
   late final _DuelEndpoint duel;
@@ -190,6 +200,8 @@ class TestEndpoints {
   late final _MealEndpoint meal;
 
   late final _PetEndpoint pet;
+
+  late final _StreakEndpoint streak;
 }
 
 class _InternalTestEndpoints extends TestEndpoints
@@ -204,6 +216,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     jwtRefresh = _JwtRefreshEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    activity = _ActivityEndpoint(
       endpoints,
       serializationManager,
     );
@@ -228,6 +244,10 @@ class _InternalTestEndpoints extends TestEndpoints
       serializationManager,
     );
     pet = _PetEndpoint(
+      endpoints,
+      serializationManager,
+    );
+    streak = _StreakEndpoint(
       endpoints,
       serializationManager,
     );
@@ -544,6 +564,54 @@ class _JwtRefreshEndpoint {
                   _localCallContext.arguments,
                 )
                 as _ida.Future<_iacs.AuthSuccess>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _ActivityEndpoint {
+  _ActivityEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<_ip7xvm0c.ActivitySyncResult> sync(
+    _ist.TestSessionBuilder sessionBuilder,
+    int steps,
+    int sleepMinutes,
+    int utcOffsetMinutes,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'activity',
+            method: 'sync',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'activity',
+          methodName: 'sync',
+          parameters: _ist.testObjectToJson({
+            'steps': steps,
+            'sleepMinutes': sleepMinutes,
+            'utcOffsetMinutes': utcOffsetMinutes,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_ip7xvm0c.ActivitySyncResult>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1142,6 +1210,37 @@ class _MealEndpoint {
       }
     });
   }
+
+  _ida.Future<List<_ipo9v88q.MealSuggestion>> ideas(
+    _ist.TestSessionBuilder sessionBuilder,
+    String locale,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'meal',
+            method: 'ideas',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'meal',
+          methodName: 'ideas',
+          parameters: _ist.testObjectToJson({'locale': locale}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_ipo9v88q.MealSuggestion>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
 }
 
 class _PetEndpoint {
@@ -1242,6 +1341,170 @@ class _PetEndpoint {
                   _localCallContext.arguments,
                 )
                 as _ida.Future<_i9zqw63y.Pet>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+}
+
+class _StreakEndpoint {
+  _StreakEndpoint(
+    this._endpointDispatch,
+    this._serializationManager,
+  );
+
+  final _is.EndpointDispatch _endpointDispatch;
+
+  final _is.SerializationManager _serializationManager;
+
+  _ida.Future<List<_iaktjz74.StreakBuddyView>> mine(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'streak',
+            method: 'mine',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'streak',
+          methodName: 'mine',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_iaktjz74.StreakBuddyView>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<List<_ic1heu54.StreakFriend>> candidates(
+    _ist.TestSessionBuilder sessionBuilder,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'streak',
+            method: 'candidates',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'streak',
+          methodName: 'candidates',
+          parameters: _ist.testObjectToJson({}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<List<_ic1heu54.StreakFriend>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_iaktjz74.StreakBuddyView> invite(
+    _ist.TestSessionBuilder sessionBuilder,
+    _is.UuidValue friendUserId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'streak',
+            method: 'invite',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'streak',
+          methodName: 'invite',
+          parameters: _ist.testObjectToJson({'friendUserId': friendUserId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iaktjz74.StreakBuddyView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<_iaktjz74.StreakBuddyView> accept(
+    _ist.TestSessionBuilder sessionBuilder,
+    int streakId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'streak',
+            method: 'accept',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'streak',
+          methodName: 'accept',
+          parameters: _ist.testObjectToJson({'streakId': streakId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<_iaktjz74.StreakBuddyView>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _ida.Future<void> remove(
+    _ist.TestSessionBuilder sessionBuilder,
+    int streakId,
+  ) async {
+    return _ist.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _ist.InternalTestSessionBuilder).internalBuild(
+            endpoint: 'streak',
+            method: 'remove',
+          );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'streak',
+          methodName: 'remove',
+          parameters: _ist.testObjectToJson({'streakId': streakId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue =
+            await (_localCallContext.method.call(
+                  _localUniqueSession,
+                  _localCallContext.arguments,
+                )
+                as _ida.Future<void>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();

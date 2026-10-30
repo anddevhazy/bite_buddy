@@ -132,6 +132,8 @@ class _LeagueDetailView extends StatelessWidget {
                             children: [
                               _SeasonCard(league: league),
                               const SizedBox(height: AppSpacing.md),
+                              _ChallengeCard(league: league),
+                              const SizedBox(height: AppSpacing.md),
                               _InviteCard(code: league.inviteCode),
                               if (league.duels.isNotEmpty) ...[
                                 const SizedBox(height: AppSpacing.lg),
@@ -272,6 +274,64 @@ class _SeasonCard extends StatelessWidget {
               style: AppTextStyles.bodyMedium.copyWith(color: AppColors.gold),
             ),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ChallengeCard extends StatelessWidget {
+  final LeagueDetailEntity league;
+
+  const _ChallengeCard({required this.league});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = league.challenge;
+    final lastWeek = league.lastChallengeCompleted;
+    return GlassCard(
+      padding: const EdgeInsets.all(AppSpacing.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text('🎯 Team challenge', style: AppTextStyles.caption),
+              ),
+              const InfoButton(topics: [GuideTopicId.teamChallenges]),
+            ],
+          ),
+          Text(c.title, style: AppTextStyles.h3),
+          Text(c.description, style: AppTextStyles.bodyMedium),
+          const SizedBox(height: AppSpacing.sm),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: LinearProgressIndicator(
+              value: c.target == 0 ? 0 : c.progress / c.target,
+              minHeight: 10,
+              color: c.completed ? AppColors.gold : AppColors.primary,
+              backgroundColor: AppColors.glass.withValues(alpha: 0.15),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            c.completed
+                ? '✅ Done! Everyone gets ${c.rewardCoins} coins when the '
+                      'season ends'
+                : '${c.progress} / ${c.target} · everyone gets '
+                      '${c.rewardCoins} coins if you make it',
+            style: AppTextStyles.caption.copyWith(
+              color: c.completed ? AppColors.gold : null,
+            ),
+          ),
+          if (lastWeek != null)
+            Text(
+              lastWeek
+                  ? "Last week's challenge was met: +${c.rewardCoins} coins 🎉"
+                  : "Last week's challenge wasn't met",
+              style: AppTextStyles.caption,
+            ),
         ],
       ),
     );

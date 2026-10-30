@@ -31,6 +31,10 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Bite Buddy reads your steps and sleep so walking and resting well can boost your buddy's energy and health.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Bite Buddy never writes to Apple Health; it only reads your steps and sleep.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Bite Buddy uses the camera to scan your meals so your buddy can eat them.</string>
 	<key>UIApplicationSceneManifest</key>

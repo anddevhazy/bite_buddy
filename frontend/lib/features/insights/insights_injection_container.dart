@@ -3,7 +3,9 @@ import 'package:bite_buddy/features/insights/data/data_sources/remote/insights_r
 import 'package:bite_buddy/features/insights/data/repository/insights_repository_impl.dart';
 import 'package:bite_buddy/features/insights/domain/repositories/insights_repository.dart';
 import 'package:bite_buddy/features/insights/domain/usecases/fetch_insights_usecase.dart';
+import 'package:bite_buddy/features/insights/domain/usecases/fetch_meal_ideas_usecase.dart';
 import 'package:bite_buddy/features/insights/presentation/bloc/insights_cubit.dart';
+import 'package:bite_buddy/features/insights/presentation/bloc/meal_ideas_cubit.dart';
 import 'package:bite_buddy/service_locator.dart';
 
 Future<void> insightsInjectionContainer() async {
@@ -12,9 +14,17 @@ Future<void> insightsInjectionContainer() async {
     () => InsightsCubit(fetchInsightsUseCase: sl.call()),
   );
 
+  sl.registerFactory<MealIdeasCubit>(
+    () => MealIdeasCubit(fetchMealIdeasUseCase: sl.call()),
+  );
+
   // * USE CASES INJECTION
   sl.registerLazySingleton<FetchInsightsUseCase>(
     () => FetchInsightsUseCase(repository: sl.call()),
+  );
+
+  sl.registerLazySingleton<FetchMealIdeasUseCase>(
+    () => FetchMealIdeasUseCase(repository: sl.call()),
   );
 
   // * REPOSITORY & DATA SOURCES INJECTION

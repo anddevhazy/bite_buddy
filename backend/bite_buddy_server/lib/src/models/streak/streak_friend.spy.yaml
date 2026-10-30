@@ -1,0 +1,6 @@
+### A league friend the caller could start a shared streak with.
+class: StreakFriend
+fields:
+  userId: UuidValue
+  petName: String
+  speciesKey: String

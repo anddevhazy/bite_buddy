@@ -21,12 +21,14 @@ import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _iais;
 import '../auth/email_idp_endpoint.dart' as _iuc1hd5t;
 import '../auth/jwt_refresh_endpoint.dart' as _inwq3ztq;
+import '../endpoints/activity_endpoint.dart' as _ijhtbkuk;
 import '../endpoints/battle_endpoint.dart' as _ilghbeth;
 import '../endpoints/duel_endpoint.dart' as _iq9xj8m5;
 import '../endpoints/leaderboard_endpoint.dart' as _iy80ldha;
 import '../endpoints/league_endpoint.dart' as _ixxtv0ct;
 import '../endpoints/meal_endpoint.dart' as _indvr2gf;
 import '../endpoints/pet_endpoint.dart' as _ic7gura5;
+import '../endpoints/streak_endpoint.dart' as _ii2s5alo;
 
 class Endpoints extends _is.EndpointDispatch {
   @override
@@ -42,6 +44,12 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'jwtRefresh',
+          null,
+        ),
+      'activity': _ijhtbkuk.ActivityEndpoint()
+        ..initialize(
+          server,
+          'activity',
           null,
         ),
       'battle': _ilghbeth.BattleEndpoint()
@@ -78,6 +86,12 @@ class Endpoints extends _is.EndpointDispatch {
         ..initialize(
           server,
           'pet',
+          null,
+        ),
+      'streak': _ii2s5alo.StreakEndpoint()
+        ..initialize(
+          server,
+          'streak',
           null,
         ),
     };
@@ -284,6 +298,43 @@ class Endpoints extends _is.EndpointDispatch {
                         session,
                         refreshToken: params['refreshToken'],
                       ),
+        ),
+      },
+    );
+    connectors['activity'] = _is.EndpointConnector(
+      name: 'activity',
+      endpoint: endpoints['activity']!,
+      methodConnectors: {
+        'sync': _is.MethodConnector(
+          name: 'sync',
+          params: {
+            'steps': _is.ParameterDescription(
+              name: 'steps',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+            'sleepMinutes': _is.ParameterDescription(
+              name: 'sleepMinutes',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+            'utcOffsetMinutes': _is.ParameterDescription(
+              name: 'utcOffsetMinutes',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['activity'] as _ijhtbkuk.ActivityEndpoint).sync(
+                    session,
+                    params['steps'],
+                    params['sleepMinutes'],
+                    params['utcOffsetMinutes'],
+                  ),
         ),
       },
     );
@@ -606,6 +657,24 @@ class Endpoints extends _is.EndpointDispatch {
                 session,
               ),
         ),
+        'ideas': _is.MethodConnector(
+          name: 'ideas',
+          params: {
+            'locale': _is.ParameterDescription(
+              name: 'locale',
+              type: _is.getType<String>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['meal'] as _indvr2gf.MealEndpoint).ideas(
+                session,
+                params['locale'],
+              ),
+        ),
       },
     );
     connectors['pet'] = _is.EndpointConnector(
@@ -655,6 +724,90 @@ class Endpoints extends _is.EndpointDispatch {
                 params['speciesKey'],
                 params['name'],
               ),
+        ),
+      },
+    );
+    connectors['streak'] = _is.EndpointConnector(
+      name: 'streak',
+      endpoint: endpoints['streak']!,
+      methodConnectors: {
+        'mine': _is.MethodConnector(
+          name: 'mine',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['streak'] as _ii2s5alo.StreakEndpoint).mine(
+                session,
+              ),
+        ),
+        'candidates': _is.MethodConnector(
+          name: 'candidates',
+          params: {},
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async => (endpoints['streak'] as _ii2s5alo.StreakEndpoint)
+                  .candidates(session),
+        ),
+        'invite': _is.MethodConnector(
+          name: 'invite',
+          params: {
+            'friendUserId': _is.ParameterDescription(
+              name: 'friendUserId',
+              type: _is.getType<_is.UuidValue>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['streak'] as _ii2s5alo.StreakEndpoint).invite(
+                    session,
+                    params['friendUserId'],
+                  ),
+        ),
+        'accept': _is.MethodConnector(
+          name: 'accept',
+          params: {
+            'streakId': _is.ParameterDescription(
+              name: 'streakId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['streak'] as _ii2s5alo.StreakEndpoint).accept(
+                    session,
+                    params['streakId'],
+                  ),
+        ),
+        'remove': _is.MethodConnector(
+          name: 'remove',
+          params: {
+            'streakId': _is.ParameterDescription(
+              name: 'streakId',
+              type: _is.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call:
+              (
+                _is.Session session,
+                Map<String, dynamic> params,
+              ) async =>
+                  (endpoints['streak'] as _ii2s5alo.StreakEndpoint).remove(
+                    session,
+                    params['streakId'],
+                  ),
         ),
       },
     );

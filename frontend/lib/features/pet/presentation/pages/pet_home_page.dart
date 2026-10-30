@@ -1,3 +1,5 @@
+import 'package:bite_buddy/features/activity/presentation/bloc/activity_cubit.dart';
+import 'package:bite_buddy/features/activity/presentation/widgets/activity_card.dart';
 import 'package:bite_buddy/features/global/components/app_error_view.dart';
 import 'package:bite_buddy/features/global/components/game_button.dart';
 import 'package:bite_buddy/features/global/components/stat_bar.dart';
@@ -12,6 +14,8 @@ import 'package:bite_buddy/features/pet/presentation/bloc/pet_cubit.dart';
 import 'package:bite_buddy/features/pet/presentation/widgets/pet_avatar.dart';
 import 'package:bite_buddy/features/guide/presentation/widgets/info_button.dart';
 import 'package:bite_buddy/features/guide/domain/entities/guide_topic.dart';
+import 'package:bite_buddy/features/streak/presentation/bloc/streaks_cubit.dart';
+import 'package:bite_buddy/features/streak/presentation/widgets/shared_streaks_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -50,6 +54,8 @@ Future<void> _refresh(BuildContext context) async {
   await (
     context.read<PetCubit>().loadPet(silent: true),
     context.read<InsightsCubit>().load(),
+    context.read<StreaksCubit>().load(),
+    context.read<ActivityCubit>().load(),
   ).wait;
 }
 
@@ -163,6 +169,10 @@ class _PetHome extends StatelessWidget {
           ],
         ),
         const SizedBox(height: AppSpacing.xl),
+        const SharedStreaksCard(),
+        const SizedBox(height: AppSpacing.lg),
+        const ActivityCard(),
+        const SizedBox(height: AppSpacing.lg),
         const InsightsCard(),
       ],
     );

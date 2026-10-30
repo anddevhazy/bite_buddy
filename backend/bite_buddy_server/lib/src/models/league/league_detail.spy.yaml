@@ -8,9 +8,12 @@ fields:
   seasonStartsAt: DateTime
   seasonEndsAt: DateTime
   standings: List<LeagueStanding>
+  challenge: LeagueChallenge
   ### The caller's friend battles in this league: active ones, then the most
   ### recent finished ones.
   duels: List<DuelView>
   ### How last week ended, if there was a last week.
   lastSeasonWinner: String?
   lastSeasonYourRank: int?
+  ### Whether last week's team challenge was met (and paid out).
+  lastChallengeCompleted: bool?

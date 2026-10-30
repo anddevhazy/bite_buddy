@@ -9,6 +9,8 @@ fields:
   ### Null when nobody scored or the league had fewer than 2 members.
   winnerUserId: UuidValue?
   standings: List<LeagueStanding>
+  ### Whether the league met that week's team challenge.
+  challengeCompleted: bool, default=false
   createdAt: DateTime
 indexes:
   season_result_unique_idx:

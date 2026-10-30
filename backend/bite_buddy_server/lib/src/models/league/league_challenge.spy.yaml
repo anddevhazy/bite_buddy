@@ -1,0 +1,11 @@
+### This week's team goal for a league. Everyone works on it together; when
+### it's met by the end of the season, every member gets [rewardCoins].
+class: LeagueChallenge
+fields:
+  key: String
+  title: String
+  description: String
+  progress: int
+  target: int
+  completed: bool
+  rewardCoins: int

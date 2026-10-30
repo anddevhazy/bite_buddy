@@ -382,6 +382,17 @@ class _Fed extends StatelessWidget {
             style: AppTextStyles.h3.copyWith(color: AppColors.accent),
           ),
         ],
+        if (result.sharedStreaksGrown > 0) ...[
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            result.sharedStreaksGrown == 1
+                ? '🤝 Shared streak grew! +5 coins for you and your friend'
+                : '🤝 ${result.sharedStreaksGrown} shared streaks grew! '
+                      '+${5 * result.sharedStreaksGrown} coins',
+            textAlign: TextAlign.center,
+            style: AppTextStyles.h3.copyWith(color: AppColors.gold),
+          ),
+        ],
         if (result.fullHealthBonusXp > 0) ...[
           const SizedBox(height: AppSpacing.md),
           Text(

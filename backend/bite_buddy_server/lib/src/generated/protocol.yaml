@@ -9,6 +9,8 @@ emailIdp:
   - hasAccount:
 jwtRefresh:
   - refreshAccessToken:
+activity:
+  - sync:
 battle:
   - arena:
   - startRun:
@@ -31,7 +33,14 @@ meal:
   - feed:
   - history:
   - insights:
+  - ideas:
 pet:
   - listSpecies:
   - getMyPet:
   - adopt:
+streak:
+  - mine:
+  - candidates:
+  - invite:
+  - accept:
+  - remove:

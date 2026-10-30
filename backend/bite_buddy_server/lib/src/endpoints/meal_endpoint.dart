@@ -29,4 +29,9 @@ class MealEndpoint extends Endpoint {
   // The last 7 days of meals, summarised, with tips
   Future<NutritionInsights> insights(Session session) =>
       mealService.insights(session, session.userId);
+
+  // Today's meal ideas for the gaps in the pet's week. [locale] is the
+  // phone's, e.g. en_NG, so ideas match local food.
+  Future<List<MealSuggestion>> ideas(Session session, String locale) =>
+      mealService.ideas(session, session.userId, locale);
 }

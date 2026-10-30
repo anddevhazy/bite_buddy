@@ -1,0 +1,14 @@
+### The pet after a health sync, and what today's activity has earned.
+class: ActivitySyncResult
+fields:
+  pet: Pet
+  steps: int
+  sleepMinutes: int
+  ### Gained from this sync only.
+  energyGained: int
+  healthGained: int
+  ### Today's totals so far, out of the daily caps.
+  energyToday: int
+  healthToday: int
+  maxEnergyPerDay: int
+  maxHealthPerDay: int

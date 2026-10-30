@@ -1,0 +1,24 @@
+### A shared streak between two league friends, Duolingo style: a day only
+### counts when both of them feed their buddy. [aUserId] sent the invite.
+class: StreakBuddy
+table: streak_buddy
+fields:
+  aUserId: UuidValue
+  bUserId: UuidValue
+  ### False until [bUserId] accepts the invite.
+  accepted: bool
+  ### Days in a row both friends fed. Missing a whole day resets it to 0.
+  streak: int
+  bestStreak: int
+  ### The last local day (UTC midnight) each friend fed while paired.
+  aLastFedDay: DateTime?
+  bLastFedDay: DateTime?
+  ### The last day that counted for the shared streak.
+  lastStreakDay: DateTime?
+  createdAt: DateTime
+indexes:
+  streak_buddy_pair_idx:
+    fields: aUserId, bUserId
+    unique: true
+  streak_buddy_b_idx:
+    fields: bUserId

@@ -1,3 +1,4 @@
+import 'package:bite_buddy/features/activity/activity_injection_container.dart';
 import 'package:bite_buddy/features/auth/auth_injection_container.dart';
 import 'package:bite_buddy/features/battle/battle_injection_container.dart';
 import 'package:bite_buddy/features/collection/collection_injection_container.dart';
@@ -6,6 +7,8 @@ import 'package:bite_buddy/features/insights/insights_injection_container.dart';
 import 'package:bite_buddy/features/league/league_injection_container.dart';
 import 'package:bite_buddy/features/pet/pet_injection_container.dart';
 import 'package:bite_buddy/features/scanner/scanner_injection_container.dart';
+import 'package:bite_buddy/features/streak/streak_injection_container.dart';
+import 'package:bite_buddy/features/global/services/pet_widget_service.dart';
 import 'package:bite_buddy/features/global/services/sound_service.dart';
 import 'package:bite_buddy/service_locator.dart';
 import 'package:bite_buddy_client/bite_buddy_client.dart';
@@ -17,6 +20,11 @@ Future<void> init() async {
   final sounds = SoundService(const FlutterSecureStorage());
   await sounds.init();
   sl.registerSingleton<SoundService>(sounds);
+
+  // The home-screen widget showing the buddy's mood
+  final widget = PetWidgetService();
+  await widget.init();
+  sl.registerSingleton<PetWidgetService>(widget);
 
   // The generated Serverpod client. It plays the part Dio + ApiClient play in
   // Attend: every remote data source talks to the server through it. The
@@ -40,4 +48,6 @@ Future<void> init() async {
   await battleInjectionContainer();
   await insightsInjectionContainer();
   await leagueInjectionContainer();
+  await streakInjectionContainer();
+  await activityInjectionContainer();
 }

@@ -61,6 +61,29 @@ class StandingEntity extends Equatable {
   List<Object?> get props => [memberId, rank, totalScore];
 }
 
+// This week's team goal. When it's met by the end of the season, every
+// member gets [rewardCoins].
+class LeagueChallengeEntity extends Equatable {
+  final String title;
+  final String description;
+  final int progress;
+  final int target;
+  final bool completed;
+  final int rewardCoins;
+
+  const LeagueChallengeEntity({
+    required this.title,
+    required this.description,
+    required this.progress,
+    required this.target,
+    required this.completed,
+    required this.rewardCoins,
+  });
+
+  @override
+  List<Object?> get props => [title, progress, target, completed];
+}
+
 class LeagueDetailEntity extends Equatable {
   final int id;
   final String name;
@@ -69,9 +92,12 @@ class LeagueDetailEntity extends Equatable {
   final DateTime seasonStartsAt;
   final DateTime seasonEndsAt;
   final List<StandingEntity> standings;
+  final LeagueChallengeEntity challenge;
   final List<DuelEntity> duels;
   final String? lastSeasonWinner;
   final int? lastSeasonYourRank;
+  // Whether last week's team challenge was met and paid out
+  final bool? lastChallengeCompleted;
 
   const LeagueDetailEntity({
     required this.id,
@@ -81,13 +107,21 @@ class LeagueDetailEntity extends Equatable {
     required this.seasonStartsAt,
     required this.seasonEndsAt,
     required this.standings,
+    required this.challenge,
     required this.duels,
     this.lastSeasonWinner,
     this.lastSeasonYourRank,
+    this.lastChallengeCompleted,
   });
 
   @override
-  List<Object?> get props => [id, standings, duels, lastSeasonWinner];
+  List<Object?> get props => [
+    id,
+    standings,
+    challenge,
+    duels,
+    lastSeasonWinner,
+  ];
 }
 
 enum DuelResult { won, lost, draw }

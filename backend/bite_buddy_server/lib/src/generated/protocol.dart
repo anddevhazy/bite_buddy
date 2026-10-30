@@ -18,13 +18,21 @@ import 'package:bite_buddy_server/src/generated/league/league_summary.dart'
 import 'package:bite_buddy_server/src/generated/league/trophy.dart'
     as _i17xpjnn;
 import 'package:bite_buddy_server/src/generated/meal.dart' as _idk4xbnt;
+import 'package:bite_buddy_server/src/generated/meal_suggestion.dart'
+    as _ipo9v88q;
 import 'package:bite_buddy_server/src/generated/pet_species.dart' as _it8ve0l0;
+import 'package:bite_buddy_server/src/generated/streak/streak_buddy_view.dart'
+    as _iaktjz74;
+import 'package:bite_buddy_server/src/generated/streak/streak_friend.dart'
+    as _ic1heu54;
 import 'package:serverpod/protocol.dart' as _isp;
 import 'package:serverpod/serverpod.dart' as _is;
 import 'package:serverpod_auth_core_server/serverpod_auth_core_server.dart'
     as _iacs;
 import 'package:serverpod_auth_idp_server/serverpod_auth_idp_server.dart'
     as _iais;
+import 'activity/activity_day.dart' as _igd8tknp;
+import 'activity/activity_sync_result.dart' as _i2m60d3i;
 import 'arena.dart' as _iwiby7qv;
 import 'arena_rules.dart' as _ildu9ri2;
 import 'arena_run.dart' as _isxurcys;
@@ -43,6 +51,7 @@ import 'league/duel_round_view.dart' as _iwzwahda;
 import 'league/duel_status.dart' as _i1rc3le2;
 import 'league/duel_view.dart' as _ihf53btn;
 import 'league/league.dart' as _iu6wab7g;
+import 'league/league_challenge.dart' as _it8j4sh6;
 import 'league/league_detail.dart' as _i535uegq;
 import 'league/league_member.dart' as _ixajhlyi;
 import 'league/league_standing.dart' as _itpdgapo;
@@ -50,10 +59,18 @@ import 'league/league_summary.dart' as _idqobzdi;
 import 'league/season_result.dart' as _i7znqzmr;
 import 'league/trophy.dart' as _ij1ocmo2;
 import 'meal.dart' as _ixnoudrx;
+import 'meal_ideas.dart' as _igmlprfo;
+import 'meal_suggestion.dart' as _iymppxeh;
 import 'nutrition_insights.dart' as _ik434gbd;
 import 'opponent.dart' as _i2ot5zrj;
 import 'pet.dart' as _ie9pyd3w;
 import 'pet_species.dart' as _it7bnlgl;
+import 'streak/streak_buddy.dart' as _igrz7ax7;
+import 'streak/streak_buddy_status.dart' as _io8ln7w8;
+import 'streak/streak_buddy_view.dart' as _i5rddhms;
+import 'streak/streak_friend.dart' as _ifaru43m;
+export 'activity/activity_day.dart';
+export 'activity/activity_sync_result.dart';
 export 'arena.dart';
 export 'arena_rules.dart';
 export 'arena_run.dart';
@@ -72,6 +89,7 @@ export 'league/duel_round_view.dart';
 export 'league/duel_status.dart';
 export 'league/duel_view.dart';
 export 'league/league.dart';
+export 'league/league_challenge.dart';
 export 'league/league_detail.dart';
 export 'league/league_member.dart';
 export 'league/league_standing.dart';
@@ -79,10 +97,16 @@ export 'league/league_summary.dart';
 export 'league/season_result.dart';
 export 'league/trophy.dart';
 export 'meal.dart';
+export 'meal_ideas.dart';
+export 'meal_suggestion.dart';
 export 'nutrition_insights.dart';
 export 'opponent.dart';
 export 'pet.dart';
 export 'pet_species.dart';
+export 'streak/streak_buddy.dart';
+export 'streak/streak_buddy_status.dart';
+export 'streak/streak_buddy_view.dart';
+export 'streak/streak_friend.dart';
 
 class Protocol extends _is.DatabaseSerializationManager {
   Protocol._();
@@ -92,6 +116,84 @@ class Protocol extends _is.DatabaseSerializationManager {
   static final Protocol _instance = Protocol._().._registerHostProtocols();
 
   static List<_isp.TableDefinition> get targetTableDefinitions => [
+    _isp.TableDefinition(
+      name: 'activity_day',
+      dartName: 'ActivityDay',
+      schema: 'public',
+      module: 'bite_buddy',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'ownerId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'day',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _isp.ColumnDefinition(
+          name: 'steps',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'sleepMinutes',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'energyAwarded',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'healthAwarded',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'updatedAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'activity_day_owner_day_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'ownerId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'day',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
     _isp.TableDefinition(
       name: 'arena_run',
       dartName: 'ArenaRun',
@@ -747,6 +849,66 @@ class Protocol extends _is.DatabaseSerializationManager {
       managed: true,
     ),
     _isp.TableDefinition(
+      name: 'meal_ideas',
+      dartName: 'MealIdeas',
+      schema: 'public',
+      module: 'bite_buddy',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'ownerId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'day',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+        _isp.ColumnDefinition(
+          name: 'ideas',
+          columnType: _isp.ColumnType.json,
+          isNullable: false,
+          dartType: 'List<protocol:MealSuggestion>',
+        ),
+        _isp.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'meal_ideas_owner_day_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'ownerId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'day',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
       name: 'pet',
       dartName: 'Pet',
       schema: 'public',
@@ -946,6 +1108,13 @@ class Protocol extends _is.DatabaseSerializationManager {
           dartType: 'List<protocol:LeagueStanding>',
         ),
         _isp.ColumnDefinition(
+          name: 'challengeCompleted',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
+        ),
+        _isp.ColumnDefinition(
           name: 'createdAt',
           columnType: _isp.ColumnType.timestampWithoutTimeZone,
           isNullable: false,
@@ -969,6 +1138,109 @@ class Protocol extends _is.DatabaseSerializationManager {
           ],
           type: 'btree',
           isUnique: true,
+          isPrimary: false,
+        ),
+      ],
+      managed: true,
+    ),
+    _isp.TableDefinition(
+      name: 'streak_buddy',
+      dartName: 'StreakBuddy',
+      schema: 'public',
+      module: 'bite_buddy',
+      columns: [
+        _isp.ColumnDefinition(
+          name: 'id',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'serial',
+        ),
+        _isp.ColumnDefinition(
+          name: 'aUserId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'bUserId',
+          columnType: _isp.ColumnType.uuid,
+          isNullable: false,
+          dartType: 'UuidValue',
+        ),
+        _isp.ColumnDefinition(
+          name: 'accepted',
+          columnType: _isp.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+        ),
+        _isp.ColumnDefinition(
+          name: 'streak',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'bestStreak',
+          columnType: _isp.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _isp.ColumnDefinition(
+          name: 'aLastFedDay',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'bLastFedDay',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'lastStreakDay',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: true,
+          dartType: 'DateTime?',
+        ),
+        _isp.ColumnDefinition(
+          name: 'createdAt',
+          columnType: _isp.ColumnType.timestampWithoutTimeZone,
+          isNullable: false,
+          dartType: 'DateTime',
+        ),
+      ],
+      foreignKeys: [],
+      indexes: [
+        _isp.IndexDefinition(
+          indexName: 'streak_buddy_pair_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'aUserId',
+            ),
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'bUserId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: false,
+        ),
+        _isp.IndexDefinition(
+          indexName: 'streak_buddy_b_idx',
+          tableSpace: null,
+          elements: [
+            _isp.IndexElementDefinition(
+              type: _isp.IndexElementDefinitionType.column,
+              definition: 'bUserId',
+            ),
+          ],
+          type: 'btree',
+          isUnique: false,
           isPrimary: false,
         ),
       ],
@@ -1074,6 +1346,12 @@ class Protocol extends _is.DatabaseSerializationManager {
       }
     }
 
+    if (t == _igd8tknp.ActivityDay) {
+      return _igd8tknp.ActivityDay.fromJson(data) as T;
+    }
+    if (t == _i2m60d3i.ActivitySyncResult) {
+      return _i2m60d3i.ActivitySyncResult.fromJson(data) as T;
+    }
     if (t == _iwiby7qv.Arena) {
       return _iwiby7qv.Arena.fromJson(data) as T;
     }
@@ -1128,6 +1406,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _iu6wab7g.League) {
       return _iu6wab7g.League.fromJson(data) as T;
     }
+    if (t == _it8j4sh6.LeagueChallenge) {
+      return _it8j4sh6.LeagueChallenge.fromJson(data) as T;
+    }
     if (t == _i535uegq.LeagueDetail) {
       return _i535uegq.LeagueDetail.fromJson(data) as T;
     }
@@ -1149,6 +1430,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _ixnoudrx.Meal) {
       return _ixnoudrx.Meal.fromJson(data) as T;
     }
+    if (t == _igmlprfo.MealIdeas) {
+      return _igmlprfo.MealIdeas.fromJson(data) as T;
+    }
+    if (t == _iymppxeh.MealSuggestion) {
+      return _iymppxeh.MealSuggestion.fromJson(data) as T;
+    }
     if (t == _ik434gbd.NutritionInsights) {
       return _ik434gbd.NutritionInsights.fromJson(data) as T;
     }
@@ -1160,6 +1447,25 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _it7bnlgl.PetSpecies) {
       return _it7bnlgl.PetSpecies.fromJson(data) as T;
+    }
+    if (t == _igrz7ax7.StreakBuddy) {
+      return _igrz7ax7.StreakBuddy.fromJson(data) as T;
+    }
+    if (t == _io8ln7w8.StreakBuddyStatus) {
+      return _io8ln7w8.StreakBuddyStatus.fromJson(data) as T;
+    }
+    if (t == _i5rddhms.StreakBuddyView) {
+      return _i5rddhms.StreakBuddyView.fromJson(data) as T;
+    }
+    if (t == _ifaru43m.StreakFriend) {
+      return _ifaru43m.StreakFriend.fromJson(data) as T;
+    }
+    if (t == _is.getType<_igd8tknp.ActivityDay?>()) {
+      return (data != null ? _igd8tknp.ActivityDay.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_i2m60d3i.ActivitySyncResult?>()) {
+      return (data != null ? _i2m60d3i.ActivitySyncResult.fromJson(data) : null)
+          as T;
     }
     if (t == _is.getType<_iwiby7qv.Arena?>()) {
       return (data != null ? _iwiby7qv.Arena.fromJson(data) : null) as T;
@@ -1222,6 +1528,10 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _is.getType<_iu6wab7g.League?>()) {
       return (data != null ? _iu6wab7g.League.fromJson(data) : null) as T;
     }
+    if (t == _is.getType<_it8j4sh6.LeagueChallenge?>()) {
+      return (data != null ? _it8j4sh6.LeagueChallenge.fromJson(data) : null)
+          as T;
+    }
     if (t == _is.getType<_i535uegq.LeagueDetail?>()) {
       return (data != null ? _i535uegq.LeagueDetail.fromJson(data) : null) as T;
     }
@@ -1245,6 +1555,13 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == _is.getType<_ixnoudrx.Meal?>()) {
       return (data != null ? _ixnoudrx.Meal.fromJson(data) : null) as T;
     }
+    if (t == _is.getType<_igmlprfo.MealIdeas?>()) {
+      return (data != null ? _igmlprfo.MealIdeas.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_iymppxeh.MealSuggestion?>()) {
+      return (data != null ? _iymppxeh.MealSuggestion.fromJson(data) : null)
+          as T;
+    }
     if (t == _is.getType<_ik434gbd.NutritionInsights?>()) {
       return (data != null ? _ik434gbd.NutritionInsights.fromJson(data) : null)
           as T;
@@ -1257,6 +1574,20 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (t == _is.getType<_it7bnlgl.PetSpecies?>()) {
       return (data != null ? _it7bnlgl.PetSpecies.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_igrz7ax7.StreakBuddy?>()) {
+      return (data != null ? _igrz7ax7.StreakBuddy.fromJson(data) : null) as T;
+    }
+    if (t == _is.getType<_io8ln7w8.StreakBuddyStatus?>()) {
+      return (data != null ? _io8ln7w8.StreakBuddyStatus.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_i5rddhms.StreakBuddyView?>()) {
+      return (data != null ? _i5rddhms.StreakBuddyView.fromJson(data) : null)
+          as T;
+    }
+    if (t == _is.getType<_ifaru43m.StreakFriend?>()) {
+      return (data != null ? _ifaru43m.StreakFriend.fromJson(data) : null) as T;
     }
     if (t == List<_i2ot5zrj.Opponent>) {
       return (data as List)
@@ -1279,6 +1610,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (t == List<_ihf53btn.DuelView>) {
       return (data as List)
               .map((e) => deserialize<_ihf53btn.DuelView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_iymppxeh.MealSuggestion>) {
+      return (data as List)
+              .map((e) => deserialize<_iymppxeh.MealSuggestion>(e))
               .toList()
           as T;
     }
@@ -1307,9 +1644,27 @@ class Protocol extends _is.DatabaseSerializationManager {
       return (data as List).map((e) => deserialize<_idk4xbnt.Meal>(e)).toList()
           as T;
     }
+    if (t == List<_ipo9v88q.MealSuggestion>) {
+      return (data as List)
+              .map((e) => deserialize<_ipo9v88q.MealSuggestion>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_it8ve0l0.PetSpecies>) {
       return (data as List)
               .map((e) => deserialize<_it8ve0l0.PetSpecies>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_iaktjz74.StreakBuddyView>) {
+      return (data as List)
+              .map((e) => deserialize<_iaktjz74.StreakBuddyView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_ic1heu54.StreakFriend>) {
+      return (data as List)
+              .map((e) => deserialize<_ic1heu54.StreakFriend>(e))
               .toList()
           as T;
     }
@@ -1327,6 +1682,8 @@ class Protocol extends _is.DatabaseSerializationManager {
 
   static String? getClassNameForType(Type type) {
     return switch (type) {
+      _igd8tknp.ActivityDay => 'ActivityDay',
+      _i2m60d3i.ActivitySyncResult => 'ActivitySyncResult',
       _iwiby7qv.Arena => 'Arena',
       _ildu9ri2.ArenaRules => 'ArenaRules',
       _isxurcys.ArenaRun => 'ArenaRun',
@@ -1345,6 +1702,7 @@ class Protocol extends _is.DatabaseSerializationManager {
       _i1rc3le2.DuelStatus => 'DuelStatus',
       _ihf53btn.DuelView => 'DuelView',
       _iu6wab7g.League => 'League',
+      _it8j4sh6.LeagueChallenge => 'LeagueChallenge',
       _i535uegq.LeagueDetail => 'LeagueDetail',
       _ixajhlyi.LeagueMember => 'LeagueMember',
       _itpdgapo.LeagueStanding => 'LeagueStanding',
@@ -1352,10 +1710,16 @@ class Protocol extends _is.DatabaseSerializationManager {
       _i7znqzmr.SeasonResult => 'SeasonResult',
       _ij1ocmo2.Trophy => 'Trophy',
       _ixnoudrx.Meal => 'Meal',
+      _igmlprfo.MealIdeas => 'MealIdeas',
+      _iymppxeh.MealSuggestion => 'MealSuggestion',
       _ik434gbd.NutritionInsights => 'NutritionInsights',
       _i2ot5zrj.Opponent => 'Opponent',
       _ie9pyd3w.Pet => 'Pet',
       _it7bnlgl.PetSpecies => 'PetSpecies',
+      _igrz7ax7.StreakBuddy => 'StreakBuddy',
+      _io8ln7w8.StreakBuddyStatus => 'StreakBuddyStatus',
+      _i5rddhms.StreakBuddyView => 'StreakBuddyView',
+      _ifaru43m.StreakFriend => 'StreakFriend',
       _ => null,
     };
   }
@@ -1370,6 +1734,10 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
 
     switch (data) {
+      case _igd8tknp.ActivityDay():
+        return 'ActivityDay';
+      case _i2m60d3i.ActivitySyncResult():
+        return 'ActivitySyncResult';
       case _iwiby7qv.Arena():
         return 'Arena';
       case _ildu9ri2.ArenaRules():
@@ -1406,6 +1774,8 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'DuelView';
       case _iu6wab7g.League():
         return 'League';
+      case _it8j4sh6.LeagueChallenge():
+        return 'LeagueChallenge';
       case _i535uegq.LeagueDetail():
         return 'LeagueDetail';
       case _ixajhlyi.LeagueMember():
@@ -1420,6 +1790,10 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'Trophy';
       case _ixnoudrx.Meal():
         return 'Meal';
+      case _igmlprfo.MealIdeas():
+        return 'MealIdeas';
+      case _iymppxeh.MealSuggestion():
+        return 'MealSuggestion';
       case _ik434gbd.NutritionInsights():
         return 'NutritionInsights';
       case _i2ot5zrj.Opponent():
@@ -1428,6 +1802,14 @@ class Protocol extends _is.DatabaseSerializationManager {
         return 'Pet';
       case _it7bnlgl.PetSpecies():
         return 'PetSpecies';
+      case _igrz7ax7.StreakBuddy():
+        return 'StreakBuddy';
+      case _io8ln7w8.StreakBuddyStatus():
+        return 'StreakBuddyStatus';
+      case _i5rddhms.StreakBuddyView():
+        return 'StreakBuddyView';
+      case _ifaru43m.StreakFriend():
+        return 'StreakFriend';
     }
     className = _iais.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -1453,6 +1835,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     var dataClassName = data['className'];
     if (dataClassName is! String) {
       return super.deserializeByClassName(data);
+    }
+    if (dataClassName == 'ActivityDay') {
+      return deserialize<_igd8tknp.ActivityDay>(data['data']);
+    }
+    if (dataClassName == 'ActivitySyncResult') {
+      return deserialize<_i2m60d3i.ActivitySyncResult>(data['data']);
     }
     if (dataClassName == 'Arena') {
       return deserialize<_iwiby7qv.Arena>(data['data']);
@@ -1508,6 +1896,9 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'League') {
       return deserialize<_iu6wab7g.League>(data['data']);
     }
+    if (dataClassName == 'LeagueChallenge') {
+      return deserialize<_it8j4sh6.LeagueChallenge>(data['data']);
+    }
     if (dataClassName == 'LeagueDetail') {
       return deserialize<_i535uegq.LeagueDetail>(data['data']);
     }
@@ -1529,6 +1920,12 @@ class Protocol extends _is.DatabaseSerializationManager {
     if (dataClassName == 'Meal') {
       return deserialize<_ixnoudrx.Meal>(data['data']);
     }
+    if (dataClassName == 'MealIdeas') {
+      return deserialize<_igmlprfo.MealIdeas>(data['data']);
+    }
+    if (dataClassName == 'MealSuggestion') {
+      return deserialize<_iymppxeh.MealSuggestion>(data['data']);
+    }
     if (dataClassName == 'NutritionInsights') {
       return deserialize<_ik434gbd.NutritionInsights>(data['data']);
     }
@@ -1540,6 +1937,18 @@ class Protocol extends _is.DatabaseSerializationManager {
     }
     if (dataClassName == 'PetSpecies') {
       return deserialize<_it7bnlgl.PetSpecies>(data['data']);
+    }
+    if (dataClassName == 'StreakBuddy') {
+      return deserialize<_igrz7ax7.StreakBuddy>(data['data']);
+    }
+    if (dataClassName == 'StreakBuddyStatus') {
+      return deserialize<_io8ln7w8.StreakBuddyStatus>(data['data']);
+    }
+    if (dataClassName == 'StreakBuddyView') {
+      return deserialize<_i5rddhms.StreakBuddyView>(data['data']);
+    }
+    if (dataClassName == 'StreakFriend') {
+      return deserialize<_ifaru43m.StreakFriend>(data['data']);
     }
     if (dataClassName.startsWith('serverpod_auth_idp.')) {
       data['className'] = dataClassName.substring(19);
@@ -1582,6 +1991,8 @@ class Protocol extends _is.DatabaseSerializationManager {
       }
     }
     switch (t) {
+      case _igd8tknp.ActivityDay:
+        return _igd8tknp.ActivityDay.t;
       case _isxurcys.ArenaRun:
         return _isxurcys.ArenaRun.t;
       case _i4ouuzm2.Duel:
@@ -1596,8 +2007,12 @@ class Protocol extends _is.DatabaseSerializationManager {
         return _ij1ocmo2.Trophy.t;
       case _ixnoudrx.Meal:
         return _ixnoudrx.Meal.t;
+      case _igmlprfo.MealIdeas:
+        return _igmlprfo.MealIdeas.t;
       case _ie9pyd3w.Pet:
         return _ie9pyd3w.Pet.t;
+      case _igrz7ax7.StreakBuddy:
+        return _igrz7ax7.StreakBuddy.t;
     }
     return null;
   }

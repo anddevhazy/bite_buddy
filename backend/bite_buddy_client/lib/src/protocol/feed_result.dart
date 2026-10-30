@@ -27,7 +27,8 @@ abstract class FeedResult
     required this.streakExtended,
     required this.streakBonusXp,
     required this.fullHealthBonusXp,
-  });
+    int? sharedStreaksGrown,
+  }) : sharedStreaksGrown = sharedStreaksGrown ?? 0;
 
   factory FeedResult({
     required _ie9pyd3w.Pet pet,
@@ -39,6 +40,7 @@ abstract class FeedResult
     required bool streakExtended,
     required int streakBonusXp,
     required int fullHealthBonusXp,
+    int? sharedStreaksGrown,
   }) = _FeedResultImpl;
 
   factory FeedResult.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -58,6 +60,7 @@ abstract class FeedResult
       ),
       streakBonusXp: jsonSerialization['streakBonusXp'] as int,
       fullHealthBonusXp: jsonSerialization['fullHealthBonusXp'] as int,
+      sharedStreaksGrown: jsonSerialization['sharedStreaksGrown'] as int?,
     );
   }
 
@@ -83,6 +86,10 @@ abstract class FeedResult
   /// at full health. Already included in xpGained.
   int fullHealthBonusXp;
 
+  /// Shared streaks with friends that grew with this meal. Each one also
+  /// paid both friends a few coins, already included in pet.coins.
+  int sharedStreaksGrown;
+
   /// Returns a shallow copy of this [FeedResult]
   /// with some or all fields replaced by the given arguments.
   @_isc.useResult
@@ -96,6 +103,7 @@ abstract class FeedResult
     bool? streakExtended,
     int? streakBonusXp,
     int? fullHealthBonusXp,
+    int? sharedStreaksGrown,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -110,6 +118,7 @@ abstract class FeedResult
       'streakExtended': streakExtended,
       'streakBonusXp': streakBonusXp,
       'fullHealthBonusXp': fullHealthBonusXp,
+      'sharedStreaksGrown': sharedStreaksGrown,
     };
   }
 
@@ -126,6 +135,7 @@ abstract class FeedResult
       'streakExtended': streakExtended,
       'streakBonusXp': streakBonusXp,
       'fullHealthBonusXp': fullHealthBonusXp,
+      'sharedStreaksGrown': sharedStreaksGrown,
     };
   }
 
@@ -146,6 +156,7 @@ class _FeedResultImpl extends FeedResult {
     required bool streakExtended,
     required int streakBonusXp,
     required int fullHealthBonusXp,
+    int? sharedStreaksGrown,
   }) : super._(
          pet: pet,
          healthChange: healthChange,
@@ -156,6 +167,7 @@ class _FeedResultImpl extends FeedResult {
          streakExtended: streakExtended,
          streakBonusXp: streakBonusXp,
          fullHealthBonusXp: fullHealthBonusXp,
+         sharedStreaksGrown: sharedStreaksGrown,
        );
 
   /// Returns a shallow copy of this [FeedResult]
@@ -172,6 +184,7 @@ class _FeedResultImpl extends FeedResult {
     bool? streakExtended,
     int? streakBonusXp,
     int? fullHealthBonusXp,
+    int? sharedStreaksGrown,
   }) {
     return FeedResult(
       pet: pet ?? this.pet.copyWith(),
@@ -183,6 +196,7 @@ class _FeedResultImpl extends FeedResult {
       streakExtended: streakExtended ?? this.streakExtended,
       streakBonusXp: streakBonusXp ?? this.streakBonusXp,
       fullHealthBonusXp: fullHealthBonusXp ?? this.fullHealthBonusXp,
+      sharedStreaksGrown: sharedStreaksGrown ?? this.sharedStreaksGrown,
     );
   }
 }

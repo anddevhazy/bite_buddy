@@ -13,6 +13,7 @@
 import 'package:bite_buddy_server/src/generated/protocol.dart' as _i61ow1lb;
 import 'package:serverpod/serverpod.dart' as _is;
 import '../league/duel_view.dart' as _i0oqzm9q;
+import '../league/league_challenge.dart' as _iomiitux;
 import '../league/league_standing.dart' as _iyvw479e;
 
 /// Everything on a league's screen.
@@ -26,9 +27,11 @@ abstract class LeagueDetail
     required this.seasonStartsAt,
     required this.seasonEndsAt,
     required this.standings,
+    required this.challenge,
     required this.duels,
     this.lastSeasonWinner,
     this.lastSeasonYourRank,
+    this.lastChallengeCompleted,
   });
 
   factory LeagueDetail({
@@ -39,9 +42,11 @@ abstract class LeagueDetail
     required DateTime seasonStartsAt,
     required DateTime seasonEndsAt,
     required List<_iyvw479e.LeagueStanding> standings,
+    required _iomiitux.LeagueChallenge challenge,
     required List<_i0oqzm9q.DuelView> duels,
     String? lastSeasonWinner,
     int? lastSeasonYourRank,
+    bool? lastChallengeCompleted,
   }) = _LeagueDetailImpl;
 
   factory LeagueDetail.fromJson(Map<String, dynamic> jsonSerialization) {
@@ -60,11 +65,20 @@ abstract class LeagueDetail
           .deserialize<List<_iyvw479e.LeagueStanding>>(
             jsonSerialization['standings'],
           ),
+      challenge: _i61ow1lb.Protocol().deserialize<_iomiitux.LeagueChallenge>(
+        jsonSerialization['challenge'],
+      ),
       duels: _i61ow1lb.Protocol().deserialize<List<_i0oqzm9q.DuelView>>(
         jsonSerialization['duels'],
       ),
       lastSeasonWinner: jsonSerialization['lastSeasonWinner'] as String?,
       lastSeasonYourRank: jsonSerialization['lastSeasonYourRank'] as int?,
+      lastChallengeCompleted:
+          jsonSerialization['lastChallengeCompleted'] == null
+          ? null
+          : _is.BoolJsonExtension.fromJson(
+              jsonSerialization['lastChallengeCompleted'],
+            ),
     );
   }
 
@@ -82,6 +96,8 @@ abstract class LeagueDetail
 
   List<_iyvw479e.LeagueStanding> standings;
 
+  _iomiitux.LeagueChallenge challenge;
+
   /// The caller's friend battles in this league: active ones, then the most
   /// recent finished ones.
   List<_i0oqzm9q.DuelView> duels;
@@ -90,6 +106,9 @@ abstract class LeagueDetail
   String? lastSeasonWinner;
 
   int? lastSeasonYourRank;
+
+  /// Whether last week's team challenge was met (and paid out).
+  bool? lastChallengeCompleted;
 
   /// Returns a shallow copy of this [LeagueDetail]
   /// with some or all fields replaced by the given arguments.
@@ -102,9 +121,11 @@ abstract class LeagueDetail
     DateTime? seasonStartsAt,
     DateTime? seasonEndsAt,
     List<_iyvw479e.LeagueStanding>? standings,
+    _iomiitux.LeagueChallenge? challenge,
     List<_i0oqzm9q.DuelView>? duels,
     String? lastSeasonWinner,
     int? lastSeasonYourRank,
+    bool? lastChallengeCompleted,
   });
   @override
   Map<String, dynamic> toJson() {
@@ -117,9 +138,12 @@ abstract class LeagueDetail
       'seasonStartsAt': seasonStartsAt.toJson(),
       'seasonEndsAt': seasonEndsAt.toJson(),
       'standings': standings.toJson(valueToJson: (v) => v.toJson()),
+      'challenge': challenge.toJson(),
       'duels': duels.toJson(valueToJson: (v) => v.toJson()),
       if (lastSeasonWinner != null) 'lastSeasonWinner': lastSeasonWinner,
       if (lastSeasonYourRank != null) 'lastSeasonYourRank': lastSeasonYourRank,
+      if (lastChallengeCompleted != null)
+        'lastChallengeCompleted': lastChallengeCompleted,
     };
   }
 
@@ -134,9 +158,12 @@ abstract class LeagueDetail
       'seasonStartsAt': seasonStartsAt.toJson(),
       'seasonEndsAt': seasonEndsAt.toJson(),
       'standings': standings.toJson(valueToJson: (v) => v.toJsonForProtocol()),
+      'challenge': challenge.toJsonForProtocol(),
       'duels': duels.toJson(valueToJson: (v) => v.toJsonForProtocol()),
       if (lastSeasonWinner != null) 'lastSeasonWinner': lastSeasonWinner,
       if (lastSeasonYourRank != null) 'lastSeasonYourRank': lastSeasonYourRank,
+      if (lastChallengeCompleted != null)
+        'lastChallengeCompleted': lastChallengeCompleted,
     };
   }
 
@@ -157,9 +184,11 @@ class _LeagueDetailImpl extends LeagueDetail {
     required DateTime seasonStartsAt,
     required DateTime seasonEndsAt,
     required List<_iyvw479e.LeagueStanding> standings,
+    required _iomiitux.LeagueChallenge challenge,
     required List<_i0oqzm9q.DuelView> duels,
     String? lastSeasonWinner,
     int? lastSeasonYourRank,
+    bool? lastChallengeCompleted,
   }) : super._(
          id: id,
          name: name,
@@ -168,9 +197,11 @@ class _LeagueDetailImpl extends LeagueDetail {
          seasonStartsAt: seasonStartsAt,
          seasonEndsAt: seasonEndsAt,
          standings: standings,
+         challenge: challenge,
          duels: duels,
          lastSeasonWinner: lastSeasonWinner,
          lastSeasonYourRank: lastSeasonYourRank,
+         lastChallengeCompleted: lastChallengeCompleted,
        );
 
   /// Returns a shallow copy of this [LeagueDetail]
@@ -185,9 +216,11 @@ class _LeagueDetailImpl extends LeagueDetail {
     DateTime? seasonStartsAt,
     DateTime? seasonEndsAt,
     List<_iyvw479e.LeagueStanding>? standings,
+    _iomiitux.LeagueChallenge? challenge,
     List<_i0oqzm9q.DuelView>? duels,
     Object? lastSeasonWinner = _Undefined,
     Object? lastSeasonYourRank = _Undefined,
+    Object? lastChallengeCompleted = _Undefined,
   }) {
     return LeagueDetail(
       id: id ?? this.id,
@@ -198,6 +231,7 @@ class _LeagueDetailImpl extends LeagueDetail {
       seasonEndsAt: seasonEndsAt ?? this.seasonEndsAt,
       standings:
           standings ?? this.standings.map((e0) => e0.copyWith()).toList(),
+      challenge: challenge ?? this.challenge.copyWith(),
       duels: duels ?? this.duels.map((e0) => e0.copyWith()).toList(),
       lastSeasonWinner: lastSeasonWinner is String?
           ? lastSeasonWinner
@@ -205,6 +239,9 @@ class _LeagueDetailImpl extends LeagueDetail {
       lastSeasonYourRank: lastSeasonYourRank is int?
           ? lastSeasonYourRank
           : this.lastSeasonYourRank,
+      lastChallengeCompleted: lastChallengeCompleted is bool?
+          ? lastChallengeCompleted
+          : this.lastChallengeCompleted,
     );
   }
 }

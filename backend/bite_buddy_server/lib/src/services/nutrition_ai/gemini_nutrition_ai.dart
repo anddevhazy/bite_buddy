@@ -34,8 +34,81 @@ class GeminiNutritionAi implements NutritionAiProvider {
     'propertyOrdering': nutritionFields.keys.toList(),
   };
 
+  // Turns a standard JSON schema into Gemini's format: upper-case types, no
+  // additionalProperties, and properties kept in the order given
+  static Map<String, dynamic> toGeminiSchema(Map<String, dynamic> schema) => {
+    for (final MapEntry(:key, :value) in schema.entries)
+      if (key == 'type')
+        key: (value as String).toUpperCase()
+      else if (key == 'properties')
+        key: {
+          for (final p in (value as Map<String, dynamic>).entries)
+            p.key: toGeminiSchema(p.value as Map<String, dynamic>),
+        }
+      else if (key == 'items')
+        key: toGeminiSchema(value as Map<String, dynamic>)
+      else if (key != 'additionalProperties')
+        key: value,
+    if (schema['properties'] case final Map<String, dynamic> properties)
+      'propertyOrdering': properties.keys.toList(),
+  };
+
   @override
   Future<NutritionAnalysis> analyze(Session session, Uint8List jpeg) async {
+    final text = await _generate(
+      session,
+      system: nutritionSystemPrompt,
+      parts: [
+        {
+          'inlineData': {'mimeType': 'image/jpeg', 'data': base64Encode(jpeg)},
+        },
+        {'text': nutritionUserPrompt},
+      ],
+      schema: _schema,
+    );
+    try {
+      return NutritionAnalysis.fromJson(
+        jsonDecode(text) as Map<String, dynamic>,
+      );
+    } on FormatException {
+      session.log('Gemini returned invalid JSON: $text', level: LogLevel.error);
+      throw scannerUnavailable();
+    } on TypeError {
+      session.log('Gemini JSON missing fields: $text', level: LogLevel.error);
+      throw scannerUnavailable();
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> generateJson(
+    Session session, {
+    required String system,
+    required String prompt,
+    required Map<String, dynamic> schema,
+  }) async {
+    final text = await _generate(
+      session,
+      system: system,
+      parts: [
+        {'text': prompt},
+      ],
+      schema: toGeminiSchema(schema),
+    );
+    try {
+      return jsonDecode(text) as Map<String, dynamic>;
+    } on FormatException {
+      session.log('Gemini returned invalid JSON: $text', level: LogLevel.error);
+      throw scannerUnavailable();
+    }
+  }
+
+  // Sends one request and returns the answer's text
+  Future<String> _generate(
+    Session session, {
+    required String system,
+    required List<Map<String, dynamic>> parts,
+    required Map<String, dynamic> schema,
+  }) async {
     final apiKey = requirePassword(session, 'geminiApiKey');
     final model = session.passwords['geminiModel'] ?? defaultModel;
 
@@ -51,26 +124,15 @@ class GeminiNutritionAi implements NutritionAiProvider {
       body: jsonEncode({
         'systemInstruction': {
           'parts': [
-            {'text': nutritionSystemPrompt},
+            {'text': system},
           ],
         },
         'contents': [
-          {
-            'role': 'user',
-            'parts': [
-              {
-                'inlineData': {
-                  'mimeType': 'image/jpeg',
-                  'data': base64Encode(jpeg),
-                },
-              },
-              {'text': nutritionUserPrompt},
-            ],
-          },
+          {'role': 'user', 'parts': parts},
         ],
         'generationConfig': {
           'responseMimeType': 'application/json',
-          'responseSchema': _schema,
+          'responseSchema': schema,
         },
       }),
     );
@@ -81,7 +143,7 @@ class GeminiNutritionAi implements NutritionAiProvider {
     final blockReason = (json['promptFeedback'] as Map?)?['blockReason'];
     if (blockReason != null) {
       session.log(
-        'Gemini blocked the scan: $blockReason',
+        'Gemini blocked the request: $blockReason',
         level: LogLevel.info,
       );
       throw photoDeclined();
@@ -104,24 +166,13 @@ class GeminiNutritionAi implements NutritionAiProvider {
     }
 
     // Skip any thought parts; the JSON is in the answer text
-    final parts = ((candidate['content'] as Map?)?['parts'] as List? ?? [])
+    final answer = ((candidate['content'] as Map?)?['parts'] as List? ?? [])
         .cast<Map<String, dynamic>>();
-    final text = parts
+    final text = answer
         .where((p) => p['thought'] != true && p['text'] is String)
         .map((p) => p['text'] as String)
         .join();
     if (text.isEmpty) throw scannerUnavailable();
-
-    try {
-      return NutritionAnalysis.fromJson(
-        jsonDecode(text) as Map<String, dynamic>,
-      );
-    } on FormatException {
-      session.log('Gemini returned invalid JSON: $text', level: LogLevel.error);
-      throw scannerUnavailable();
-    } on TypeError {
-      session.log('Gemini JSON missing fields: $text', level: LogLevel.error);
-      throw scannerUnavailable();
-    }
+    return text;
   }
 }

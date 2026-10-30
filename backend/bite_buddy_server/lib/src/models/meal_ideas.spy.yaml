@@ -1,0 +1,14 @@
+### Today's AI meal ideas for one user, cached so the AI is asked at most
+### once a day.
+class: MealIdeas
+table: meal_ideas
+fields:
+  ownerId: UuidValue
+  ### The owner's local day (UTC midnight).
+  day: DateTime
+  ideas: List<MealSuggestion>
+  createdAt: DateTime
+indexes:
+  meal_ideas_owner_day_idx:
+    fields: ownerId, day
+    unique: true

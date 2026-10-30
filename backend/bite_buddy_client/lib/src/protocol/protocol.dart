@@ -17,12 +17,20 @@ import 'package:bite_buddy_client/src/protocol/league/league_summary.dart'
     as _i4dmvkfy;
 import 'package:bite_buddy_client/src/protocol/league/trophy.dart' as _iaaiiecv;
 import 'package:bite_buddy_client/src/protocol/meal.dart' as _is4r12e0;
+import 'package:bite_buddy_client/src/protocol/meal_suggestion.dart'
+    as _i98wybr7;
 import 'package:bite_buddy_client/src/protocol/pet_species.dart' as _i12uia3s;
+import 'package:bite_buddy_client/src/protocol/streak/streak_buddy_view.dart'
+    as _is2ga6uj;
+import 'package:bite_buddy_client/src/protocol/streak/streak_friend.dart'
+    as _ik6csu2n;
 import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
     as _iacc;
 import 'package:serverpod_auth_idp_client/serverpod_auth_idp_client.dart'
     as _iaic;
 import 'package:serverpod_client/serverpod_client.dart' as _isc;
+import 'activity/activity_day.dart' as _igd8tknp;
+import 'activity/activity_sync_result.dart' as _i2m60d3i;
 import 'arena.dart' as _iwiby7qv;
 import 'arena_rules.dart' as _ildu9ri2;
 import 'arena_run.dart' as _isxurcys;
@@ -41,6 +49,7 @@ import 'league/duel_round_view.dart' as _iwzwahda;
 import 'league/duel_status.dart' as _i1rc3le2;
 import 'league/duel_view.dart' as _ihf53btn;
 import 'league/league.dart' as _iu6wab7g;
+import 'league/league_challenge.dart' as _it8j4sh6;
 import 'league/league_detail.dart' as _i535uegq;
 import 'league/league_member.dart' as _ixajhlyi;
 import 'league/league_standing.dart' as _itpdgapo;
@@ -48,10 +57,18 @@ import 'league/league_summary.dart' as _idqobzdi;
 import 'league/season_result.dart' as _i7znqzmr;
 import 'league/trophy.dart' as _ij1ocmo2;
 import 'meal.dart' as _ixnoudrx;
+import 'meal_ideas.dart' as _igmlprfo;
+import 'meal_suggestion.dart' as _iymppxeh;
 import 'nutrition_insights.dart' as _ik434gbd;
 import 'opponent.dart' as _i2ot5zrj;
 import 'pet.dart' as _ie9pyd3w;
 import 'pet_species.dart' as _it7bnlgl;
+import 'streak/streak_buddy.dart' as _igrz7ax7;
+import 'streak/streak_buddy_status.dart' as _io8ln7w8;
+import 'streak/streak_buddy_view.dart' as _i5rddhms;
+import 'streak/streak_friend.dart' as _ifaru43m;
+export 'activity/activity_day.dart';
+export 'activity/activity_sync_result.dart';
 export 'arena.dart';
 export 'arena_rules.dart';
 export 'arena_run.dart';
@@ -70,6 +87,7 @@ export 'league/duel_round_view.dart';
 export 'league/duel_status.dart';
 export 'league/duel_view.dart';
 export 'league/league.dart';
+export 'league/league_challenge.dart';
 export 'league/league_detail.dart';
 export 'league/league_member.dart';
 export 'league/league_standing.dart';
@@ -77,10 +95,16 @@ export 'league/league_summary.dart';
 export 'league/season_result.dart';
 export 'league/trophy.dart';
 export 'meal.dart';
+export 'meal_ideas.dart';
+export 'meal_suggestion.dart';
 export 'nutrition_insights.dart';
 export 'opponent.dart';
 export 'pet.dart';
 export 'pet_species.dart';
+export 'streak/streak_buddy.dart';
+export 'streak/streak_buddy_status.dart';
+export 'streak/streak_buddy_view.dart';
+export 'streak/streak_friend.dart';
 export 'client.dart';
 
 class Protocol extends _isc.SerializationManager {
@@ -117,6 +141,12 @@ class Protocol extends _isc.SerializationManager {
       }
     }
 
+    if (t == _igd8tknp.ActivityDay) {
+      return _igd8tknp.ActivityDay.fromJson(data) as T;
+    }
+    if (t == _i2m60d3i.ActivitySyncResult) {
+      return _i2m60d3i.ActivitySyncResult.fromJson(data) as T;
+    }
     if (t == _iwiby7qv.Arena) {
       return _iwiby7qv.Arena.fromJson(data) as T;
     }
@@ -171,6 +201,9 @@ class Protocol extends _isc.SerializationManager {
     if (t == _iu6wab7g.League) {
       return _iu6wab7g.League.fromJson(data) as T;
     }
+    if (t == _it8j4sh6.LeagueChallenge) {
+      return _it8j4sh6.LeagueChallenge.fromJson(data) as T;
+    }
     if (t == _i535uegq.LeagueDetail) {
       return _i535uegq.LeagueDetail.fromJson(data) as T;
     }
@@ -192,6 +225,12 @@ class Protocol extends _isc.SerializationManager {
     if (t == _ixnoudrx.Meal) {
       return _ixnoudrx.Meal.fromJson(data) as T;
     }
+    if (t == _igmlprfo.MealIdeas) {
+      return _igmlprfo.MealIdeas.fromJson(data) as T;
+    }
+    if (t == _iymppxeh.MealSuggestion) {
+      return _iymppxeh.MealSuggestion.fromJson(data) as T;
+    }
     if (t == _ik434gbd.NutritionInsights) {
       return _ik434gbd.NutritionInsights.fromJson(data) as T;
     }
@@ -203,6 +242,25 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _it7bnlgl.PetSpecies) {
       return _it7bnlgl.PetSpecies.fromJson(data) as T;
+    }
+    if (t == _igrz7ax7.StreakBuddy) {
+      return _igrz7ax7.StreakBuddy.fromJson(data) as T;
+    }
+    if (t == _io8ln7w8.StreakBuddyStatus) {
+      return _io8ln7w8.StreakBuddyStatus.fromJson(data) as T;
+    }
+    if (t == _i5rddhms.StreakBuddyView) {
+      return _i5rddhms.StreakBuddyView.fromJson(data) as T;
+    }
+    if (t == _ifaru43m.StreakFriend) {
+      return _ifaru43m.StreakFriend.fromJson(data) as T;
+    }
+    if (t == _isc.getType<_igd8tknp.ActivityDay?>()) {
+      return (data != null ? _igd8tknp.ActivityDay.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_i2m60d3i.ActivitySyncResult?>()) {
+      return (data != null ? _i2m60d3i.ActivitySyncResult.fromJson(data) : null)
+          as T;
     }
     if (t == _isc.getType<_iwiby7qv.Arena?>()) {
       return (data != null ? _iwiby7qv.Arena.fromJson(data) : null) as T;
@@ -265,6 +323,10 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_iu6wab7g.League?>()) {
       return (data != null ? _iu6wab7g.League.fromJson(data) : null) as T;
     }
+    if (t == _isc.getType<_it8j4sh6.LeagueChallenge?>()) {
+      return (data != null ? _it8j4sh6.LeagueChallenge.fromJson(data) : null)
+          as T;
+    }
     if (t == _isc.getType<_i535uegq.LeagueDetail?>()) {
       return (data != null ? _i535uegq.LeagueDetail.fromJson(data) : null) as T;
     }
@@ -288,6 +350,13 @@ class Protocol extends _isc.SerializationManager {
     if (t == _isc.getType<_ixnoudrx.Meal?>()) {
       return (data != null ? _ixnoudrx.Meal.fromJson(data) : null) as T;
     }
+    if (t == _isc.getType<_igmlprfo.MealIdeas?>()) {
+      return (data != null ? _igmlprfo.MealIdeas.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_iymppxeh.MealSuggestion?>()) {
+      return (data != null ? _iymppxeh.MealSuggestion.fromJson(data) : null)
+          as T;
+    }
     if (t == _isc.getType<_ik434gbd.NutritionInsights?>()) {
       return (data != null ? _ik434gbd.NutritionInsights.fromJson(data) : null)
           as T;
@@ -300,6 +369,20 @@ class Protocol extends _isc.SerializationManager {
     }
     if (t == _isc.getType<_it7bnlgl.PetSpecies?>()) {
       return (data != null ? _it7bnlgl.PetSpecies.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_igrz7ax7.StreakBuddy?>()) {
+      return (data != null ? _igrz7ax7.StreakBuddy.fromJson(data) : null) as T;
+    }
+    if (t == _isc.getType<_io8ln7w8.StreakBuddyStatus?>()) {
+      return (data != null ? _io8ln7w8.StreakBuddyStatus.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_i5rddhms.StreakBuddyView?>()) {
+      return (data != null ? _i5rddhms.StreakBuddyView.fromJson(data) : null)
+          as T;
+    }
+    if (t == _isc.getType<_ifaru43m.StreakFriend?>()) {
+      return (data != null ? _ifaru43m.StreakFriend.fromJson(data) : null) as T;
     }
     if (t == List<_i2ot5zrj.Opponent>) {
       return (data as List)
@@ -322,6 +405,12 @@ class Protocol extends _isc.SerializationManager {
     if (t == List<_ihf53btn.DuelView>) {
       return (data as List)
               .map((e) => deserialize<_ihf53btn.DuelView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_iymppxeh.MealSuggestion>) {
+      return (data as List)
+              .map((e) => deserialize<_iymppxeh.MealSuggestion>(e))
               .toList()
           as T;
     }
@@ -350,9 +439,27 @@ class Protocol extends _isc.SerializationManager {
       return (data as List).map((e) => deserialize<_is4r12e0.Meal>(e)).toList()
           as T;
     }
+    if (t == List<_i98wybr7.MealSuggestion>) {
+      return (data as List)
+              .map((e) => deserialize<_i98wybr7.MealSuggestion>(e))
+              .toList()
+          as T;
+    }
     if (t == List<_i12uia3s.PetSpecies>) {
       return (data as List)
               .map((e) => deserialize<_i12uia3s.PetSpecies>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_is2ga6uj.StreakBuddyView>) {
+      return (data as List)
+              .map((e) => deserialize<_is2ga6uj.StreakBuddyView>(e))
+              .toList()
+          as T;
+    }
+    if (t == List<_ik6csu2n.StreakFriend>) {
+      return (data as List)
+              .map((e) => deserialize<_ik6csu2n.StreakFriend>(e))
               .toList()
           as T;
     }
@@ -367,6 +474,8 @@ class Protocol extends _isc.SerializationManager {
 
   static String? getClassNameForType(Type type) {
     return switch (type) {
+      _igd8tknp.ActivityDay => 'ActivityDay',
+      _i2m60d3i.ActivitySyncResult => 'ActivitySyncResult',
       _iwiby7qv.Arena => 'Arena',
       _ildu9ri2.ArenaRules => 'ArenaRules',
       _isxurcys.ArenaRun => 'ArenaRun',
@@ -385,6 +494,7 @@ class Protocol extends _isc.SerializationManager {
       _i1rc3le2.DuelStatus => 'DuelStatus',
       _ihf53btn.DuelView => 'DuelView',
       _iu6wab7g.League => 'League',
+      _it8j4sh6.LeagueChallenge => 'LeagueChallenge',
       _i535uegq.LeagueDetail => 'LeagueDetail',
       _ixajhlyi.LeagueMember => 'LeagueMember',
       _itpdgapo.LeagueStanding => 'LeagueStanding',
@@ -392,10 +502,16 @@ class Protocol extends _isc.SerializationManager {
       _i7znqzmr.SeasonResult => 'SeasonResult',
       _ij1ocmo2.Trophy => 'Trophy',
       _ixnoudrx.Meal => 'Meal',
+      _igmlprfo.MealIdeas => 'MealIdeas',
+      _iymppxeh.MealSuggestion => 'MealSuggestion',
       _ik434gbd.NutritionInsights => 'NutritionInsights',
       _i2ot5zrj.Opponent => 'Opponent',
       _ie9pyd3w.Pet => 'Pet',
       _it7bnlgl.PetSpecies => 'PetSpecies',
+      _igrz7ax7.StreakBuddy => 'StreakBuddy',
+      _io8ln7w8.StreakBuddyStatus => 'StreakBuddyStatus',
+      _i5rddhms.StreakBuddyView => 'StreakBuddyView',
+      _ifaru43m.StreakFriend => 'StreakFriend',
       _ => null,
     };
   }
@@ -410,6 +526,10 @@ class Protocol extends _isc.SerializationManager {
     }
 
     switch (data) {
+      case _igd8tknp.ActivityDay():
+        return 'ActivityDay';
+      case _i2m60d3i.ActivitySyncResult():
+        return 'ActivitySyncResult';
       case _iwiby7qv.Arena():
         return 'Arena';
       case _ildu9ri2.ArenaRules():
@@ -446,6 +566,8 @@ class Protocol extends _isc.SerializationManager {
         return 'DuelView';
       case _iu6wab7g.League():
         return 'League';
+      case _it8j4sh6.LeagueChallenge():
+        return 'LeagueChallenge';
       case _i535uegq.LeagueDetail():
         return 'LeagueDetail';
       case _ixajhlyi.LeagueMember():
@@ -460,6 +582,10 @@ class Protocol extends _isc.SerializationManager {
         return 'Trophy';
       case _ixnoudrx.Meal():
         return 'Meal';
+      case _igmlprfo.MealIdeas():
+        return 'MealIdeas';
+      case _iymppxeh.MealSuggestion():
+        return 'MealSuggestion';
       case _ik434gbd.NutritionInsights():
         return 'NutritionInsights';
       case _i2ot5zrj.Opponent():
@@ -468,6 +594,14 @@ class Protocol extends _isc.SerializationManager {
         return 'Pet';
       case _it7bnlgl.PetSpecies():
         return 'PetSpecies';
+      case _igrz7ax7.StreakBuddy():
+        return 'StreakBuddy';
+      case _io8ln7w8.StreakBuddyStatus():
+        return 'StreakBuddyStatus';
+      case _i5rddhms.StreakBuddyView():
+        return 'StreakBuddyView';
+      case _ifaru43m.StreakFriend():
+        return 'StreakFriend';
     }
     className = _iaic.Protocol().getClassNameForObject(data);
     if (className != null) {
@@ -489,6 +623,12 @@ class Protocol extends _isc.SerializationManager {
     var dataClassName = data['className'];
     if (dataClassName is! String) {
       return super.deserializeByClassName(data);
+    }
+    if (dataClassName == 'ActivityDay') {
+      return deserialize<_igd8tknp.ActivityDay>(data['data']);
+    }
+    if (dataClassName == 'ActivitySyncResult') {
+      return deserialize<_i2m60d3i.ActivitySyncResult>(data['data']);
     }
     if (dataClassName == 'Arena') {
       return deserialize<_iwiby7qv.Arena>(data['data']);
@@ -544,6 +684,9 @@ class Protocol extends _isc.SerializationManager {
     if (dataClassName == 'League') {
       return deserialize<_iu6wab7g.League>(data['data']);
     }
+    if (dataClassName == 'LeagueChallenge') {
+      return deserialize<_it8j4sh6.LeagueChallenge>(data['data']);
+    }
     if (dataClassName == 'LeagueDetail') {
       return deserialize<_i535uegq.LeagueDetail>(data['data']);
     }
@@ -565,6 +708,12 @@ class Protocol extends _isc.SerializationManager {
     if (dataClassName == 'Meal') {
       return deserialize<_ixnoudrx.Meal>(data['data']);
     }
+    if (dataClassName == 'MealIdeas') {
+      return deserialize<_igmlprfo.MealIdeas>(data['data']);
+    }
+    if (dataClassName == 'MealSuggestion') {
+      return deserialize<_iymppxeh.MealSuggestion>(data['data']);
+    }
     if (dataClassName == 'NutritionInsights') {
       return deserialize<_ik434gbd.NutritionInsights>(data['data']);
     }
@@ -576,6 +725,18 @@ class Protocol extends _isc.SerializationManager {
     }
     if (dataClassName == 'PetSpecies') {
       return deserialize<_it7bnlgl.PetSpecies>(data['data']);
+    }
+    if (dataClassName == 'StreakBuddy') {
+      return deserialize<_igrz7ax7.StreakBuddy>(data['data']);
+    }
+    if (dataClassName == 'StreakBuddyStatus') {
+      return deserialize<_io8ln7w8.StreakBuddyStatus>(data['data']);
+    }
+    if (dataClassName == 'StreakBuddyView') {
+      return deserialize<_i5rddhms.StreakBuddyView>(data['data']);
+    }
+    if (dataClassName == 'StreakFriend') {
+      return deserialize<_ifaru43m.StreakFriend>(data['data']);
     }
     if (dataClassName.startsWith('serverpod_auth_idp.')) {
       data['className'] = dataClassName.substring(19);

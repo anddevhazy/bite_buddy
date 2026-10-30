@@ -1,0 +1,8 @@
+### A meal idea that fills a gap in the pet's week.
+class: MealSuggestion
+fields:
+  name: String
+  ### One short sentence on why it helps.
+  reason: String
+  ### The nutrients it boosts, e.g. protein, fiber.
+  boosts: List<String>

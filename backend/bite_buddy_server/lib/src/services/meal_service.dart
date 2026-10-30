@@ -5,17 +5,25 @@ import 'package:serverpod/serverpod.dart';
 
 import '../errors/app_errors.dart';
 import '../generated/protocol.dart';
+import '../utils/meal_ideas.dart';
 import '../utils/nutrition_insights.dart';
 import '../utils/photo_fingerprint.dart';
 import '../utils/pet_stats.dart' as stats;
+import '../utils/shared_streak.dart';
 import 'nutrition_ai_service.dart';
 import 'pet_service.dart';
+import 'streak_service.dart';
 
 class MealService {
   final NutritionAiService ai;
   final PetService pets;
+  final StreakService streaks;
 
-  const MealService({required this.ai, required this.pets});
+  const MealService({
+    required this.ai,
+    required this.pets,
+    required this.streaks,
+  });
 
   static const int maxImageBytes = 4 * 1024 * 1024;
   // Real phone photos are never this small; tiny images are usually thumbnails
@@ -142,7 +150,9 @@ class MealService {
     int mealId,
     int utcOffsetMinutes,
   ) async {
-    return session.db.transaction((transaction) async {
+    final (result, friendsToPay) = await session.db.transaction((
+      transaction,
+    ) async {
       final meal = await Meal.db.findById(
         session,
         mealId,
@@ -190,9 +200,18 @@ class MealService {
         utcOffsetMinutes: utcOffsetMinutes,
       );
 
+      final grew = await streaks.recordFeed(
+        session,
+        ownerId,
+        result.pet.lastStreakDay!,
+        transaction,
+      );
+
       final savedPet = await Pet.db.updateRow(
         session,
-        result.pet,
+        result.pet.copyWith(
+          coins: result.pet.coins + grew.length * sharedStreakCoins,
+        ),
         transaction: transaction,
       );
       await Meal.db.updateRow(
@@ -201,8 +220,13 @@ class MealService {
         transaction: transaction,
       );
 
-      return result.copyWith(pet: savedPet);
+      return (
+        result.copyWith(pet: savedPet, sharedStreaksGrown: grew.length),
+        grew,
+      );
     });
+    await streaks.payFriends(session, friendsToPay);
+    return result;
   }
 
   Future<List<Meal>> history(Session session, UuidValue ownerId) {
@@ -231,6 +255,65 @@ class MealService {
       meals: meals,
       utcOffsetMinutes: pet.utcOffsetMinutes,
     );
+  }
+
+  // Today's meal ideas for the gaps in the pet's week, from the AI. Cached
+  // per local day, so the AI is asked at most once a day per user. If the AI
+  // is unavailable it falls back to simple ideas, which aren't cached.
+  Future<List<MealSuggestion>> ideas(
+    Session session,
+    UuidValue ownerId,
+    String locale,
+  ) async {
+    final pet = await pets.requireMine(session, ownerId);
+    final day = stats.localDay(DateTime.now(), pet.utcOffsetMinutes);
+    final cached = await MealIdeas.db.findFirstRow(
+      session,
+      where: (t) => t.ownerId.equals(ownerId) & t.day.equals(day),
+    );
+    if (cached != null) return cached.ideas;
+
+    final week = await insights(session, ownerId);
+    final recent = await Meal.db.find(
+      session,
+      where: (t) => t.ownerId.equals(ownerId) & t.fed.equals(true),
+      orderByList: (t) => [t.createdAt.desc()],
+      limit: 10,
+    );
+    final List<MealSuggestion> ideas;
+    try {
+      ideas = parseMealIdeas(
+        await ai.generateJson(
+          session,
+          system: mealIdeasSystemPrompt,
+          prompt: mealIdeasPrompt(
+            week: week,
+            recentMeals: {for (final m in recent) m.name}.toList(),
+            // Only a short tag like en_NG is useful; ignore anything else
+            locale: locale.length <= 20 ? locale : 'unknown',
+          ),
+          schema: mealIdeasSchema,
+        ),
+      );
+    } on BiteBuddyException {
+      return fallbackMealIdeas(week);
+    }
+    if (ideas.isEmpty) return fallbackMealIdeas(week);
+
+    try {
+      await MealIdeas.db.insertRow(
+        session,
+        MealIdeas(
+          ownerId: ownerId,
+          day: day,
+          ideas: ideas,
+          createdAt: DateTime.now().toUtc(),
+        ),
+      );
+    } on DatabaseUniqueViolationException {
+      // Another request cached today's ideas first; either set is fine
+    }
+    return ideas;
   }
 
   bool _isJpeg(Uint8List bytes) =>

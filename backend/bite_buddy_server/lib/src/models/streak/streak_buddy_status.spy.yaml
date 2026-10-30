@@ -1,0 +1,9 @@
+enum: StreakBuddyStatus
+serialized: byName
+values:
+  ### Both friends accepted; the streak is running.
+  - active
+  ### The caller sent the invite and is waiting for the friend.
+  - invited
+  ### The friend invited the caller, who can accept or decline.
+  - incoming

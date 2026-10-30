@@ -1,3 +1,4 @@
+import 'package:bite_buddy/features/activity/presentation/bloc/activity_cubit.dart';
 import 'package:bite_buddy/features/auth/presentation/bloc/auth_cubit.dart';
 import 'package:bite_buddy/features/battle/presentation/bloc/battle_cubit.dart';
 import 'package:bite_buddy/features/collection/presentation/bloc/collection_cubit.dart';
@@ -5,10 +6,12 @@ import 'package:bite_buddy/features/global/components/splash_art.dart';
 import 'package:bite_buddy/features/global/constants/colors.dart';
 import 'package:bite_buddy/features/global/constants/text_styles.dart';
 import 'package:bite_buddy/features/global/routes/routes.dart';
+import 'package:bite_buddy/features/global/services/pet_widget_service.dart';
 import 'package:bite_buddy/features/insights/presentation/bloc/insights_cubit.dart';
 import 'package:bite_buddy/features/league/presentation/bloc/leagues_cubit.dart';
 import 'package:bite_buddy/features/pet/presentation/bloc/pet_cubit.dart';
 import 'package:bite_buddy/features/scanner/presentation/bloc/scanner_cubit.dart';
+import 'package:bite_buddy/features/streak/presentation/bloc/streaks_cubit.dart';
 import 'package:bite_buddy/service_locator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -44,17 +47,34 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => sl<BattleCubit>()),
         BlocProvider(create: (context) => sl<InsightsCubit>()),
         BlocProvider(create: (context) => sl<LeaguesCubit>()),
+        BlocProvider(create: (context) => sl<StreaksCubit>()),
+        BlocProvider(create: (context) => sl<ActivityCubit>()),
       ],
-      // Signing out, or the session expiring, sends the user back to sign in
-      child: BlocListener<AuthCubit, AuthState>(
-        listenWhen: (previous, current) =>
-            previous is Authenticated && current is Unauthenticated,
-        listener: (context, state) {
-          context.read<PetCubit>().reset();
-          context.read<InsightsCubit>().reset();
-          context.read<LeaguesCubit>().reset();
-          Routes.goToSignIn();
-        },
+      child: MultiBlocListener(
+        listeners: [
+          // Signing out, or the session expiring, sends the user back to
+          // sign in
+          BlocListener<AuthCubit, AuthState>(
+            listenWhen: (previous, current) =>
+                previous is Authenticated && current is Unauthenticated,
+            listener: (context, state) {
+              context.read<PetCubit>().reset();
+              context.read<InsightsCubit>().reset();
+              context.read<LeaguesCubit>().reset();
+              context.read<StreaksCubit>().reset();
+              context.read<ActivityCubit>().reset();
+              sl<PetWidgetService>().clear();
+              Routes.goToSignIn();
+            },
+          ),
+          // Every time the pet loads or changes, refresh the home widget
+          BlocListener<PetCubit, PetState>(
+            listenWhen: (previous, current) => current is PetLoaded,
+            listener: (context, state) {
+              if (state is PetLoaded) sl<PetWidgetService>().update(state.pet);
+            },
+          ),
+        ],
         child: ScreenUtilInit(
           designSize: const Size(360, 800),
           minTextAdapt: true,

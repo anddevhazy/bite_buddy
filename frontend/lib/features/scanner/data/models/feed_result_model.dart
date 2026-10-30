@@ -13,6 +13,7 @@ class FeedResultModel extends FeedResultEntity {
     required super.streakExtended,
     required super.streakBonusXp,
     required super.fullHealthBonusXp,
+    super.sharedStreaksGrown,
   });
 
   factory FeedResultModel.fromProtocol(FeedResult result) {
@@ -26,6 +27,7 @@ class FeedResultModel extends FeedResultEntity {
       streakExtended: result.streakExtended,
       streakBonusXp: result.streakBonusXp,
       fullHealthBonusXp: result.fullHealthBonusXp,
+      sharedStreaksGrown: result.sharedStreaksGrown,
     );
   }
 }

@@ -34,6 +34,50 @@ class ClaudeNutritionAi implements NutritionAiProvider {
 
   @override
   Future<NutritionAnalysis> analyze(Session session, Uint8List jpeg) async {
+    final text = await _generate(
+      session,
+      system: nutritionSystemPrompt,
+      content: [
+        {
+          'type': 'image',
+          'source': {
+            'type': 'base64',
+            'media_type': 'image/jpeg',
+            'data': base64Encode(jpeg),
+          },
+        },
+        {'type': 'text', 'text': nutritionUserPrompt},
+      ],
+      schema: _schema,
+    );
+    return NutritionAnalysis.fromJson(jsonDecode(text) as Map<String, dynamic>);
+  }
+
+  @override
+  Future<Map<String, dynamic>> generateJson(
+    Session session, {
+    required String system,
+    required String prompt,
+    required Map<String, dynamic> schema,
+  }) async {
+    final text = await _generate(
+      session,
+      system: system,
+      content: [
+        {'type': 'text', 'text': prompt},
+      ],
+      schema: schema,
+    );
+    return jsonDecode(text) as Map<String, dynamic>;
+  }
+
+  // Sends one message and returns the answer's text
+  Future<String> _generate(
+    Session session, {
+    required String system,
+    required List<Map<String, dynamic>> content,
+    required Map<String, dynamic> schema,
+  }) async {
     final apiKey = requirePassword(session, 'anthropicApiKey');
     final model = session.passwords['claudeModel'] ?? defaultModel;
 
@@ -52,24 +96,11 @@ class ClaudeNutritionAi implements NutritionAiProvider {
         'max_tokens': 16000,
         'output_config': {
           'effort': 'medium',
-          'format': {'type': 'json_schema', 'schema': _schema},
+          'format': {'type': 'json_schema', 'schema': schema},
         },
-        'system': nutritionSystemPrompt,
+        'system': system,
         'messages': [
-          {
-            'role': 'user',
-            'content': [
-              {
-                'type': 'image',
-                'source': {
-                  'type': 'base64',
-                  'media_type': 'image/jpeg',
-                  'data': base64Encode(jpeg),
-                },
-              },
-              {'type': 'text', 'text': nutritionUserPrompt},
-            ],
-          },
+          {'role': 'user', 'content': content},
         ],
       }),
     );
@@ -79,19 +110,16 @@ class ClaudeNutritionAi implements NutritionAiProvider {
     final stopReason = json['stop_reason'];
     if (stopReason == 'refusal') throw photoDeclined();
     if (stopReason == 'max_tokens') {
-      session.log('Food scan hit max_tokens', level: LogLevel.warning);
+      session.log('Claude hit max_tokens', level: LogLevel.warning);
       throw scannerUnavailable();
     }
 
     // Thinking blocks come first; the JSON is in the text block
-    final content = (json['content'] as List).cast<Map<String, dynamic>>();
-    final text =
-        content.firstWhere(
-              (b) => b['type'] == 'text',
-              orElse: () => throw scannerUnavailable(),
-            )['text']
-            as String;
-
-    return NutritionAnalysis.fromJson(jsonDecode(text) as Map<String, dynamic>);
+    final blocks = (json['content'] as List).cast<Map<String, dynamic>>();
+    return blocks.firstWhere(
+          (b) => b['type'] == 'text',
+          orElse: () => throw scannerUnavailable(),
+        )['text']
+        as String;
   }
 }

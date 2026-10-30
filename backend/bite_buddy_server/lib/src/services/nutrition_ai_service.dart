@@ -24,7 +24,19 @@ class NutritionAiService {
           providers ??
           {'gemini': GeminiNutritionAi(), 'claude': ClaudeNutritionAi()};
 
-  Future<NutritionAnalysis> analyze(Session session, Uint8List jpeg) {
+  Future<NutritionAnalysis> analyze(Session session, Uint8List jpeg) =>
+      _provider(session).analyze(session, jpeg);
+
+  Future<Map<String, dynamic>> generateJson(
+    Session session, {
+    required String system,
+    required String prompt,
+    required Map<String, dynamic> schema,
+  }) => _provider(
+    session,
+  ).generateJson(session, system: system, prompt: prompt, schema: schema);
+
+  NutritionAiProvider _provider(Session session) {
     final name = session.passwords['nutritionAiProvider'] ?? defaultProvider;
     final provider = _providers[name];
     if (provider == null) {
@@ -35,6 +47,6 @@ class NutritionAiService {
       );
       throw scannerUnavailable();
     }
-    return provider.analyze(session, jpeg);
+    return provider;
   }
 }

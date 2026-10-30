@@ -98,6 +98,8 @@ class GuideContent {
       summary: 'Your reward for winning battles.',
       points: [
         'Win a week in a friend league for 500 coins.',
+        'Meet your league\'s weekly team challenge for 150 coins each.',
+        'Every day a shared streak grows, you and your friend get 5 coins.',
         'Each opponent pays a set number of coins when you beat it, shown on '
             'its card in the Battle Arena. Tougher opponents pay more.',
         'Losing a battle pays nothing.',
@@ -245,6 +247,80 @@ class GuideContent {
             'on the days you ate.',
         'The tips point out what is most worth improving, like a nutrient you '
             'are low on.',
+      ],
+    ),
+    GuideTopic(
+      id: GuideTopicId.mealIdeas,
+      emoji: '🥗',
+      title: 'Meal ideas',
+      summary: 'Meals that fill the gaps in your week.',
+      points: [
+        'Tap "Meal ideas" on the weekly summary to get 3 ideas for today.',
+        'They aim at whatever you were low on this week, like protein or '
+            'fiber, and lean toward food from your country and dishes you '
+            'already eat.',
+        'You get a new set each day. If the AI is busy, you get simpler '
+            'ideas instead; try again later for fresh ones.',
+        "They're ideas, not medical advice. Eat what works for you.",
+      ],
+    ),
+    GuideTopic(
+      id: GuideTopicId.sharedStreaks,
+      emoji: '🤝',
+      title: 'Shared streaks',
+      summary: 'A streak you keep alive with a friend.',
+      points: [
+        'Invite a friend from one of your leagues from the Shared streaks '
+            'card on My Pet. It starts once they accept.',
+        'A day only counts when you both feed your buddies. If one of you '
+            'misses a whole day, the shared streak goes back to 0.',
+        'Each day it grows, you both get 5 coins.',
+        'The card shows whether each of you has fed today, so you can nudge '
+            'your friend.',
+        'You can have up to 5 shared streaks, and end one at any time.',
+      ],
+    ),
+    GuideTopic(
+      id: GuideTopicId.teamChallenges,
+      emoji: '🎯',
+      title: 'Team challenges',
+      summary: 'A weekly goal the whole league works on together.',
+      points: [
+        'Each league gets a new challenge every Monday, like feeding a number '
+            'of good meals or finishing friend battles between you.',
+        'Everyone\'s meals and battles count toward it. The bigger the '
+            'league, the bigger the target.',
+        'If the league meets it by the end of the season, every member gets '
+            '150 coins, on top of the prize for winning the week.',
+        'Leagues need at least 2 members for the reward.',
+      ],
+    ),
+    GuideTopic(
+      id: GuideTopicId.activity,
+      emoji: '👟',
+      title: 'Steps and sleep',
+      summary: 'Moving and sleeping well boost your buddy.',
+      points: [
+        'Connect Health Connect (Android) or Apple Health (iPhone) from the '
+            'Steps and sleep card on My Pet. Bite Buddy only reads your steps '
+            'and sleep.',
+        'Every 1,000 steps today gives your buddy 1 energy, up to 10 a day.',
+        'Sleeping 7 hours or more gives your buddy 5 health, once a day.',
+        'Your numbers update whenever you open My Pet or pull to refresh.',
+      ],
+    ),
+    GuideTopic(
+      id: GuideTopicId.homeWidget,
+      emoji: '📱',
+      title: 'Home-screen widget',
+      summary: 'See how your buddy is doing without opening the app.',
+      points: [
+        'Long-press your home screen, tap Widgets, find Bite Buddy and drag it '
+            'onto the screen.',
+        'It shows your buddy, its mood and your streak. Your buddy gets '
+            'hungry 8 hours after its last meal, and the widget shows that '
+            'too.',
+        'It updates whenever you open the app.',
       ],
     ),
   ];

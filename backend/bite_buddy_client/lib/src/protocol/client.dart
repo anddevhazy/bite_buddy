@@ -12,6 +12,8 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _ida;
 import 'dart:typed_data' as _idt;
+import 'package:bite_buddy_client/src/protocol/activity/activity_sync_result.dart'
+    as _iy7hcr3x;
 import 'package:bite_buddy_client/src/protocol/arena.dart' as _ih1v9sxu;
 import 'package:bite_buddy_client/src/protocol/arena_run_config.dart'
     as _ipde2zlx;
@@ -31,10 +33,16 @@ import 'package:bite_buddy_client/src/protocol/league/league_summary.dart'
     as _i4dmvkfy;
 import 'package:bite_buddy_client/src/protocol/league/trophy.dart' as _iaaiiecv;
 import 'package:bite_buddy_client/src/protocol/meal.dart' as _is4r12e0;
+import 'package:bite_buddy_client/src/protocol/meal_suggestion.dart'
+    as _i98wybr7;
 import 'package:bite_buddy_client/src/protocol/nutrition_insights.dart'
     as _iwtty9ju;
 import 'package:bite_buddy_client/src/protocol/pet.dart' as _iqjbfwnu;
 import 'package:bite_buddy_client/src/protocol/pet_species.dart' as _i12uia3s;
+import 'package:bite_buddy_client/src/protocol/streak/streak_buddy_view.dart'
+    as _is2ga6uj;
+import 'package:bite_buddy_client/src/protocol/streak/streak_friend.dart'
+    as _ik6csu2n;
 import 'package:http/http.dart' as _i85jenna;
 import 'package:serverpod_auth_core_client/serverpod_auth_core_client.dart'
     as _iacc;
@@ -269,6 +277,28 @@ class EndpointJwtRefresh extends _iacc.EndpointRefreshJwtTokens {
 }
 
 /// {@category Endpoint}
+class EndpointActivity extends _isc.EndpointRef {
+  EndpointActivity(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'activity';
+
+  _ida.Future<_iy7hcr3x.ActivitySyncResult> sync(
+    int steps,
+    int sleepMinutes,
+    int utcOffsetMinutes,
+  ) => caller.callServerEndpoint<_iy7hcr3x.ActivitySyncResult>(
+    'activity',
+    'sync',
+    {
+      'steps': steps,
+      'sleepMinutes': sleepMinutes,
+      'utcOffsetMinutes': utcOffsetMinutes,
+    },
+  );
+}
+
+/// {@category Endpoint}
 class EndpointBattle extends _isc.EndpointRef {
   EndpointBattle(_isc.EndpointCaller caller) : super(caller);
 
@@ -444,6 +474,13 @@ class EndpointMeal extends _isc.EndpointRef {
         'insights',
         {},
       );
+
+  _ida.Future<List<_i98wybr7.MealSuggestion>> ideas(String locale) =>
+      caller.callServerEndpoint<List<_i98wybr7.MealSuggestion>>(
+        'meal',
+        'ideas',
+        {'locale': locale},
+      );
 }
 
 /// {@category Endpoint}
@@ -477,6 +514,48 @@ class EndpointPet extends _isc.EndpointRef {
       'speciesKey': speciesKey,
       'name': name,
     },
+  );
+}
+
+/// {@category Endpoint}
+class EndpointStreak extends _isc.EndpointRef {
+  EndpointStreak(_isc.EndpointCaller caller) : super(caller);
+
+  @override
+  String get name => 'streak';
+
+  _ida.Future<List<_is2ga6uj.StreakBuddyView>> mine() =>
+      caller.callServerEndpoint<List<_is2ga6uj.StreakBuddyView>>(
+        'streak',
+        'mine',
+        {},
+      );
+
+  _ida.Future<List<_ik6csu2n.StreakFriend>> candidates() =>
+      caller.callServerEndpoint<List<_ik6csu2n.StreakFriend>>(
+        'streak',
+        'candidates',
+        {},
+      );
+
+  _ida.Future<_is2ga6uj.StreakBuddyView> invite(_isc.UuidValue friendUserId) =>
+      caller.callServerEndpoint<_is2ga6uj.StreakBuddyView>(
+        'streak',
+        'invite',
+        {'friendUserId': friendUserId},
+      );
+
+  _ida.Future<_is2ga6uj.StreakBuddyView> accept(int streakId) =>
+      caller.callServerEndpoint<_is2ga6uj.StreakBuddyView>(
+        'streak',
+        'accept',
+        {'streakId': streakId},
+      );
+
+  _ida.Future<void> remove(int streakId) => caller.callServerEndpoint<void>(
+    'streak',
+    'remove',
+    {'streakId': streakId},
   );
 }
 
@@ -520,18 +599,22 @@ class Client extends _isc.ServerpodClientShared {
        ) {
     emailIdp = EndpointEmailIdp(this);
     jwtRefresh = EndpointJwtRefresh(this);
+    activity = EndpointActivity(this);
     battle = EndpointBattle(this);
     duel = EndpointDuel(this);
     leaderboard = EndpointLeaderboard(this);
     league = EndpointLeague(this);
     meal = EndpointMeal(this);
     pet = EndpointPet(this);
+    streak = EndpointStreak(this);
     modules = Modules(this);
   }
 
   late final EndpointEmailIdp emailIdp;
 
   late final EndpointJwtRefresh jwtRefresh;
+
+  late final EndpointActivity activity;
 
   late final EndpointBattle battle;
 
@@ -545,18 +628,22 @@ class Client extends _isc.ServerpodClientShared {
 
   late final EndpointPet pet;
 
+  late final EndpointStreak streak;
+
   late final Modules modules;
 
   @override
   Map<String, _isc.EndpointRef> get endpointRefLookup => {
     'emailIdp': emailIdp,
     'jwtRefresh': jwtRefresh,
+    'activity': activity,
     'battle': battle,
     'duel': duel,
     'leaderboard': leaderboard,
     'league': league,
     'meal': meal,
     'pet': pet,
+    'streak': streak,
   };
 
   @override

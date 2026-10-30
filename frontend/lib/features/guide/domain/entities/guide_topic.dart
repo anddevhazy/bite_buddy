@@ -16,6 +16,11 @@ enum GuideTopicId {
   friendBattles,
   leaderboard,
   weeklySummary,
+  mealIdeas,
+  sharedStreaks,
+  teamChallenges,
+  activity,
+  homeWidget,
 }
 
 // One section of the "How to play" guide

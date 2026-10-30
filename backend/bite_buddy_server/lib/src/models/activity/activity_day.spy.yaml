@@ -1,0 +1,18 @@
+### Steps and sleep from Apple Health or Health Connect for one local day,
+### and how much they've already boosted the pet, so a day pays out once.
+class: ActivityDay
+table: activity_day
+fields:
+  ownerId: UuidValue
+  ### The owner's local day (UTC midnight).
+  day: DateTime
+  steps: int
+  ### Sleep in the night that ended this morning.
+  sleepMinutes: int
+  energyAwarded: int
+  healthAwarded: int
+  updatedAt: DateTime
+indexes:
+  activity_day_owner_day_idx:
+    fields: ownerId, day
+    unique: true

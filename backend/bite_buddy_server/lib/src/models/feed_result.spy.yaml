@@ -14,3 +14,6 @@ fields:
   ### Healing past 100 health, turned into XP so a good meal is never wasted
   ### at full health. Already included in xpGained.
   fullHealthBonusXp: int
+  ### Shared streaks with friends that grew with this meal. Each one also
+  ### paid both friends a few coins, already included in pet.coins.
+  sharedStreaksGrown: int, default=0
