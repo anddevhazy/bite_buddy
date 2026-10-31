@@ -6,7 +6,7 @@ import '../generated/protocol.dart';
 const int mealIdeasCount = 3;
 
 const mealIdeasSystemPrompt = '''
-You suggest meals in Bite Buddy, a game where people feed a virtual pet with photos of the meals they eat. Suggest simple, affordable, everyday meals that fill the gaps in the user's week. Match the food culture of the user's country (from their locale) and the kinds of dishes they already eat, so the ideas feel familiar and easy to find or cook. Each name is a short dish name. Each reason is one friendly sentence of at most 15 words that says which gap it fills. boosts lists the nutrients it raises, from: protein, carbs, fats, vitamins, minerals, fiber.''';
+You suggest meals in Bite Buddy, a game where people feed a virtual pet with photos of the meals they eat. Suggest simple, affordable, everyday meals that fill the gaps in the user's week. Suggest Nigerian dishes by default: most users are in Nigeria, and many phones there report a US or UK locale. Only suggest another country's food if the locale's region clearly names that other country (not US or GB) and their recent meals are mostly from it too. Lean towards the kinds of dishes they already eat, so the ideas feel familiar and easy to find or cook in a Nigerian market or kitchen. Each name is a short dish name. Each reason is one friendly sentence of at most 15 words that says which gap it fills. boosts lists the nutrients it raises, from: protein, carbs, fats, vitamins, minerals, fiber.''';
 
 // Standard JSON schema; each AI provider converts it to its own format
 const mealIdeasSchema = <String, dynamic>{
@@ -78,13 +78,20 @@ List<MealSuggestion> parseMealIdeas(Map<String, dynamic> json) {
   return ideas.take(mealIdeasCount).toList();
 }
 
+// Nigerian, like the AI's ideas (see mealIdeasSystemPrompt)
 const _fallbackIdeas = {
-  'protein': ('Eggs on toast', 'A quick, easy way to add protein.'),
-  'fiber': ('Beans and vegetables', 'Packed with fiber to keep things moving.'),
-  'vitamins': ('Fruit salad', 'A colourful bowl full of vitamins.'),
+  'protein': (
+    'Moi moi with boiled eggs',
+    'Beans and eggs: an easy protein boost.',
+  ),
+  'fiber': (
+    'Beans and plantain',
+    'Beans are packed with fiber to keep you full.',
+  ),
+  'vitamins': ('Pawpaw and oranges', 'Fresh fruit full of vitamins.'),
   'minerals': (
-    'Nuts and leafy greens',
-    'A handful of minerals with every bite.',
+    'Efo riro with fish',
+    'Leafy greens and fish for a mineral boost.',
   ),
 };
 
